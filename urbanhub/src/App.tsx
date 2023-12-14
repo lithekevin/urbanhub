@@ -1,7 +1,6 @@
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Row } from 'react-bootstrap';
-import { getTrips } from './firebase/daos/dao-trips';
 
 
 function App() {

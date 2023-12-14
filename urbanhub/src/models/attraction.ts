@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
 
 export interface Attraction {
-    id: string;
+    attractionId: string;
     name: string;
     location: {
-        lat: number;
-        lng: number;
+        latitude: number;
+        longitude: number;
     }
     startDate: dayjs.Dayjs;
     endDate: dayjs.Dayjs;

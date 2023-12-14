@@ -6,12 +6,11 @@ export interface Trip {
     city: string;
     startDate: dayjs.Dayjs;
     endDate: dayjs.Dayjs;
-    image: string;
     answers: string[];
     schedule: Map<dayjs.Dayjs, Attraction[]>;
     location: {
-        lat: number;
-        lng: number;
+        latitude: number;
+        longitude: number;
     }
     
 }
