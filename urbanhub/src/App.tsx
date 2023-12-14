@@ -3,8 +3,6 @@ import './App.css';
 import { Row } from 'react-bootstrap';
 import { getTrips } from './firebase/daos/dao-trips';
 
-getTrips();
-
 
 function App() {
   return (
