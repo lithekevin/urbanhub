@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
 export interface Attraction {
-    attractionId: string;
+    id: string;
     name: string;
     location: {
         latitude: number;
