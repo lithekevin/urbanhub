@@ -1,7 +1,13 @@
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Row } from 'react-bootstrap';
+import Homepage from './pages/Homepage';
+import { setDefaultTrips } from './firebase/daos/dao-trips';
+import MyTrips from './pages/MyTrips';
+import NewTrip from './pages/NewTrip';
+import TripOverview from './pages/TripOverview';
 
+setDefaultTrips();
 
 function App() {
   return (
@@ -15,10 +21,11 @@ function Main() {
   return (
     <Routes>
       <Route path="/" element={<PageLayout/>}>
-        <Route index path='/' element={<div>HomePage</div> /* TODO: Start designing pages from here */}/>
+        <Route index path='/' element={<Homepage/>}/>
+        <Route path='/mytrips' element={<MyTrips/>}/>
+        <Route path='/newtrip' element={<NewTrip/>}/>
+        <Route path='/trips/:tripId' element={<TripOverview/>}/>
       </Route>
-
-      <Route path="*" element={<div>404</div> /* TODO: Design not found page */}/>
     </Routes>
   );
 }

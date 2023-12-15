@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Attraction } from './attraction';
+import { TripAttraction } from './tripAttraction';
 
 export interface Trip {
     id: string;
@@ -7,7 +7,7 @@ export interface Trip {
     startDate: dayjs.Dayjs;
     endDate: dayjs.Dayjs;
     answers: string[];
-    schedule: Map<dayjs.Dayjs, Attraction[]>;
+    schedule: Map<dayjs.Dayjs, TripAttraction[]>;
     location: {
         latitude: number;
         longitude: number;
