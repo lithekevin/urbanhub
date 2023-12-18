@@ -1,0 +1,15 @@
+#navbar {
+    background-color: #B3D89C;
+    min-height: 75px;
+    z-index: 1;
+}
+
+.homepageButton {
+    background-color: #4D7298 !important;
+    font-size: 20px !important;
+    border: none !important;
+}
+
+.homepageButton:hover {
+    background-color: #9DC3C2 !important;
+}
