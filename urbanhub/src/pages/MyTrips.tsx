@@ -5,6 +5,7 @@ import { getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
 
 
 
@@ -96,6 +97,10 @@ function MyTrips() {
                       </Card.Body>
                   </Card>
                 </Link>
+                {
+                  dayjs().isAfter(trip.startDate) && dayjs().isBefore(trip.endDate) && 
+                  <h5 className="text-start mt-3">ONGOING...</h5>
+                }
               </Col>
             );
           })
