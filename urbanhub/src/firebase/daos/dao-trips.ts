@@ -1,7 +1,9 @@
-import { getFirestore, collection, setDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, setDoc, doc, getDocs } from "firebase/firestore";
 import { app } from "../firebaseConfig";
 import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { Trip } from "../../models/trip";
+import { TripAttraction } from "../../models/tripAttraction";
 
 dayjs.extend(customParseFormat)
 
@@ -26,6 +28,7 @@ export const setDefaultTrips = async () => {
                 latitude: 41.390205,
                 longitude: 2.154007
             },
+            image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         },
 
         {
@@ -37,6 +40,7 @@ export const setDefaultTrips = async () => {
                 latitude: 51.509865,
                 longitude: -0.118092
             },
+            image: "https://images.unsplash.com/photo-1486299267070-83823f5448dd?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         }
     ];
 
@@ -49,5 +53,44 @@ export const setDefaultTrips = async () => {
     } catch (error) {
         console.error("Error adding document: ", error);
     }
+}
+
+// Get all trips from the DB
+
+export const getAllTrips = async () => {
+    const trips : Trip[] = [];
+
+    try{
+
+        const querySnapshot = await getDocs(tripsCollection);
+
+        querySnapshot.forEach((doc) => {
+
+            // Convert doc data to Trip object
+
+            const trip: Trip = {
+                id: doc.id,
+                city: doc.data().city,
+                startDate: dayjs(doc.data().startDate, "DD/MM/YYYY"),
+                endDate: dayjs(doc.data().endDate, "DD/MM/YYYY"),
+                answers: doc.data().answers,
+                schedule: new Map<dayjs.Dayjs, TripAttraction[]>(),
+                location: {
+                    latitude: doc.data().location.latitude,
+                    longitude: doc.data().location.longitude
+                },
+                image: doc.data().image
+            }
+
+            trips.push(trip);
+        });
+
+        return trips;
+
+    } catch (error) {
+        console.error("Error getting documents: ", error);
+        throw error;
+    }
+    
 }
 

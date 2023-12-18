@@ -12,6 +12,7 @@ export interface Trip {
         latitude: number;
         longitude: number;
     }
+    image: string;
     
 }
 

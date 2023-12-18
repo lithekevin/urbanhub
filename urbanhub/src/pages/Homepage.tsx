@@ -18,7 +18,7 @@ function Homepage() {
           </Button>
         </Link>
 
-        <Link to='/trips' className="text-decoration-none text-white w-50">
+        <Link to='/mytrips' className="text-decoration-none text-white w-50">
           <Button className="w-100 mb-5 homepageButton">
             <FaMapMarkedAlt className="me-2"/>
             See my trips
