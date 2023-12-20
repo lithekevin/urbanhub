@@ -2,6 +2,7 @@ import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Row } from 'react-bootstrap';
 import Homepage from './pages/Homepage';
+import NavigationBar from './components/NavigationBar';
 import { setDefaultTrips } from './firebase/daos/dao-trips';
 import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
@@ -12,18 +13,25 @@ setDefaultTrips();
 function App() {
   return (
     <BrowserRouter>
+      <NavigationBar/>
       <Main/>
     </BrowserRouter>
   );
 }
 
 function Main() {
+
+  const handleTripSubmission = (data: { destination: string; startDate: string; endDate: string }) => {
+    // Handle the form submission logic here
+    console.log('Form submitted with data:', data);
+  };
+
   return (
     <Routes>
       <Route path="/" element={<PageLayout/>}>
         <Route index path='/' element={<Homepage/>}/>
         <Route path='/mytrips' element={<MyTrips/>}/>
-        <Route path='/newtrip' element={<NewTrip/>}/>
+        <Route path='/newtrip' element={<NewTrip onSubmit={handleTripSubmission}/>}/>
         <Route path='/trips/:tripId' element={<TripOverview/>}/>
       </Route>
     </Routes>
