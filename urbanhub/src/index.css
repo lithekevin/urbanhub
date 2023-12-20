@@ -21,3 +21,19 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+
+.title{
+    font-size: 30px;
+    margin-top:50px;
+    margin-bottom: 100px;
+}
+
+#navbar{
+    box-shadow: 1px 1px 1px 1px #393646;
+}
+
+.button{
+    margin-top: 2%;
+    margin-right: 2%
+}

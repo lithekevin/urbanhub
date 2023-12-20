@@ -1,5 +1,4 @@
 import { Alert, Card, Col, Container, Row, Spinner } from "react-bootstrap";
-import NavigationBar from "../components/NavigationBar";
 import { useEffect, useState } from "react";
 import { getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
@@ -36,7 +35,6 @@ function MyTrips() {
 
 
   return (<>
-    <NavigationBar />
 
     <Container className="d-flex flex-column align-items-center vh-100 content-padding-top" style={{ position: 'absolute'}}>
 
