@@ -2,8 +2,9 @@ import { Alert, Card, Col, Container, Row, Spinner } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
-import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { FaPlus } from "react-icons/fa";
+import colors from "../style/colors";
 import dayjs from "dayjs";
 
 
@@ -36,18 +37,11 @@ function MyTrips() {
 
   return (<>
 
-    <Container className="d-flex flex-column align-items-center vh-100 content-padding-top" style={{ position: 'absolute'}}>
+    <Container className="d-flex flex-column align-items-center content-padding-top">
 
-    <Container fluid className="position-relative d-flex flex-column align-items-center">
-
-      <div className="position-absolute start-0 top-50 translate-middle-y px-md-5">
-        <Link to="/" className="text-decoration-none text-dark">
-          <FaArrowLeft size={36} />
-        </Link>
-      </div>
-
-      <h1 className="text-center">My trips</h1>
-    </Container>
+      <Container fluid className="position-relative d-flex flex-column align-items-center">
+        <h1 className="text-center">MY TRIPS</h1>
+      </Container>
       
 
       {
@@ -74,7 +68,21 @@ function MyTrips() {
       
       }
 
-      <Row className="d-flex flex-row justify-content-center w-100 mt-5">
+      <Row className="d-flex flex-row justify-content-center w-100 mt-5 px-5">
+
+      <Row className="w-100 d-flex flex-row justify-content-center">
+        <Col xs={11} md={5} lg={3} className="mb-4 px-0">
+          <Link to={`/newtrip`} className="text-decoration-none">
+            <Card className="text-center tripCard" style={{backgroundColor: colors.softBackgroundColor}}>
+                <Card.Body>
+                  <FaPlus size={32} strokeWidth={1}/>
+                  <Card.Title className="p-0" style={{fontSize: 30}}>new trip</Card.Title>
+                </Card.Body>
+            </Card>
+          </Link>
+        </Col>
+      </Row>
+
         {
 
           trips.map((trip) => {
@@ -82,7 +90,7 @@ function MyTrips() {
             return (
               <Col xs={11} md={5} lg={3} className="mb-4">
                 <Link to={`/trips/${trip.id}`} className="text-decoration-none">
-                  <Card key={trip.id} className="text-center tripCard" style={{backgroundColor: "#ECF5E4"}}>
+                  <Card key={trip.id} className="text-center tripCard" style={{backgroundColor: colors.whiteBackgroundColor}}>
                       <div className="city-image-container">
                         <img src={trip.image} alt={`City: ${trip.city}`} className="city-image" />
                         <div className="gradient-overlay"></div>

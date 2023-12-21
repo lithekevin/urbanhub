@@ -1,20 +1,23 @@
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Row } from 'react-bootstrap';
-import Homepage from './pages/Homepage';
 import NavigationBar from './components/NavigationBar';
 import { setDefaultTrips } from './firebase/daos/dao-trips';
 import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
 import TripOverview from './pages/TripOverview';
+import FooterComponent from './components/FooterComponent';
 
 setDefaultTrips();
 
 function App() {
   return (
     <BrowserRouter>
-      <NavigationBar/>
-      <Main/>
+      <div className='wrapper'>
+        <NavigationBar/>
+        <Main/>
+        <FooterComponent/>
+      </div>
     </BrowserRouter>
   );
 }
@@ -29,8 +32,7 @@ function Main() {
   return (
     <Routes>
       <Route path="/" element={<PageLayout/>}>
-        <Route index path='/' element={<Homepage/>}/>
-        <Route path='/mytrips' element={<MyTrips/>}/>
+        <Route index path='/' element={<MyTrips/>}/>
         <Route path='/newtrip' element={<NewTrip onSubmit={handleTripSubmission}/>}/>
         <Route path='/trips/:tripId' element={<TripOverview/>}/>
       </Route>

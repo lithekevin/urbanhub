@@ -9,8 +9,8 @@ function NavigationBar() {
           <img src="/smart-city.png" alt="logo" width="50" height="50" className="d-inline-block align-top"/>
           <Navbar.Brand href="/" style={{ fontSize: '30px', marginLeft: '10px' }}>UrbanHub</Navbar.Brand>
         </div>
-        <Row className="d-flex flex-row justify-content-center">
-          <PiUserCircleFill style={{ fontSize: '35px' }} />
+        <Row className="d-flex flex-row justify-content-center w-xs-100 w-md-auto">
+          <PiUserCircleFill style={{ fontSize: '35px', color: "black" }} />
           <Navbar.Text className="text-center" style={{ padding: '0' }}>
             Mario Rossi
           </Navbar.Text>
