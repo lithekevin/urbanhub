@@ -1,7 +1,20 @@
 #navbar {
-    background-color: #B3D89C;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background-color: #00aa70;
+    color: whitesmoke;
     min-height: 75px;
     z-index: 1;
+}
+
+.homepage {
+    padding-top: 75px;
+    background-image: url("../../public/homepage_background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: calc(100vh - 75px);
 }
 
 .homepageButton {
