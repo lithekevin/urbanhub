@@ -49,7 +49,7 @@
 }
 
 .header-style {
-    margin: 15px 20px 20px;
+    margin: 15px 20px 20px 20px;
     border-radius: 20px;
     position: sticky;
     top: 15px;
@@ -77,8 +77,13 @@
 
 .userInfo {
     margin-left: 5px;
+    margin-bottom: 20px;
     font-size: 16px;
     color: black;
+}
+
+.website-icon{
+    margin-bottom: 20px;
 }
 
 
