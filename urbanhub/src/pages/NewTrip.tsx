@@ -38,7 +38,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
       title: "Trip preferences",
     },
     {
-      title: "Trip overview"
+      title: "Trip summary"
     }
   ];
   const [step, setStep] = React.useState(0);
@@ -112,7 +112,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
         <div key={index}>
           <Row gutter={16}>
             <Col span={24}>
-              <label>{question}</label>
+              <label className='label'>{question}</label>
             </Col>
             <Col span={24}>
               <Form.Item
@@ -208,8 +208,11 @@ const NewTrip: React.FC<TripFormProps> = () => {
         </Steps>
 
         <Form>
+          { step === 0 && (
+          <>
+          <h3 className='step-title'> Choose your trip destination </h3>
+          <label className='label'> Where would you want to go? </label>
           <Form.Item
-            label="Destination"
             name="destination"
             hidden={step !== 0}
             validateStatus={isDestinationSelected ? 'success' : 'error'}
@@ -223,9 +226,13 @@ const NewTrip: React.FC<TripFormProps> = () => {
               <Select.Option value='Rome'> Rome </Select.Option>
             </Select>
           </Form.Item>
-
+          </>
+          )}
+          { step === 1 && (
+          <>
+          <h3 className='step-title'> Select your trip settings </h3>
+          <label className='label'> When would you like to go? </label>
           <Form.Item
-            label="Date Range"
             name="dateRange"
             hidden={step !== 1}
           >
@@ -235,8 +242,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
             />
           </Form.Item>
 
+          <label className='label'> How many adults are going? </label>
           <Form.Item
-            label="Number of adults"
             name="adults"
             hidden={step !== 1}
           >
@@ -249,8 +256,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
             />
           </Form.Item>
 
+          <label className='label'> How many kids are going? </label>
           <Form.Item
-            label="Number of kids"
             name="kids"
             hidden={step !== 1}
           >
@@ -263,8 +270,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
             />
           </Form.Item>
 
+          <label className='label'> How much do you plan to spend on this trip </label>
           <Form.Item
-            label="Budget"
             name="budget"
             hidden={step !== 1}
           >
@@ -276,9 +283,16 @@ const NewTrip: React.FC<TripFormProps> = () => {
               }
             />
           </Form.Item>
+          </>
+          )}
+          { step === 2 && (
+            <>
+            <h3 className='step-title'> Set your trip preferences </h3>
+            </>
+          )}
 
           <div hidden={step !== 3}>
-            <h4>Summary</h4>
+            <h3 className='step-title'> Trip summary</h3>
             <br />
             <p>
               <strong>Destination:</strong> {formData.destination}
