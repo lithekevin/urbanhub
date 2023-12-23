@@ -1,184 +1,337 @@
-import React, { useState } from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { Steps } from 'antd';
+import React from 'react';
+import { Form, Button, DatePicker, InputNumber, Input, Steps, Row, Col, Select } from 'antd';
+import moment from 'moment';
+import questions from '../firebase/questions'; 
+import shuffle from 'lodash/shuffle';
+const { Step } = Steps;
+const { RangePicker } = DatePicker;
 
-const steps = [
-  {
-    title: "Trip destination",
-  },
-  {
-    title: "Trip settings",
-  },
-  {
-    title: "Trip preferences",
-  },
-  {
-    title: "Trip overview"
-  }
-];
+interface CustomEvent {
+  target: {
+    name: string;
+    value: string | [string, string] | number;
+  };
+}
 
 interface TripFormProps {
   onSubmit: (data: {
     destination: string;
-    startDate: string;
-    endDate: string;
+    dateRange: [string, string];
     adults: number;
     kids: number;
     budget: number;
-    additionalInfo: string;
+    questions: [string];
+    answers: [string];
   }) => void;
 }
 
-const NewTrip: React.FC<TripFormProps> = ({ onSubmit }) => {
-  const [step, setStep] = useState(0);
-  const [formData, setFormData] = useState({
+const NewTrip: React.FC<TripFormProps> = () => {
+
+  const steps = [
+    {
+      title: "Trip destination",
+    },
+    {
+      title: "Trip settings",
+    },
+    {
+      title: "Trip preferences",
+    },
+    {
+      title: "Trip overview"
+    }
+  ];
+  const [step, setStep] = React.useState(0);
+
+  const [formData, setFormData] = React.useState({
     destination: '',
-    startDate: '',
-    endDate: '',
+    dateRange: ['', ''],
     adults: 0,
     kids: 0,
     budget: 0,
     additionalInfo: '',
   });
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+  // State to track the displayed questions
+  const [displayedQuestions, setDisplayedQuestions] = React.useState<string[]>([]);
+
+  // State to store all displayed questions (including previous ones)
+  const [allDisplayedQuestions, setAllDisplayedQuestions] = React.useState<string[]>([]);
+ 
+  // New state to store user answers to questions
+  const [userAnswers, setUserAnswers] = React.useState<string[]>(Array(allDisplayedQuestions.length).fill(''));
+  
+  const [isDestinationSelected, setIsDestinationSelected] = React.useState(false);
+
+  // New state to track whether more questions can be loaded
+  const [canLoadMoreQuestions, setCanLoadMoreQuestions] = React.useState(true);
+
+  const handleInputChange = (e: CustomEvent) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  
+    // Check if the property is 'dateRange' and convert it to the correct type
+    const updatedValue =
+      name === 'dateRange' ? (typeof value === 'string' ? value.split(',') : (value as [string, string])) : value;
+  
+    setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (step === 3) {
-      onSubmit(formData); // Submit the data only in the final step
+  const handleDestinationChange = (value: string) => {
+    setIsDestinationSelected(value !== ''); // Check if a city is selected
+    handleInputChange({ target: { name: 'destination', value } } as CustomEvent);
+  };
+
+  const handleDateRangeChange = (dates: [moment.Moment, moment.Moment]) => {
+    const dateStrings = dates.map((date) => date.format('YYYY-MM-DD'));
+    handleInputChange({ target: { name: 'dateRange', value: dateStrings } } as CustomEvent);
+  };
+
+  // Handle user's answers to questions
+  const handleAnswerChange = (index: number, value: string) => {
+    const updatedAnswers = [...userAnswers];
+    updatedAnswers[index] = value;
+    setUserAnswers(updatedAnswers);
+  };
+  
+  // New function to check if all questions are answered
+  const areAllQuestionsAnswered = () => {
+    return userAnswers.length === allDisplayedQuestions.length && userAnswers.every((answer) => answer.trim() !== '');
+  };
+
+  React.useEffect(() => {
+    // Load the initial set of questions when the component mounts
+    const initialQuestions = shuffle(questions).slice(0, 3);
+    setDisplayedQuestions(initialQuestions);
+    setAllDisplayedQuestions(initialQuestions);
+  }, []); 
+
+  // Render random questions and text area fields for the third step
+  const renderQuestions = () => {
+    if (step === 2) {
+      return displayedQuestions.map((question, index) => (
+        <div key={index}>
+          <Row gutter={16}>
+            <Col span={24}>
+              <label>{question}</label>
+            </Col>
+            <Col span={24}>
+              <Form.Item
+                name={`answer${index}`}
+                hidden={step !== 2}
+              >
+                <Input.TextArea
+                  value={userAnswers[index]}
+                  onChange={(e) => handleAnswerChange(index, e.target.value)}
+                  rows={4}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        </div>
+      ));
+    }
+    else if (step === 3){
+      return allDisplayedQuestions.map((question, index) => (
+        <div key={index}>
+          <Row gutter={16}>
+            <Col span={24}>
+              <strong>{question}</strong>
+            </Col>
+            <Col span={24}>
+              <p>{userAnswers[index]}</p>
+            </Col>
+          </Row>
+        </div>
+      ));
+    }
+    else{
+      return null;
     }
   };
 
-  const items = steps.map((item) => ({
-    key: item.title,
-    title: item.title,
-  }));
+  // Load more questions when the user clicks the button
+  const loadMoreQuestions = () => {
+    const remainingQuestions = questions.filter(
+      (question) => !allDisplayedQuestions.includes(question)
+    );
 
-  const nextStep = () => setStep((prevStep) => Math.min(prevStep + 1, 3));
+    const newQuestions = shuffle(remainingQuestions).slice(0, 3);
+
+    setDisplayedQuestions((prevDisplayedQuestions) => [
+      ...prevDisplayedQuestions,
+      ...newQuestions,
+    ]);
+
+    setAllDisplayedQuestions((prevAllDisplayedQuestions) => [
+      ...prevAllDisplayedQuestions,
+      ...newQuestions,
+    ]);
+
+    // Disable loading more questions if all questions are displayed
+    if (allDisplayedQuestions.length + newQuestions.length === 9) {
+      setCanLoadMoreQuestions(false);
+    }
+  };
+
+  const isStepValid = () => {
+    switch (step) {
+      case 0:
+        return isDestinationSelected;
+      case 1:
+        return (
+          formData.dateRange[0] !== '' &&
+          formData.adults > 0 &&
+          formData.kids >= 0 &&
+          formData.budget > 0
+        );
+      case 2:
+        return areAllQuestionsAnswered();
+      default:
+        return true;
+    }
+  };
+
+  const nextStep = () => {
+    if (isStepValid()) {
+      setStep((prevStep) => prevStep + 1);
+    }
+  };
   const prevStep = () => setStep((prevStep) => Math.max(prevStep - 1, 0));
 
   return (
-    <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh' }}>
-      <Row>
-          <Col md={{ span: 12 }}>
-          {/* Ant Design Steps */}
-          <Steps current={step} items={items} size="small" className="mb-3">
-          </Steps>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="Destination" hidden={step !== 0}>
-              <Form.Label>Destination</Form.Label>
-              <Form.Control
-                type="text"
-                name="destination"
-                placeholder="Enter destination"
-                value={formData.destination}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
+    <Row justify="center" align="middle" style={{ minHeight: '90vh' }}>
+      <Col md={{ span: 12 }}>
+        <Steps current={step} size="small" className="mb-3">
+          {steps.map((s, index) => (
+            <Step key={index} title={s.title} />
+          ))}
+        </Steps>
 
-            <Form.Group controlId="Trip settings" hidden={step !== 1}>
-              <Form.Group controlId="Start date">
-                <Form.Label>Start date</Form.Label>
-                <Form.Control
-                  type="date"
-                  name="startDate"
-                  value={formData.startDate}
-                  onChange={handleInputChange}
-                />
-                </Form.Group>
-              <Form.Group controlId="End date">
-                <Form.Label>End date</Form.Label>
-                <Form.Control
-                  type="date"
-                  name="endDate"
-                  value={formData.endDate}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="Number of adults">
-                <Form.Label>Number of adults</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="adults"
-                  value={formData.adults}
-                  onChange={handleInputChange}
-                />
-                </Form.Group>
-              <Form.Group controlId="Number of kids">
-                <Form.Label>Number of kids</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="kids"
-                  value={formData.kids}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="Budget">
-                <Form.Label>Budget</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="budget"
-                  value={formData.budget}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-            </Form.Group>
+        <Form>
+          <Form.Item
+            label="Destination"
+            name="destination"
+            hidden={step !== 0}
+            validateStatus={isDestinationSelected ? 'success' : 'error'}
+            help={!isDestinationSelected && 'Please select a city'}
+          >
+            <Select onChange={handleDestinationChange}>
+              <Select.Option value=''> Select a city </Select.Option>
+              <Select.Option value='Barcelona'> Barcelona </Select.Option>
+              <Select.Option value='London'> London </Select.Option>
+              <Select.Option value='Paris'> Paris </Select.Option>
+              <Select.Option value='Rome'> Rome </Select.Option>
+            </Select>
+          </Form.Item>
 
-            {/* Step 2 content goes here */}
+          <Form.Item
+            label="Date Range"
+            name="dateRange"
+            hidden={step !== 1}
+          >
+            <RangePicker
+              style={{ width: '100%' }}
+              onChange={(dates, dateStrings) => handleDateRangeChange(dates as [moment.Moment, moment.Moment])}
+            />
+          </Form.Item>
 
-            <div hidden={step !== 3}>
-              <h4>Summary</h4>
-              <br />
-              <p>
-                <strong>Destination:</strong> {formData.destination}
-              </p>
-              <p>
-                <strong>Start Date:</strong> {formData.startDate}
-              </p>
-              <p>
-                <strong>End Date:</strong> {formData.endDate}
-              </p>
-              <p>
-                <strong>Number of Adults:</strong> {formData.adults}
-              </p>
-              <p>
-                <strong>Number of Kids:</strong> {formData.kids}
-              </p>
-              <p>
-                <strong>Budget:</strong> {formData.budget}
-              </p>
-              {/* You can add more fields as needed */}
-            </div>
+          <Form.Item
+            label="Number of adults"
+            name="adults"
+            hidden={step !== 1}
+          >
+            <InputNumber
+              onChange={(value) =>
+                handleInputChange({
+                  target: { name: 'adults', value: typeof value === 'number' ? value : 0 },
+                } as CustomEvent)
+              }
+            />
+          </Form.Item>
 
+          <Form.Item
+            label="Number of kids"
+            name="kids"
+            hidden={step !== 1}
+          >
+            <InputNumber
+                onChange={(value) =>
+                  handleInputChange({
+                    target: { name: 'kids', value: typeof value === 'number' ? value : 0 },
+                  } as CustomEvent)
+                }
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Budget"
+            name="budget"
+            hidden={step !== 1}
+          >
+            <InputNumber
+              onChange={(value) =>
+                handleInputChange({
+                  target: { name: 'budget', value: typeof value === 'number' ? value : 0 },
+                } as CustomEvent)
+              }
+            />
+          </Form.Item>
+
+          <div hidden={step !== 3}>
+            <h4>Summary</h4>
+            <br />
+            <p>
+              <strong>Destination:</strong> {formData.destination}
+            </p>
+            <p>
+              <strong>Date Range:</strong> {formData.dateRange.join(' to ')}
+            </p>
+            <p>
+              <strong>Number of Adults:</strong> {formData.adults}
+            </p>
+            <p>
+              <strong>Number of Kids:</strong> {formData.kids}
+            </p>
+            <p>
+              <strong>Budget:</strong> {formData.budget}
+            </p>
+          </div>
+
+          {/* Render questions and input fields for the third step */}
+          {renderQuestions()}
+
+          {/* Load more questions button */}
+          {step === 2 && displayedQuestions.length < questions.length && canLoadMoreQuestions && (
             <div className="mb-2 d-flex align-items-center justify-content-center">
-              {step > 0 && (
-                <Button variant="secondary" onClick={prevStep} className='button'>
-                  Previous
-                </Button>
-              )}
-
-              {step < 3 && (
-                <Button variant="primary" onClick={nextStep} className='button'>
-                  Next
-                </Button>
-              )}
-
-              {step === 3 && (
-                <Button variant="primary" type="submit" className='button'>
-                  Submit
-                </Button>
-              )}
+              <Button type="default" onClick={loadMoreQuestions} className="button" disabled={!areAllQuestionsAnswered()}>
+                Load More Questions
+              </Button>
             </div>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+          )}
+
+
+          <div className="mb-2 d-flex align-items-center justify-content-center">
+            {step > 0 && (
+              <Button type="default" onClick={prevStep} className="button">
+                Previous
+              </Button>
+            )}
+
+            {step < 3 && (
+              <Button type="primary" onClick={nextStep} className="button" htmlType="submit" disabled={!isStepValid()}>
+                Next
+              </Button>
+            )}
+
+            {step === 3 && (
+              <Button type="primary" htmlType="submit" className="button">
+                Submit
+              </Button>
+            )}
+          </div>
+        </Form>
+      </Col>
+    </Row>
   );
 };
 
