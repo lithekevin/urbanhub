@@ -24,9 +24,17 @@ function App() {
 
 function Main() {
 
-  const handleTripSubmission = (data: { destination: string; startDate: string; endDate: string }) => {
-    // Handle the form submission logic here
-    console.log('Form submitted with data:', data);
+  const handleTripSubmission = (data: {
+    destination: string;
+    dateRange: [string, string];
+    adults: number;
+    kids: number;
+    budget: number;
+    questions: [string];
+    answers: [string];
+  }) => {
+    // Handle the submission logic here
+    console.log(data);
   };
 
   return (
