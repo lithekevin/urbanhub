@@ -47,7 +47,7 @@ function TripOverview() {
           </div>
         </Container>
       </div>
-      <footer style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#f8f9fa', padding: '10px', textAlign: 'center', zIndex: 1}}>
+      <footer style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#f8f9fa', padding: '10px', textAlign: 'center'}}>
         <Footer />
       </footer>
     </>
@@ -108,10 +108,9 @@ function Sidebar() {
         </Col>
         <Col xs={24} sm={24} md={11}>
           <Space.Compact style={{ width: '100%' }}>
-            <TextArea placeholder="Ask something to UrbanHub..." autoSize={{ minRows: 3 }} />
+            <TextArea placeholder="Ask something to UrbanHub..." autoSize={{ minRows: 1 }} />
             <Button type="primary">Send</Button>
           </Space.Compact>
-          <p></p>
         </Col>
       </Row>
     </Footer>
