@@ -1,9 +1,10 @@
-import { Timeline } from 'antd';
-import type { CollapseProps } from 'antd';
-import { Collapse } from 'antd';
+import { CollapseProps, Timeline, Collapse, Layout, Row, Col, Button, Space } from 'antd';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
 import { useState } from 'react';
+import { Input } from 'antd';
+
+
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
 
@@ -29,21 +30,28 @@ function TripOverview() {
     );
   };
 
-  return (<>
-    <h1 className="text-center" >TRIP OVERVIEW</h1>
-    <Container className="d-flex align-items-stretch content-padding-top" style={{ height: '100vh' }}>
-      <div style={{ flex: '0 0 25%', height: '100%' }}>
-        <Sidebar />
-      </div>
-      <div style={{ flex: '0 0 75%', height: '100%' }}>
-        <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
-          <div style={{ width: '100%', height: '100%' }}>
-            <GoogleMapComponent />
+  return (
+    <>
+      <h1 className="text-center">TRIP OVERVIEW</h1>
+      <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative' }}>
+        <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
+          <div style={{ flex: '0 0 25%', height: '100%' }}>
+            <Sidebar />
+          </div>
+          <div style={{ flex: '0 0 75%', height: '100%' }}>
+            <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
+              <div style={{ width: '100%', height: '100%' }}>
+                <GoogleMapComponent />
+              </div>
+            </Container>
           </div>
         </Container>
       </div>
-    </Container>
-    </>);
+      <footer style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#f8f9fa', padding: '10px', textAlign: 'center', zIndex: 1}}>
+        <Footer />
+      </footer>
+    </>
+  );
 };
   
 
@@ -86,6 +94,28 @@ function Sidebar() {
       <Collapse size="large" items={dailyActivities} defaultActiveKey={['1']} accordion={true} />
       </div>
       </>);
+  };
+
+  function Footer() {
+    const { Footer } = Layout;
+    const { TextArea } = Input;
+
+    return (
+      <Footer className='footer-style'>
+      <Row justify="space-between">
+        <Col xs={24} sm={24} md={11}>
+          <p>Placeholder per robottino con risposte</p>
+        </Col>
+        <Col xs={24} sm={24} md={11}>
+          <Space.Compact style={{ width: '100%' }}>
+            <TextArea placeholder="Ask something to UrbanHub..." autoSize={{ minRows: 3 }} />
+            <Button type="primary">Send</Button>
+          </Space.Compact>
+          <p></p>
+        </Col>
+      </Row>
+    </Footer>
+  );
   };
 
 export default TripOverview;
