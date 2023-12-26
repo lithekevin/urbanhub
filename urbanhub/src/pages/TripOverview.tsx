@@ -8,7 +8,6 @@ import { Input } from 'antd';
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
 
-
 function TripOverview() {
   const containerStyle = {
     width: '100%',
@@ -100,16 +99,40 @@ function Sidebar() {
     const { Footer } = Layout;
     const { TextArea } = Input;
 
+    const [message, setMessage] = useState('Is there anything I can do for you?');
+    const [undoVisibility, setUndoVisibility] = useState(false);
+
+    const updateMessage = (msg: string) => {
+      setMessage(msg);
+    };
+
+    const handleUndoClick = () => {
+      setUndoVisibility(false);
+      setMessage('Operation undone, is there anything else I can do for you?');
+    };
+
+    const handleSendClick = () => {
+      setUndoVisibility(true);
+      updateMessage('Here is the proposed solution to your problem');
+    };
+
     return (
-      <Footer className='footer-style'>
+      <Footer className='footer-style' style={{ backgroundColor: '#f0f0f0' }}>
       <Row justify="space-between">
         <Col xs={24} sm={24} md={11}>
-          <p>Placeholder per robottino con risposte</p>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start' }}>
+            <img src={"/robotassistant.png"} alt="UrbanHub assistant" style={{ width: 'auto', height: '70px', marginRight: '10px' }} />
+            <div style={{ flex: '1', position: 'relative', backgroundColor: '#fff', padding: '10px', borderRadius: '10px' }}>
+              <div style={{ position: 'absolute', top: '50%', left: '-10px', transform: 'translateY(-50%)', width: 0, height: 0, borderTop: '10px solid transparent', borderBottom: '10px solid transparent', borderRight: '10px solid #fff' }} />
+              <p>{message}</p>
+            </div>
+          </div>
         </Col>
         <Col xs={24} sm={24} md={11}>
           <Space.Compact style={{ width: '100%' }}>
-            <TextArea placeholder="Ask something to UrbanHub..." autoSize={{ minRows: 1 }} />
-            <Button type="primary">Send</Button>
+            <TextArea placeholder="Ask something to UrbanHub..." autoSize={{ minRows: 1, maxRows: 3 }} />
+            <Button type="primary" onClick={handleSendClick}>Send</Button>
+            {undoVisibility && (<Button type="primary" onClick={handleUndoClick}>Undo</Button>)}
           </Space.Compact>
         </Col>
       </Row>
