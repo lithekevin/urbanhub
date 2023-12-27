@@ -307,7 +307,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
               <strong>Number of Kids:</strong> {formData.kids}
             </p>
             <p>
-              <strong>Budget:</strong> {formData.budget}
+              <strong>Budget:</strong> {formData.budget} €
             </p>
           </div>
 

@@ -30,8 +30,8 @@ function Main() {
     adults: number;
     kids: number;
     budget: number;
-    questions: [string];
-    answers: [string];
+    questions: string[];
+    answers: string[];
   }) => {
     // Handle the submission logic here
     console.log(data);
