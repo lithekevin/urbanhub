@@ -52,6 +52,9 @@ const NewTrip: React.FC<TripFormProps> = () => {
     additionalInfo: '',
   });
 
+  const [adultsValue, setAdultsValue] = React.useState<number>(0);
+  const [kidsValue, setKidsValue] = React.useState<number>(0);
+
   // State to track the displayed questions
   const [displayedQuestions, setDisplayedQuestions] = React.useState<string[]>([]);
 
@@ -66,7 +69,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
   // New state to track whether more questions can be loaded
   const [canLoadMoreQuestions, setCanLoadMoreQuestions] = React.useState(true);
 
-  const handleInputChange = (e: CustomEvent) => {
+  const handleInputChange = React.useCallback((e: CustomEvent) => {
     const { name, value } = e.target;
   
     // Check if the property is 'dateRange' and convert it to the correct type
@@ -74,12 +77,38 @@ const NewTrip: React.FC<TripFormProps> = () => {
       name === 'dateRange' ? (typeof value === 'string' ? value.split(',') : (value as [string, string])) : value;
   
     setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
-  };
+  }, [setFormData]);
 
   const handleDestinationChange = (value: string) => {
     setIsDestinationSelected(value !== ''); // Check if a city is selected
     handleInputChange({ target: { name: 'destination', value } } as CustomEvent);
   };
+
+  const handleIncrement = (type: 'adults' | 'kids') => {
+    if (type === 'adults') {
+      setAdultsValue((prevValue) => prevValue + 1);
+    } else if (type === 'kids') {
+      setKidsValue((prevValue) => prevValue + 1);
+    }
+  };
+
+  const handleDecrement = (type: 'adults' | 'kids') => {
+    if (type === 'adults') {
+      setAdultsValue((prevValue) => Math.max(prevValue - 1, 0));
+    } else if (type === 'kids') {
+      setKidsValue((prevValue) => Math.max(prevValue - 1, 0));
+    }
+  };
+
+  React.useEffect(() => {
+    // Update the form data when adultsValue or kidsValue changes
+    handleInputChange({
+      target: { name: 'adults', value: adultsValue },
+    } as CustomEvent);
+    handleInputChange({
+      target: { name: 'kids', value: kidsValue },
+    } as CustomEvent);
+  }, [adultsValue, kidsValue, handleInputChange]);
 
   const handleDateRangeChange = (dates: [moment.Moment, moment.Moment]) => {
     const dateStrings = dates.map((date) => date.format('YYYY-MM-DD'));
@@ -180,8 +209,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
       case 1:
         return (
           formData.dateRange[0] !== '' &&
-          formData.adults > 0 &&
-          formData.kids >= 0 &&
+          ( formData.adults > 0 ||
+          formData.kids > 0 ) &&
           formData.budget > 0
         );
       case 2:
@@ -247,30 +276,57 @@ const NewTrip: React.FC<TripFormProps> = () => {
             name="adults"
             hidden={step !== 1}
           >
-            <InputNumber
-              onChange={(value) =>
-                handleInputChange({
-                  target: { name: 'adults', value: typeof value === 'number' ? value : 0 },
-                } as CustomEvent)
-              }
-            />
+            <Row gutter={8} align="middle">
+              <Col>
+                <Button onClick={() => handleDecrement('adults')} style={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
+                  -
+                </Button>
+              </Col>
+              <Col style={{ display: 'flex', alignItems: 'center' }}>
+                <InputNumber
+                  min={0}
+                  value={adultsValue}
+                  onChange={(value) => setAdultsValue(value || 0)}
+                  addonAfter={<span>Adults</span>}
+                  controls={false}
+                  style={{ textAlign: 'center' }}
+                />
+              </Col>
+              <Col>
+                <Button onClick={() => handleIncrement('adults')} style={{ width: '50%', display: 'flex', justifyContent: 'center'}}>
+                  +
+                </Button>
+              </Col>
+            </Row>
           </Form.Item>
 
           <label className='label'> How many kids are going? </label>
-          <Form.Item
-            name="kids"
-            hidden={step !== 1}
-          >
-            <InputNumber
-                onChange={(value) =>
-                  handleInputChange({
-                    target: { name: 'kids', value: typeof value === 'number' ? value : 0 },
-                  } as CustomEvent)
-                }
-            />
+          <Form.Item name="kids" hidden={step !== 1}>
+            <Row gutter={8} align="middle">
+              <Col>
+                <Button onClick={() => handleDecrement('kids')} style={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
+                  -
+                </Button>
+              </Col>
+              <Col style={{ display: 'flex', alignItems: 'center' }}>
+                <InputNumber
+                  min={0}
+                  value={kidsValue}
+                  onChange={(value) => setKidsValue(value || 0)}
+                  addonAfter={<span>Kids</span>}
+                  controls={false}
+                  style={{ textAlign: 'center' }}
+                />
+              </Col>
+              <Col>
+                <Button onClick={() => handleIncrement('kids')} style={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
+                  +
+                </Button>
+              </Col>
+            </Row>
           </Form.Item>
 
-          <label className='label'> How much do you plan to spend on this trip </label>
+          <label className='label'> How much do you plan to spend on this trip? </label>
           <Form.Item
             name="budget"
             hidden={step !== 1}
@@ -281,6 +337,10 @@ const NewTrip: React.FC<TripFormProps> = () => {
                   target: { name: 'budget', value: typeof value === 'number' ? value : 0 },
                 } as CustomEvent)
               }
+              value={formData.budget}
+              min={0}
+              controls={false}
+              addonAfter={<span>€</span>}
             />
           </Form.Item>
           </>
