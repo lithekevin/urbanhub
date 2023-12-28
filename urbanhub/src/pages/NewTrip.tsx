@@ -268,6 +268,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
             <RangePicker
               style={{ width: '100%' }}
               onChange={(dates, dateStrings) => handleDateRangeChange(dates as [moment.Moment, moment.Moment])}
+              disabledDate={(current) => current && current < moment().endOf('day')}
             />
           </Form.Item>
 
