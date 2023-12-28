@@ -18,7 +18,8 @@
  ************/
 
 .footer-style {
-    position: relative;
+    position: absolute;
+    bottom: 0;
     width: 100%;
     text-align: center;
     background-color: white;
@@ -29,7 +30,7 @@
     font-style: italic;
     padding-left: 0;
     padding-right: 0;
-    padding-top: 2%;
+    padding-top: 1%;
     padding-bottom: 0;
 }
 
@@ -73,6 +74,8 @@
 .projectName {
    font-size: 30px;
    margin-left: 10px;
+   position: relative;
+   top: -3px;
 }
 
 .userInfo {
