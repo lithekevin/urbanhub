@@ -18,7 +18,7 @@
  ************/
 
 .footer-style {
-    position: absolute;
+    position: relative;
     bottom: 0;
     width: 100%;
     text-align: center;
@@ -140,4 +140,16 @@ box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 .label{
     font-size: 20px;
     margin-bottom: 15px;
+}
+
+.ant-input-number .ant-input-number-input{
+    width: 80px;
+    text-align: center;
+}
+
+.custom-stepper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5%;
 }

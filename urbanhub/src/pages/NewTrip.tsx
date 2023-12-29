@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, DatePicker, InputNumber, Input, Steps, Row, Col, Select } from 'antd';
+import { Form, Button, DatePicker, InputNumber, Input, Steps, Row, Col, AutoComplete } from 'antd';
 import moment from 'moment';
 import questions from '../firebase/questions'; 
 import shuffle from 'lodash/shuffle';
@@ -52,6 +52,12 @@ const NewTrip: React.FC<TripFormProps> = () => {
     additionalInfo: '',
   });
 
+  // Add a state variable to track the input validity
+  const [isDestinationValid, setIsDestinationValid] = React.useState(false);
+
+  const [adultsValue, setAdultsValue] = React.useState<number>(0);
+  const [kidsValue, setKidsValue] = React.useState<number>(0);
+
   // State to track the displayed questions
   const [displayedQuestions, setDisplayedQuestions] = React.useState<string[]>([]);
 
@@ -66,7 +72,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
   // New state to track whether more questions can be loaded
   const [canLoadMoreQuestions, setCanLoadMoreQuestions] = React.useState(true);
 
-  const handleInputChange = (e: CustomEvent) => {
+  const handleInputChange = React.useCallback((e: CustomEvent) => {
     const { name, value } = e.target;
   
     // Check if the property is 'dateRange' and convert it to the correct type
@@ -74,12 +80,38 @@ const NewTrip: React.FC<TripFormProps> = () => {
       name === 'dateRange' ? (typeof value === 'string' ? value.split(',') : (value as [string, string])) : value;
   
     setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
-  };
+  }, [setFormData]);
 
   const handleDestinationChange = (value: string) => {
     setIsDestinationSelected(value !== ''); // Check if a city is selected
     handleInputChange({ target: { name: 'destination', value } } as CustomEvent);
   };
+
+  const handleIncrement = (type: 'adults' | 'kids') => {
+    if (type === 'adults') {
+      setAdultsValue((prevValue) => prevValue + 1);
+    } else if (type === 'kids') {
+      setKidsValue((prevValue) => prevValue + 1);
+    }
+  };
+
+  const handleDecrement = (type: 'adults' | 'kids') => {
+    if (type === 'adults') {
+      setAdultsValue((prevValue) => Math.max(prevValue - 1, 0));
+    } else if (type === 'kids') {
+      setKidsValue((prevValue) => Math.max(prevValue - 1, 0));
+    }
+  };
+
+  React.useEffect(() => {
+    // Update the form data when adultsValue or kidsValue changes
+    handleInputChange({
+      target: { name: 'adults', value: adultsValue },
+    } as CustomEvent);
+    handleInputChange({
+      target: { name: 'kids', value: kidsValue },
+    } as CustomEvent);
+  }, [adultsValue, kidsValue, handleInputChange]);
 
   const handleDateRangeChange = (dates: [moment.Moment, moment.Moment]) => {
     const dateStrings = dates.map((date) => date.format('YYYY-MM-DD'));
@@ -176,12 +208,12 @@ const NewTrip: React.FC<TripFormProps> = () => {
   const isStepValid = () => {
     switch (step) {
       case 0:
-        return isDestinationSelected;
+        return isDestinationSelected && isDestinationValid;
       case 1:
         return (
           formData.dateRange[0] !== '' &&
-          formData.adults > 0 &&
-          formData.kids >= 0 &&
+          ( formData.adults > 0 ||
+          formData.kids > 0 ) &&
           formData.budget > 0
         );
       case 2:
@@ -199,33 +231,50 @@ const NewTrip: React.FC<TripFormProps> = () => {
   const prevStep = () => setStep((prevStep) => Math.max(prevStep - 1, 0));
 
   return (
-    <Row justify="center" align="middle" style={{ minHeight: '90vh' }}>
+    <>
+    <div className='custom-stepper'>
+      <Steps current={step} size="small" className="mb-3" style={{ paddingLeft: '20%', paddingRight: '20%'}}>
+        {steps.map((s, index) => (
+          <Step key={index} title={s.title} />
+        ))}
+      </Steps>
+    </div>
+    <Row justify="center" align="middle" style={{ minHeight: '60vh' }}>
       <Col md={{ span: 12 }}>
-        <Steps current={step} size="small" className="mb-3">
-          {steps.map((s, index) => (
-            <Step key={index} title={s.title} />
-          ))}
-        </Steps>
-
         <Form>
           { step === 0 && (
           <>
           <h3 className='step-title'> Choose your trip destination </h3>
           <label className='label'> Where would you want to go? </label>
           <Form.Item
-            name="destination"
-            hidden={step !== 0}
-            validateStatus={isDestinationSelected ? 'success' : 'error'}
-            help={!isDestinationSelected && 'Please select a city'}
-          >
-            <Select onChange={handleDestinationChange}>
-              <Select.Option value=''> Select a city </Select.Option>
-              <Select.Option value='Barcelona'> Barcelona </Select.Option>
-              <Select.Option value='London'> London </Select.Option>
-              <Select.Option value='Paris'> Paris </Select.Option>
-              <Select.Option value='Rome'> Rome </Select.Option>
-            </Select>
-          </Form.Item>
+                  name="destination"
+                  hidden={step !== 0}
+                  validateStatus={isDestinationValid ? 'success' : 'error'}
+                  help={!isDestinationValid && 'Please select a valid city'}
+                  style={{ width: '100%' }} 
+                >
+                  <AutoComplete
+                    options={[
+                      { value: 'Barcelona' },
+                      { value: 'London' },
+                      { value: 'Paris' },
+                      { value: 'Rome' },
+                    ]}
+                    placeholder="Select a city"
+                    onChange={(value) => {
+                      handleDestinationChange(value);
+
+                      // Check if the input matches any suggestion
+                      const isMatch = value && [
+                        'Barcelona',
+                        'London',
+                        'Paris',
+                        'Rome',
+                      ].some((suggestion) => suggestion.toLowerCase() === value.toLowerCase());
+                      setIsDestinationValid(isMatch);
+                    }}
+                  />
+                </Form.Item>
           </>
           )}
           { step === 1 && (
@@ -239,6 +288,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
             <RangePicker
               style={{ width: '100%' }}
               onChange={(dates, dateStrings) => handleDateRangeChange(dates as [moment.Moment, moment.Moment])}
+              disabledDate={(current) => current && current < moment().endOf('day')}
             />
           </Form.Item>
 
@@ -247,30 +297,57 @@ const NewTrip: React.FC<TripFormProps> = () => {
             name="adults"
             hidden={step !== 1}
           >
-            <InputNumber
-              onChange={(value) =>
-                handleInputChange({
-                  target: { name: 'adults', value: typeof value === 'number' ? value : 0 },
-                } as CustomEvent)
-              }
-            />
+            <Row gutter={8} align="middle">
+              <Col>
+                <Button onClick={() => handleDecrement('adults')} style={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
+                  -
+                </Button>
+              </Col>
+              <Col style={{ display: 'flex', alignItems: 'center' }}>
+                <InputNumber
+                  min={0}
+                  value={adultsValue}
+                  onChange={(value) => setAdultsValue(value || 0)}
+                  addonAfter={<span>Adults</span>}
+                  controls={false}
+                  style={{ textAlign: 'center' }}
+                />
+              </Col>
+              <Col>
+                <Button onClick={() => handleIncrement('adults')} style={{ width: '50%', display: 'flex', justifyContent: 'center'}}>
+                  +
+                </Button>
+              </Col>
+            </Row>
           </Form.Item>
 
           <label className='label'> How many kids are going? </label>
-          <Form.Item
-            name="kids"
-            hidden={step !== 1}
-          >
-            <InputNumber
-                onChange={(value) =>
-                  handleInputChange({
-                    target: { name: 'kids', value: typeof value === 'number' ? value : 0 },
-                  } as CustomEvent)
-                }
-            />
+          <Form.Item name="kids" hidden={step !== 1}>
+            <Row gutter={8} align="middle">
+              <Col>
+                <Button onClick={() => handleDecrement('kids')} style={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
+                  -
+                </Button>
+              </Col>
+              <Col style={{ display: 'flex', alignItems: 'center' }}>
+                <InputNumber
+                  min={0}
+                  value={kidsValue}
+                  onChange={(value) => setKidsValue(value || 0)}
+                  addonAfter={<span>Kids</span>}
+                  controls={false}
+                  style={{ textAlign: 'center' }}
+                />
+              </Col>
+              <Col>
+                <Button onClick={() => handleIncrement('kids')} style={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
+                  +
+                </Button>
+              </Col>
+            </Row>
           </Form.Item>
 
-          <label className='label'> How much do you plan to spend on this trip </label>
+          <label className='label'> How much do you plan to spend on this trip? </label>
           <Form.Item
             name="budget"
             hidden={step !== 1}
@@ -281,6 +358,10 @@ const NewTrip: React.FC<TripFormProps> = () => {
                   target: { name: 'budget', value: typeof value === 'number' ? value : 0 },
                 } as CustomEvent)
               }
+              value={formData.budget}
+              min={0}
+              controls={false}
+              addonAfter={<span>€</span>}
             />
           </Form.Item>
           </>
@@ -307,7 +388,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
               <strong>Number of Kids:</strong> {formData.kids}
             </p>
             <p>
-              <strong>Budget:</strong> {formData.budget}
+              <strong>Budget:</strong> {formData.budget} €
             </p>
           </div>
 
@@ -346,6 +427,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
         </Form>
       </Col>
     </Row>
+    </>
   );
 };
 
