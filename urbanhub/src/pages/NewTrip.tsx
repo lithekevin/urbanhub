@@ -1,8 +1,10 @@
 import React from 'react';
-import { Form, Button, DatePicker, InputNumber, Input, Steps, Row, Col, AutoComplete } from 'antd';
+import { Form, Button, DatePicker, InputNumber, Input, Steps, Row, Col, AutoComplete, ConfigProvider } from 'antd';
 import moment from 'moment';
 import questions from '../firebase/questions'; 
 import shuffle from 'lodash/shuffle';
+import colors from '../style/colors';
+import cities from '../firebase/cities';
 const { Step } = Steps;
 const { RangePicker } = DatePicker;
 
@@ -233,13 +235,23 @@ const NewTrip: React.FC<TripFormProps> = () => {
   return (
     <>
     <div className='custom-stepper'>
-      <Steps current={step} size="small" className="mb-3" style={{ paddingLeft: '20%', paddingRight: '20%'}}>
-        {steps.map((s, index) => (
-          <Step key={index} title={s.title} />
-        ))}
+    <ConfigProvider
+      theme={{
+        components: {
+          Steps: {
+            colorPrimary: colors.hardBackgroundColor,
+          },
+        },
+      }}
+    >
+      <Steps current={step} size="small" className="mb-3" style={{paddingLeft: "25%", paddingRight: "25%"}}>
+          {steps.map((s, index) => (
+            <Step key={index} title={s.title} />
+          ))}
       </Steps>
+    </ConfigProvider>
     </div>
-    <Row justify="center" align="middle" style={{ minHeight: '60vh' }}>
+    <Row justify={'center'} align={"top"} style={{ minHeight: '66vh' }}>
       <Col md={{ span: 12 }}>
         <Form>
           { step === 0 && (
@@ -254,23 +266,17 @@ const NewTrip: React.FC<TripFormProps> = () => {
                   style={{ width: '100%' }} 
                 >
                   <AutoComplete
-                    options={[
-                      { value: 'Barcelona' },
-                      { value: 'London' },
-                      { value: 'Paris' },
-                      { value: 'Rome' },
-                    ]}
+                    options={cities.map((city) => ({ value: city.name }))}
                     placeholder="Select a city"
+                    filterOption = {(inputValue, option) => {
+                      return option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                    }}
                     onChange={(value) => {
                       handleDestinationChange(value);
 
                       // Check if the input matches any suggestion
-                      const isMatch = value && [
-                        'Barcelona',
-                        'London',
-                        'Paris',
-                        'Rome',
-                      ].some((suggestion) => suggestion.toLowerCase() === value.toLowerCase());
+                      const isMatch = value && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === value.toLowerCase());
+
                       setIsDestinationValid(isMatch);
                     }}
                   />
