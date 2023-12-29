@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, DatePicker, InputNumber, Input, Steps, Row, Col, Select } from 'antd';
+import { Form, Button, DatePicker, InputNumber, Input, Steps, Row, Col, AutoComplete } from 'antd';
 import moment from 'moment';
 import questions from '../firebase/questions'; 
 import shuffle from 'lodash/shuffle';
@@ -51,6 +51,9 @@ const NewTrip: React.FC<TripFormProps> = () => {
     budget: 0,
     additionalInfo: '',
   });
+
+  // Add a state variable to track the input validity
+  const [isDestinationValid, setIsDestinationValid] = React.useState(false);
 
   const [adultsValue, setAdultsValue] = React.useState<number>(0);
   const [kidsValue, setKidsValue] = React.useState<number>(0);
@@ -205,7 +208,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
   const isStepValid = () => {
     switch (step) {
       case 0:
-        return isDestinationSelected;
+        return isDestinationSelected && isDestinationValid;
       case 1:
         return (
           formData.dateRange[0] !== '' &&
@@ -244,20 +247,34 @@ const NewTrip: React.FC<TripFormProps> = () => {
           <h3 className='step-title'> Choose your trip destination </h3>
           <label className='label'> Where would you want to go? </label>
           <Form.Item
-            name="destination"
-            hidden={step !== 0}
-            validateStatus={isDestinationSelected ? 'success' : 'error'}
-            help={!isDestinationSelected && 'Please select a city'}
-            style={{ width: '100%'}}
-          >
-            <Select onChange={handleDestinationChange}>
-              <Select.Option value=''> Select a city </Select.Option>
-              <Select.Option value='Barcelona'> Barcelona </Select.Option>
-              <Select.Option value='London'> London </Select.Option>
-              <Select.Option value='Paris'> Paris </Select.Option>
-              <Select.Option value='Rome'> Rome </Select.Option>
-            </Select>
-          </Form.Item>
+                  name="destination"
+                  hidden={step !== 0}
+                  validateStatus={isDestinationValid ? 'success' : 'error'}
+                  help={!isDestinationValid && 'Please select a valid city'}
+                  style={{ width: '100%' }} 
+                >
+                  <AutoComplete
+                    options={[
+                      { value: 'Barcelona' },
+                      { value: 'London' },
+                      { value: 'Paris' },
+                      { value: 'Rome' },
+                    ]}
+                    placeholder="Select a city"
+                    onChange={(value) => {
+                      handleDestinationChange(value);
+
+                      // Check if the input matches any suggestion
+                      const isMatch = value && [
+                        'Barcelona',
+                        'London',
+                        'Paris',
+                        'Rome',
+                      ].some((suggestion) => suggestion.toLowerCase() === value.toLowerCase());
+                      setIsDestinationValid(isMatch);
+                    }}
+                  />
+                </Form.Item>
           </>
           )}
           { step === 1 && (
