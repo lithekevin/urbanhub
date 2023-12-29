@@ -6,6 +6,9 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import colors from "../style/colors";
 import dayjs from "dayjs";
+import cities from "../firebase/cities";
+
+const defaultImageURL = "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 
 
@@ -21,8 +24,15 @@ function MyTrips() {
     async function loadTrips() {
       setLoading(true);
       getAllTrips().then((DBtrips) => {
-        setTrips(DBtrips);
-        console.log(DBtrips);
+
+        let processedTrips: Trip[] = DBtrips.map((trip) => {
+          let processedTrip: Trip = trip;
+          processedTrip.image = cities.find((city) => city.name === trip.city)?.image || defaultImageURL;
+          return processedTrip;
+        }
+        );
+
+        setTrips(processedTrips);
       }).catch((error) => {
         console.log(error);
         setError(true);
@@ -86,7 +96,6 @@ function MyTrips() {
         {
 
           trips.map((trip) => {
-            console.log(trip);
             return (
               <Col xs={11} md={5} lg={3} className="mb-4">
                 <Link to={`/trips/${trip.id}`} className="text-decoration-none">
