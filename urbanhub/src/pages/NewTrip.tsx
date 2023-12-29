@@ -228,14 +228,16 @@ const NewTrip: React.FC<TripFormProps> = () => {
   const prevStep = () => setStep((prevStep) => Math.max(prevStep - 1, 0));
 
   return (
-    <Row justify="center" align="middle" style={{ minHeight: '90vh' }}>
+    <>
+    <div className='custom-stepper'>
+      <Steps current={step} size="small" className="mb-3" style={{ paddingLeft: '20%', paddingRight: '20%'}}>
+        {steps.map((s, index) => (
+          <Step key={index} title={s.title} />
+        ))}
+      </Steps>
+    </div>
+    <Row justify="center" align="middle" style={{ minHeight: '60vh' }}>
       <Col md={{ span: 12 }}>
-        <Steps current={step} size="small" className="mb-3">
-          {steps.map((s, index) => (
-            <Step key={index} title={s.title} />
-          ))}
-        </Steps>
-
         <Form>
           { step === 0 && (
           <>
@@ -246,6 +248,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
             hidden={step !== 0}
             validateStatus={isDestinationSelected ? 'success' : 'error'}
             help={!isDestinationSelected && 'Please select a city'}
+            style={{ width: '100%'}}
           >
             <Select onChange={handleDestinationChange}>
               <Select.Option value=''> Select a city </Select.Option>
@@ -407,6 +410,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
         </Form>
       </Col>
     </Row>
+    </>
   );
 };
 
