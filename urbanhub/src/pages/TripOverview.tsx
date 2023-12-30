@@ -1,7 +1,7 @@
 import { CollapseProps, Timeline, Collapse, Layout, Row, Col, Button, Space } from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from 'antd';
 
 
@@ -94,11 +94,39 @@ function Sidebar() {
   };
 
   function Footer() {
+    const [scrollRatio, setScrollRatio] = useState(0);
+
+  const handleScroll = () => {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const windowHeight = window.innerHeight;
+    const documentHeight = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    );
+
+    const maxScroll = documentHeight - windowHeight;
+    const currentScrollRatio = scrollTop / maxScroll;
+    setScrollRatio(currentScrollRatio);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    // Clean up the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
     const { Footer } = Layout;
     const { TextArea } = Input;
 
     const [message, setMessage] = useState('Is there anything I can do for you?');
     const [undoVisibility, setUndoVisibility] = useState(false);
+    const [inputValue, setInputValue] = useState('');
 
     const updateMessage = (msg: string) => {
       setMessage(msg);
@@ -107,16 +135,22 @@ function Sidebar() {
     const handleUndoClick = () => {
       setUndoVisibility(false);
       setMessage('Operation undone, is there anything else I can do for you?');
+      setInputValue('');
     };
 
     const handleSendClick = () => {
       setUndoVisibility(true);
       updateMessage('Here is the proposed solution to your problem');
+      setInputValue('');
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setInputValue(e.target.value);
     };
 
     return (
-      <Footer className='footer-style' style={{ backgroundColor: '#f0f0f0' }}>
-      <Row justify="space-between">
+      <div className="chatbot-style" style={{ transform: `translateY(calc(-${scrollRatio * 100}% - 31px))` }}>
+        <Row justify="space-between">
         <Col xs={24} sm={24} md={11}>
           <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start' }}>
             <img src={"/robotassistant.png"} alt="UrbanHub assistant" style={{ width: 'auto', height: '70px', marginRight: '10px' }} />
@@ -128,13 +162,13 @@ function Sidebar() {
         </Col>
         <Col xs={24} sm={24} md={11}>
           <Space.Compact style={{ width: '100%' }}>
-            <TextArea placeholder="Ask something to UrbanHub..." autoSize={{ minRows: 1, maxRows: 3 }} />
+            <TextArea placeholder="Ask something to UrbanHub..." value={inputValue} onChange={handleInputChange} autoSize={{ minRows: 1, maxRows: 3 }} />
             <Button type="primary" onClick={handleSendClick}>Send</Button>
             {undoVisibility && (<Button type="primary" onClick={handleUndoClick}>Undo</Button>)}
           </Space.Compact>
         </Col>
-      </Row>
-    </Footer>
+        </Row>
+      </div>
   );
   };
 

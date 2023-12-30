@@ -34,6 +34,27 @@
     padding-bottom: 0;
 }
 
+/************
+ * CHATBOT
+ ************/
+
+.chatbot-style {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background-color: white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 10px;
+    font-style: italic;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 1%;
+    padding-bottom: 0;
+    transition: transform 0.3s ease;
+}
 
 /************
  * NAVBAR

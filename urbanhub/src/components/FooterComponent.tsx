@@ -2,9 +2,9 @@ import { Layout, Row, Col } from 'antd';
 
 const { Footer } = Layout;  
 
-function FooterComponent() {
+function FooterComponent() { 
     return (
-        <Footer className='footer-style'>
+        <Footer className="footer-style">
         <Row justify="space-between">
           <Col xs={24} sm={24} md={11}>
             <p>Course: Human Computer Interaction - Politecnico di Torino</p>
