@@ -7,6 +7,7 @@ import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
 import TripOverview from './pages/TripOverview';
 import FooterComponent from './components/FooterComponent';
+import { LoadScript } from '@react-google-maps/api';
 
 setDefaultTrips();
 
@@ -15,7 +16,9 @@ function App() {
     <BrowserRouter>
       <div className='wrapper'>
         <NavigationBar/>
-        <Main/>
+        <LoadScript googleMapsApiKey="AIzaSyDYwrQtanLbPehi6huH0sY0FMnvHo4Tg1w" language="en">
+          <Main/>
+        </LoadScript>
         <FooterComponent/>
       </div>
     </BrowserRouter>

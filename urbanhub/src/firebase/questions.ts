@@ -1,6 +1,4 @@
 const questions: string[] = [
-
-    "Describe me your ideal trip.",
     "Are you interested in historical landmarks and monuments?",
     "Do you enjoy outdoor activities and nature?",
     "Are you a food enthusiast? What type of cuisine do you prefer?",

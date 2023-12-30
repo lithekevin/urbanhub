@@ -5,6 +5,7 @@ import questions from '../firebase/questions';
 import shuffle from 'lodash/shuffle';
 import colors from '../style/colors';
 import cities from '../firebase/cities';
+import { GoogleMap, Marker } from '@react-google-maps/api';
 const { Step } = Steps;
 const { RangePicker } = DatePicker;
 
@@ -26,6 +27,8 @@ interface TripFormProps {
     answers: [string];
   }) => void;
 }
+
+const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
 
 const NewTrip: React.FC<TripFormProps> = () => {
 
@@ -55,7 +58,9 @@ const NewTrip: React.FC<TripFormProps> = () => {
   });
 
   // Add a state variable to track the input validity
-  const [isDestinationValid, setIsDestinationValid] = React.useState(false);
+  const [isDestinationValid, setIsDestinationValid] = React.useState(true);
+  const [cityPosition, setCityPosition] = React.useState({lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng});
+  const [mapZoom, setMapZoom] = React.useState(4);
 
   const [adultsValue, setAdultsValue] = React.useState<number>(0);
   const [kidsValue, setKidsValue] = React.useState<number>(0);
@@ -134,7 +139,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
 
   React.useEffect(() => {
     // Load the initial set of questions when the component mounts
-    const initialQuestions = shuffle(questions).slice(0, 3);
+    let initialQuestions = ["Describe me your ideal trip."];
+    initialQuestions = [...initialQuestions, ...shuffle(questions).slice(0, 2)]
     setDisplayedQuestions(initialQuestions);
     setAllDisplayedQuestions(initialQuestions);
   }, []); 
@@ -232,6 +238,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
   };
   const prevStep = () => setStep((prevStep) => Math.max(prevStep - 1, 0));
 
+  console.log(formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()), cityPosition.lat, cityPosition.lng)
+  
   return (
     <>
     <div className='custom-stepper'>
@@ -242,17 +250,22 @@ const NewTrip: React.FC<TripFormProps> = () => {
             colorPrimary: colors.hardBackgroundColor,
           },
         },
-      }}
+      }} 
     >
-      <Steps current={step} size="small" className="mb-3" style={{paddingLeft: "25%", paddingRight: "25%"}}>
-          {steps.map((s, index) => (
-            <Step key={index} title={s.title} />
-          ))}
-      </Steps>
+      <Row className='w-100 d-flex flex-row justify-content-center'>
+        <Col xs={{span:24}} sm={{span: 24}} md={{span: 20}} lg={{span: 18}} xl={{span: 12}}>
+          <Steps current={step} size="small" className="mb-3" style={{paddingLeft: "0%", paddingRight: "0%"}}>
+              {steps.map((s, index) => (
+                <Step key={index} title={s.title} />
+              ))}
+          </Steps>
+        </Col>
+      </Row>
+      
     </ConfigProvider>
     </div>
     <Row justify={'center'} align={"top"} style={{ minHeight: '66vh' }}>
-      <Col md={{ span: 12 }}>
+      <Col sm={{span: 24}} md={{ span: 20 }} lg={{span: 18}} xl={{span: 12}}>
         <Form>
           { step === 0 && (
           <>
@@ -271,15 +284,39 @@ const NewTrip: React.FC<TripFormProps> = () => {
                     filterOption = {(inputValue, option) => {
                       return option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                     }}
+                    value={formData.destination}
                     onChange={(value) => {
-                      handleDestinationChange(value);
-
                       // Check if the input matches any suggestion
                       const isMatch = value && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === value.toLowerCase());
+                      setIsDestinationValid(!!isMatch);
 
-                      setIsDestinationValid(isMatch);
+                      if(isMatch){
+                        const selectedCity = cities.find((city) => city.name.toLowerCase() === value.toLowerCase());
+                        setCityPosition({lat: selectedCity?.location.latitude || DEFAULT_LOCATION.lat, lng: selectedCity?.location.longitude || DEFAULT_LOCATION.lng});
+                        setMapZoom(7);
+                      }
+                      else{
+                        setCityPosition({lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng});
+                        setMapZoom(4);
+                      }
+
+                      handleDestinationChange(value.charAt(0).toUpperCase() + value.slice(1));                      
                     }}
                   />
+
+                  <Row className='mt-5'>
+                    <Col span={24}>
+
+                    <GoogleMap key={step} mapContainerStyle={{width: "100%", height: "300px"}} center={cityPosition} zoom={mapZoom}>
+                      {
+                        formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()) &&
+                          <Marker position={new google.maps.LatLng({lat: cityPosition.lat, lng: cityPosition.lng})} />
+                      }
+                    </GoogleMap>
+
+                    </Col>
+                  </Row>
+
                 </Form.Item>
           </>
           )}
@@ -419,7 +456,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
             )}
 
             {step < 3 && (
-              <Button type="primary" onClick={nextStep} className="button" htmlType="submit" disabled={!isStepValid()}>
+              <Button type='primary' onClick={nextStep} className="button" htmlType="submit" disabled={!isStepValid()}>
                 Next
               </Button>
             )}

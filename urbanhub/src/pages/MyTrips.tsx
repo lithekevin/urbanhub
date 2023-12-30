@@ -97,7 +97,7 @@ function MyTrips() {
 
           trips.map((trip) => {
             return (
-              <Col xs={11} md={5} lg={3} className="mb-4">
+              <Col key={trip.id} xs={11} md={5} lg={3} className="mb-4">
                 <Link to={`/trips/${trip.id}`} className="text-decoration-none">
                   <Card key={trip.id} className="text-center tripCard" style={{backgroundColor: colors.whiteBackgroundColor}}>
                       <div className="city-image-container">

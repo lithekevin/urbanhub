@@ -1,5 +1,5 @@
 import { CollapseProps, Timeline, Collapse, Layout, Row, Col, Button, Space } from 'antd';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
 import { useState } from 'react';
 import { Input } from 'antd';
@@ -21,11 +21,9 @@ function TripOverview() {
   
   const GoogleMapComponent: React.FC = () => {
     return (
-      <LoadScript googleMapsApiKey="AIzaSyDYwrQtanLbPehi6huH0sY0FMnvHo4Tg1w" language="en">
         <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
           <Marker position={center} />
         </GoogleMap>
-      </LoadScript>
     );
   };
 
