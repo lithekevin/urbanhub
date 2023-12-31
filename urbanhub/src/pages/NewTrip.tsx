@@ -238,8 +238,6 @@ const NewTrip: React.FC<TripFormProps> = () => {
   };
   const prevStep = () => setStep((prevStep) => Math.max(prevStep - 1, 0));
 
-  console.log(formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()), cityPosition.lat, cityPosition.lng)
-  
   return (
     <>
     <div className='custom-stepper'>
@@ -304,10 +302,13 @@ const NewTrip: React.FC<TripFormProps> = () => {
                     }}
                   />
 
-                  <Row className='mt-5'>
+                  
+
+                </Form.Item>
+                <Row className='mt-3 mb-3'>
                     <Col span={24}>
 
-                    <GoogleMap key={step} mapContainerStyle={{width: "100%", height: "300px", borderRadius: "10px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)"}} center={cityPosition} zoom={mapZoom}>
+                    <GoogleMap mapContainerStyle={{width: "100%", height: "300px", borderRadius: "10px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)"}} center={cityPosition} zoom={mapZoom}>
                       {
                         formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()) &&
                           <Marker position={new google.maps.LatLng({lat: cityPosition.lat, lng: cityPosition.lng})} />
@@ -315,9 +316,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
                     </GoogleMap>
 
                     </Col>
-                  </Row>
-
-                </Form.Item>
+                </Row>
           </>
           )}
           { step === 1 && (
