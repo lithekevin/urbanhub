@@ -308,7 +308,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
                 <Row className='mt-3 mb-3'>
                     <Col span={24}>
 
-                    <GoogleMap mapContainerStyle={{width: "100%", height: "300px", borderRadius: "10px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)"}} center={cityPosition} zoom={mapZoom}>
+                    <GoogleMap mapContainerStyle={{width: "100%", height: "300px", borderRadius: "10px", border: "2px solid " + colors.softBackgroundColor, boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)"}} center={cityPosition} zoom={mapZoom}>
                       {
                         formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()) &&
                           <Marker position={new google.maps.LatLng({lat: cityPosition.lat, lng: cityPosition.lng})} />
