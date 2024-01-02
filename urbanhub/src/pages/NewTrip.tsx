@@ -272,52 +272,53 @@ const NewTrip: React.FC<TripFormProps> = () => {
           <h3 className='step-title'> Choose your trip destination </h3>
           <label className='label'> Where would you want to go? </label>
           <Form.Item
-                  name="destination"
-                  hidden={step !== 0}
-                  validateStatus={isDestinationValid ? 'success' : 'error'}
-                  help={!isDestinationValid && 'Please select a valid city'}
-                  style={{ width: '100%' }} 
-                >
-                  <AutoComplete
-                    options={cities.map((city) => ({ value: city.name }))}
-                    placeholder="Select a city"
-                    filterOption = {(inputValue, option) => {
-                      return option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                    }}
-                    value={formData.destination}
-                    onChange={(value) => {
-                      // Check if the input matches any suggestion
-                      const isMatch = value && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === value.toLowerCase());
-                      setIsDestinationValid(!!isMatch);
+            name="destination"
+            hidden={step !== 0}
+            validateStatus={isDestinationValid ? 'success' : 'error'}
+            help={!isDestinationValid && 'Please type a valid city'}
+            style={{ width: '100%' }} 
+          >
+            <AutoComplete
+              options={cities.map((city) => ({ value: city.name }))}
+              placeholder="Type a city"
+              filterOption = {(inputValue, option) => {
+                return option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+              }}
+              value={formData.destination}
+              onChange={(value) => {
+                // Check if the input matches any suggestion
+                const isMatch = value && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === value.toLowerCase());
+                setIsDestinationValid(!!isMatch);
 
-                      if(isMatch){
-                        const selectedCity = cities.find((city) => city.name.toLowerCase() === value.toLowerCase());
-                        setCityPosition({lat: selectedCity?.location.latitude || DEFAULT_LOCATION.lat, lng: selectedCity?.location.longitude || DEFAULT_LOCATION.lng});
-                        setMapZoom(7);
-                      }
-                      else{
-                        setCityPosition({lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng});
-                        setMapZoom(4);
-                      }
+                if(isMatch){
+                  const selectedCity = cities.find((city) => city.name.toLowerCase() === value.toLowerCase());
+                  setCityPosition({lat: selectedCity?.location.latitude || DEFAULT_LOCATION.lat, lng: selectedCity?.location.longitude || DEFAULT_LOCATION.lng});
+                  setMapZoom(7);
+                }
+                else{
+                  setCityPosition({lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng});
+                  setMapZoom(4);
+                }
 
-                      handleDestinationChange(value.charAt(0).toUpperCase() + value.slice(1));                      
-                    }}
-                  />
+                handleDestinationChange(value.charAt(0).toUpperCase() + value.slice(1));                      
+              }}
+            />
+            </Form.Item>
 
-                  <Row className='mt-5'>
-                    <Col span={24}>
+            <Form.Item>
+              <Row className='mt-5'>
+                <Col span={24}>
 
-                    <GoogleMap key={step} mapContainerStyle={{width: "100%", height: "300px", borderRadius: "10px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)"}} center={cityPosition} zoom={mapZoom}>
-                      {
-                        formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()) &&
-                          <Marker position={new google.maps.LatLng({lat: cityPosition.lat, lng: cityPosition.lng})} />
-                      }
-                    </GoogleMap>
+                <GoogleMap key={step} mapContainerStyle={{width: "100%", height: "300px", borderRadius: "10px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)"}} center={cityPosition} zoom={mapZoom}>
+                  {
+                    formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()) &&
+                      <Marker position={new google.maps.LatLng({lat: cityPosition.lat, lng: cityPosition.lng})} />
+                  }
+                </GoogleMap>
 
-                    </Col>
-                  </Row>
-
-                </Form.Item>
+                </Col>
+              </Row>
+            </Form.Item>
           </>
           )}
           { step === 1 && (
