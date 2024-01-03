@@ -237,8 +237,6 @@ const NewTrip: React.FC<TripFormProps> = () => {
     }
   };
   const prevStep = () => setStep((prevStep) => Math.max(prevStep - 1, 0));
-
-  console.log(formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()), cityPosition.lat, cityPosition.lng)
   
   return (
     <>
