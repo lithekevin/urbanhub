@@ -26,11 +26,11 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    font-size: 10px;
+    font-size: 8px;
     font-style: italic;
     padding-left: 0;
     padding-right: 0;
-    padding-top: 1%;
+    padding-top: 15px;
     padding-bottom: 0;
 }
 
@@ -78,8 +78,8 @@
     z-index: 3;
     background-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    -webkit-backdrop-filter: blur(7px);
     backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
     overflow: hidden;
 }
 
