@@ -65,6 +65,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
   const [adultsValue, setAdultsValue] = React.useState<number>(0);
   const [kidsValue, setKidsValue] = React.useState<number>(0);
 
+  const [questionsPageNumber, setQuestionsPageNumber] = React.useState(0);
+
   // State to track the displayed questions
   const [displayedQuestions, setDisplayedQuestions] = React.useState<string[]>([]);
 
@@ -198,6 +200,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
               areAllQuestionsAnswered={areAllQuestionsAnswered}
               userAnswers={userAnswers}
               setUserAnswers={setUserAnswers}
+              questionsPageNumber={questionsPageNumber}
+              setQuestionsPageNumber={setQuestionsPageNumber}
             />
           )}
           { step === 3 && (
