@@ -1,13 +1,14 @@
 import React from 'react';
-import { Form, Button, DatePicker, InputNumber, Input, Steps, Row, Col, AutoComplete, ConfigProvider } from 'antd';
+import { Form, Button, Steps, Row, Col, ConfigProvider } from 'antd';
 import moment from 'moment';
-import questions from '../firebase/questions'; 
-import shuffle from 'lodash/shuffle';
 import colors from '../style/colors';
-import cities from '../firebase/cities';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import Step0 from '../components/Step0';
+import Step1 from '../components/Step1';
+import Step2 from '../components/Step2';
+import Step3 from '../components/Step3';
 const { Step } = Steps;
-const { RangePicker } = DatePicker;
+
+const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
 
 interface CustomEvent {
   target: {
@@ -27,8 +28,6 @@ interface TripFormProps {
     answers: [string];
   }) => void;
 }
-
-const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
 
 const NewTrip: React.FC<TripFormProps> = () => {
 
@@ -59,9 +58,10 @@ const NewTrip: React.FC<TripFormProps> = () => {
 
   // Add a state variable to track the input validity
   const [isDestinationValid, setIsDestinationValid] = React.useState(true);
+  const [isDestinationSelected, setIsDestinationSelected] = React.useState(false);
   const [cityPosition, setCityPosition] = React.useState({lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng});
   const [mapZoom, setMapZoom] = React.useState(4);
-
+  
   const [adultsValue, setAdultsValue] = React.useState<number>(0);
   const [kidsValue, setKidsValue] = React.useState<number>(0);
 
@@ -73,8 +73,6 @@ const NewTrip: React.FC<TripFormProps> = () => {
  
   // New state to store user answers to questions
   const [userAnswers, setUserAnswers] = React.useState<string[]>(Array(allDisplayedQuestions.length).fill(''));
-  
-  const [isDestinationSelected, setIsDestinationSelected] = React.useState(false);
 
   // New state to track whether more questions can be loaded
   const [canLoadMoreQuestions, setCanLoadMoreQuestions] = React.useState(true);
@@ -88,27 +86,6 @@ const NewTrip: React.FC<TripFormProps> = () => {
   
     setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
   }, [setFormData]);
-
-  const handleDestinationChange = (value: string) => {
-    setIsDestinationSelected(value !== ''); // Check if a city is selected
-    handleInputChange({ target: { name: 'destination', value } } as CustomEvent);
-  };
-
-  const handleIncrement = (type: 'adults' | 'kids') => {
-    if (type === 'adults') {
-      setAdultsValue((prevValue) => prevValue + 1);
-    } else if (type === 'kids') {
-      setKidsValue((prevValue) => prevValue + 1);
-    }
-  };
-
-  const handleDecrement = (type: 'adults' | 'kids') => {
-    if (type === 'adults') {
-      setAdultsValue((prevValue) => Math.max(prevValue - 1, 0));
-    } else if (type === 'kids') {
-      setKidsValue((prevValue) => Math.max(prevValue - 1, 0));
-    }
-  };
 
   React.useEffect(() => {
     // Update the form data when adultsValue or kidsValue changes
@@ -124,93 +101,10 @@ const NewTrip: React.FC<TripFormProps> = () => {
     const dateStrings = dates.map((date) => date.format('YYYY-MM-DD'));
     handleInputChange({ target: { name: 'dateRange', value: dateStrings } } as CustomEvent);
   };
-
-  // Handle user's answers to questions
-  const handleAnswerChange = (index: number, value: string) => {
-    const updatedAnswers = [...userAnswers];
-    updatedAnswers[index] = value;
-    setUserAnswers(updatedAnswers);
-  };
   
   // New function to check if all questions are answered
   const areAllQuestionsAnswered = () => {
     return userAnswers.length === allDisplayedQuestions.length && userAnswers.every((answer) => answer.trim() !== '');
-  };
-
-  React.useEffect(() => {
-    // Load the initial set of questions when the component mounts
-    let initialQuestions = ["Describe me your ideal trip."];
-    initialQuestions = [...initialQuestions, ...shuffle(questions).slice(0, 2)]
-    setDisplayedQuestions(initialQuestions);
-    setAllDisplayedQuestions(initialQuestions);
-  }, []); 
-
-  // Render random questions and text area fields for the third step
-  const renderQuestions = () => {
-    if (step === 2) {
-      return displayedQuestions.map((question, index) => (
-        <div key={index}>
-          <Row gutter={16}>
-            <Col span={24}>
-              <label className='label'>{question}</label>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                name={`answer${index}`}
-                hidden={step !== 2}
-              >
-                <Input.TextArea
-                  value={userAnswers[index]}
-                  onChange={(e) => handleAnswerChange(index, e.target.value)}
-                  rows={4}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </div>
-      ));
-    }
-    else if (step === 3){
-      return allDisplayedQuestions.map((question, index) => (
-        <div key={index}>
-          <Row gutter={16}>
-            <Col span={24}>
-              <strong>{question}</strong>
-            </Col>
-            <Col span={24}>
-              <p>{userAnswers[index]}</p>
-            </Col>
-          </Row>
-        </div>
-      ));
-    }
-    else{
-      return null;
-    }
-  };
-
-  // Load more questions when the user clicks the button
-  const loadMoreQuestions = () => {
-    const remainingQuestions = questions.filter(
-      (question) => !allDisplayedQuestions.includes(question)
-    );
-
-    const newQuestions = shuffle(remainingQuestions).slice(0, 3);
-
-    setDisplayedQuestions((prevDisplayedQuestions) => [
-      ...prevDisplayedQuestions,
-      ...newQuestions,
-    ]);
-
-    setAllDisplayedQuestions((prevAllDisplayedQuestions) => [
-      ...prevAllDisplayedQuestions,
-      ...newQuestions,
-    ]);
-
-    // Disable loading more questions if all questions are displayed
-    if (allDisplayedQuestions.length + newQuestions.length === 9) {
-      setCanLoadMoreQuestions(false);
-    }
   };
 
   const isStepValid = () => {
@@ -236,9 +130,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
       setStep((prevStep) => prevStep + 1);
     }
   };
-  const prevStep = () => setStep((prevStep) => Math.max(prevStep - 1, 0));
-
-  console.log(formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()), cityPosition.lat, cityPosition.lng)
+  const prevStep = () => setStep((prevStep) => prevStep - 1 );
   
   return (
     <>
@@ -268,187 +160,54 @@ const NewTrip: React.FC<TripFormProps> = () => {
       <Col sm={{span: 24}} md={{ span: 20 }} lg={{span: 18}} xl={{span: 12}}>
         <Form>
           { step === 0 && (
-          <>
-          <h3 className='step-title'> Choose your trip destination </h3>
-          <label className='label'> Where would you want to go? </label>
-          <Form.Item
-            name="destination"
-            hidden={step !== 0}
-            validateStatus={isDestinationValid ? 'success' : 'error'}
-            help={!isDestinationValid && 'Please type a valid city'}
-            style={{ width: '100%' }} 
-          >
-            <AutoComplete
-              options={cities.map((city) => ({ value: city.name }))}
-              placeholder="Type a city"
-              filterOption = {(inputValue, option) => {
-                return option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-              }}
-              value={formData.destination}
-              onChange={(value) => {
-                // Check if the input matches any suggestion
-                const isMatch = value && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === value.toLowerCase());
-                setIsDestinationValid(!!isMatch);
-
-                if(isMatch){
-                  const selectedCity = cities.find((city) => city.name.toLowerCase() === value.toLowerCase());
-                  setCityPosition({lat: selectedCity?.location.latitude || DEFAULT_LOCATION.lat, lng: selectedCity?.location.longitude || DEFAULT_LOCATION.lng});
-                  setMapZoom(7);
-                }
-                else{
-                  setCityPosition({lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng});
-                  setMapZoom(4);
-                }
-
-                handleDestinationChange(value.charAt(0).toUpperCase() + value.slice(1));                      
-              }}
+            <Step0 
+              isDestinationSelected={isDestinationSelected} 
+              setIsDestinationSelected={setIsDestinationSelected}
+              isDestinationValid={isDestinationValid}
+              setIsDestinationValid={setIsDestinationValid} 
+              cityPosition={cityPosition}
+              setCityPosition={setCityPosition}
+              mapZoom={mapZoom}
+              setMapZoom={setMapZoom}
+              formData={formData}
+              handleInputChange={handleInputChange}
+              step = {step}
             />
-            </Form.Item>
-
-            <Form.Item>
-              <Row className='mt-5'>
-                <Col span={24}>
-
-                <GoogleMap key={step} mapContainerStyle={{width: "100%", height: "300px", borderRadius: "10px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)"}} center={cityPosition} zoom={mapZoom}>
-                  {
-                    formData.destination && cities.map((city) => (city.name )).some((suggestion) => suggestion.toLowerCase() === formData.destination.toLowerCase()) &&
-                      <Marker position={new google.maps.LatLng({lat: cityPosition.lat, lng: cityPosition.lng})} />
-                  }
-                </GoogleMap>
-
-                </Col>
-              </Row>
-            </Form.Item>
-          </>
           )}
           { step === 1 && (
-          <>
-          <h3 className='step-title'> Select your trip settings </h3>
-          <label className='label'> When would you like to go? </label>
-          <Form.Item
-            name="dateRange"
-            hidden={step !== 1}
-          >
-            <RangePicker
-              style={{ width: '100%' }}
-              onChange={(dates, dateStrings) => handleDateRangeChange(dates as [moment.Moment, moment.Moment])}
-              disabledDate={(current) => current && current < moment().endOf('day')}
-            />
-          </Form.Item>
-
-          <label className='label'> How many adults are going? </label>
-          <Form.Item
-            name="adults"
-            hidden={step !== 1}
-          >
-            <Row gutter={8} align="middle">
-              <Col>
-                <Button onClick={() => handleDecrement('adults')} style={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
-                  -
-                </Button>
-              </Col>
-              <Col style={{ display: 'flex', alignItems: 'center' }}>
-                <InputNumber
-                  min={0}
-                  value={adultsValue}
-                  onChange={(value) => setAdultsValue(value || 0)}
-                  addonAfter={<span>Adults</span>}
-                  controls={false}
-                  style={{ textAlign: 'center' }}
-                />
-              </Col>
-              <Col>
-                <Button onClick={() => handleIncrement('adults')} style={{ width: '50%', display: 'flex', justifyContent: 'center'}}>
-                  +
-                </Button>
-              </Col>
-            </Row>
-          </Form.Item>
-
-          <label className='label'> How many kids are going? </label>
-          <Form.Item name="kids" hidden={step !== 1}>
-            <Row gutter={8} align="middle">
-              <Col>
-                <Button onClick={() => handleDecrement('kids')} style={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
-                  -
-                </Button>
-              </Col>
-              <Col style={{ display: 'flex', alignItems: 'center' }}>
-                <InputNumber
-                  min={0}
-                  value={kidsValue}
-                  onChange={(value) => setKidsValue(value || 0)}
-                  addonAfter={<span>Kids</span>}
-                  controls={false}
-                  style={{ textAlign: 'center' }}
-                />
-              </Col>
-              <Col>
-                <Button onClick={() => handleIncrement('kids')} style={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
-                  +
-                </Button>
-              </Col>
-            </Row>
-          </Form.Item>
-
-          <label className='label'> How much do you plan to spend on this trip? </label>
-          <Form.Item
-            name="budget"
-            hidden={step !== 1}
-          >
-            <InputNumber
-              onChange={(value) =>
-                handleInputChange({
-                  target: { name: 'budget', value: typeof value === 'number' ? value : 0 },
-                } as CustomEvent)
-              }
-              value={formData.budget}
-              min={0}
-              controls={false}
-              addonAfter={<span>€</span>}
-            />
-          </Form.Item>
-          </>
+              <Step1
+                step={step}
+                handleDateRangeChange={handleDateRangeChange}
+                adultsValue={adultsValue}
+                setAdultsValue={setAdultsValue}
+                kidsValue={kidsValue}
+                setKidsValue={setKidsValue}
+                handleInputChange={handleInputChange}
+                formData={formData}
+              />
           )}
           { step === 2 && (
-            <>
-            <h3 className='step-title'> Set your trip preferences </h3>
-            </>
+            <Step2
+              step={step}
+              displayedQuestions={displayedQuestions}
+              setDisplayedQuestions={setDisplayedQuestions}
+              allDisplayedQuestions={allDisplayedQuestions}
+              setAllDisplayedQuestions={setAllDisplayedQuestions}
+              canLoadMoreQuestions={canLoadMoreQuestions}
+              setCanLoadMoreQuestions={setCanLoadMoreQuestions}
+              areAllQuestionsAnswered={areAllQuestionsAnswered}
+              userAnswers={userAnswers}
+              setUserAnswers={setUserAnswers}
+            />
           )}
-
-          <div hidden={step !== 3}>
-            <h3 className='step-title'> Trip summary</h3>
-            <br />
-            <p>
-              <strong>Destination:</strong> {formData.destination}
-            </p>
-            <p>
-              <strong>Date Range:</strong> {formData.dateRange.join(' to ')}
-            </p>
-            <p>
-              <strong>Number of Adults:</strong> {formData.adults}
-            </p>
-            <p>
-              <strong>Number of Kids:</strong> {formData.kids}
-            </p>
-            <p>
-              <strong>Budget:</strong> {formData.budget} €
-            </p>
-          </div>
-
-          {/* Render questions and input fields for the third step */}
-          {renderQuestions()}
-
-          {/* Load more questions button */}
-          {step === 2 && displayedQuestions.length < questions.length && canLoadMoreQuestions && (
-            <div className="mb-2 d-flex align-items-center justify-content-center">
-              <Button type="default" onClick={loadMoreQuestions} className="button" disabled={!areAllQuestionsAnswered()}>
-                Load More Questions
-              </Button>
-            </div>
+          { step === 3 && (
+            <Step3
+              step={step}
+              allDisplayedQuestions={allDisplayedQuestions}
+              userAnswers={userAnswers}
+              formData={formData}
+            />
           )}
-
-
           <div className="mb-2 d-flex align-items-center justify-content-center">
             {step > 0 && (
               <Button type="default" onClick={prevStep} className="button">
