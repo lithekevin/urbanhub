@@ -292,7 +292,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
     }
   };
   const prevStep = () => setStep((prevStep) => Math.max(prevStep - 1, 0));
-
+  
   return (
     <>
     <div className='custom-stepper'>
