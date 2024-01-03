@@ -4,23 +4,22 @@ const { Footer } = Layout;
 
 function FooterComponent() { 
     return (
-        <Footer className="footer-style">
-        <Row justify="space-between">
-          <Col xs={24} sm={24} md={11}>
-            <p>Course: Human Computer Interaction - Politecnico di Torino</p>
-            <p>Academic year: 2023/2024</p>
-          </Col>
-          <Col xs={24} sm={24} md={11}>
-            <p>Students: Alessandro Bianco, Elia Ferraro, Kevin Gjeka, Sylvie Molinatto</p>
-            <p>Professors: Luigi De Russis, Tommaso Calò, Alberto Monge Roffarello</p>
-          </Col>
-        </Row>
-        <Row justify="center" style={{background: 'black', padding: 0, color: 'white'}}>
+      <Footer className="footer-style">
+      <Row justify="space-between" align="middle" style={{ paddingLeft: '5%', paddingRight: '5%'}}>
+        <Col style={{ fontStyle: 'normal', display: 'flex', alignItems: 'center' }}>
+          <img src="/smart-city.png" alt="logo" width="30" height="30" className="d-inline-block website-icon" style={{marginRight: '10px'}}/>
+          <p>UrbanHub - Inclusive And Effortless Urban Travel</p>
+        </Col>
+        <Col style={{ fontStyle: 'italic', display: 'flex', alignItems: 'center' }}>
+          <p>Creators: Alessandro Bianco, Elia Ferraro, Kevin Gjeka, Sylvie Molinatto</p>
+        </Col>
+      </Row>
+      <Row justify="center" style={{ padding: 0, background: 'black', color: 'white'}}>
         <Col>
           <p>All rights reserved &copy; 2023</p>
         </Col>
       </Row>
-      </Footer>
+    </Footer>
     );
 }
 
