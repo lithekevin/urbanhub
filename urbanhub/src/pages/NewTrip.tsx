@@ -492,16 +492,6 @@ const NewTrip: React.FC<TripFormProps> = () => {
           {/* Render questions and input fields for the third step */}
           {renderQuestions()}
 
-          {/* Load more questions button */}
-          {step === 2 && displayedQuestions.length < questions.length && canLoadMoreQuestions && (
-            <div className="mb-2 d-flex align-items-center justify-content-center">
-              <Button type="default" onClick={loadMoreQuestions} className="button" disabled={!areAllQuestionsAnswered()}>
-                Load More Questions
-              </Button>
-            </div>
-          )}
-
-
           <div className="mb-2 d-flex align-items-center justify-content-center">
             {step > 0 && (
               <Button type="default" onClick={prevStep} className="button">
