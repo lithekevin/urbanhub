@@ -121,7 +121,6 @@ function Sidebar() {
     };
   }, []);
 
-    const { Footer } = Layout;
     const { TextArea } = Input;
 
     const [message, setMessage] = useState('Is there anything I can do for you?');
@@ -149,7 +148,7 @@ function Sidebar() {
     };
 
     return (
-      <div className="chatbot-style" style={{ transform: `translateY(calc(-${scrollRatio * 100}% - 31px))` }}>
+      <div className="chatbot-style" style={{ transform: `translateY(calc(-${scrollRatio * 100}% - 10px))` }}>
         <Row justify="space-between">
         <Col xs={24} sm={24} md={11}>
           <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start' }}>
