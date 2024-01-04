@@ -1,8 +1,9 @@
 import React from 'react';
-import { Form, AutoComplete, Row, Col } from 'antd';
+import { Form, AutoComplete, Row, Col, Button, Typography } from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import cities from '../firebase/cities';
 
+const { Title, Paragraph } = Typography;
 const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
 
 interface CustomEvent {
@@ -24,6 +25,7 @@ interface Step0Props {
     formData: { destination: string;}; 
     handleInputChange: (e: CustomEvent) => void;
     step: number;
+    nextStep: () => void;
 }
 
 const Step0: React.FC<Step0Props> = ({
@@ -38,7 +40,9 @@ const Step0: React.FC<Step0Props> = ({
   handleInputChange,
   formData,
   step,
+  nextStep
 }) => {
+  
   const handleDestinationChange = (value: string) => {
     handleInputChange({ target: { name: 'destination', value } } as CustomEvent);
 
@@ -60,29 +64,32 @@ const Step0: React.FC<Step0Props> = ({
     }
   };
 
+  const isStepValid = () => {
+    return isDestinationSelected && isDestinationValid;
+  };
+
   return (
     <>
-      <h3 className='step-title'> Choose your trip destination </h3>
-      <label className='label'> Where would you want to go? </label>
-      <Form.Item
-        name="destination"
-        hidden={step !== 0}
-        validateStatus={isDestinationValid ? 'success' : 'error'}
-        help={!isDestinationValid && 'Please type a valid city'}
-        style={{ width: '100%' }}
-      >
-        <AutoComplete
-          options={cities.map((city) => ({ value: city.name }))}
-          placeholder="Type a city"
-          filterOption={(inputValue, option) => {
-            return option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
-          }}
-          value={formData.destination}
-          onChange={(value) => { handleDestinationChange(value.charAt(0).toUpperCase() + value.slice(1));}}
-        />
-      </Form.Item>
-
-      {step === 0 && (
+      <div className='form-container'>
+        <Title level={2} className='step-title'> Choose your trip destination </Title>
+        <Paragraph className='label'> Where would you want to go? </Paragraph>
+        <Form.Item
+          name="destination"
+          hidden={step !== 0}
+          validateStatus={isDestinationValid ? 'success' : 'error'}
+          help={!isDestinationValid && 'Please type a valid city'}
+          style={{ width: '100%' }}
+        >
+          <AutoComplete
+            options={cities.map((city) => ({ value: city.name }))}
+            placeholder="Type a city"
+            filterOption={(inputValue, option) => {
+              return option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
+            }}
+            value={formData.destination}
+            onChange={(value) => { handleDestinationChange(value.charAt(0).toUpperCase() + value.slice(1));}}
+          />
+        </Form.Item>
         <Form.Item>
           <Row className='mt-5'>
             <Col span={24}>
@@ -103,7 +110,12 @@ const Step0: React.FC<Step0Props> = ({
             </Col>
           </Row>
         </Form.Item>
-      )}
+        <div className="mb-2 d-flex align-items-center justify-content-center">
+          <Button type='primary' onClick={nextStep} className="button" htmlType="submit" disabled={!isStepValid()}>
+                  Next
+          </Button>
+        </div>
+      </div>
     </>
   );
 };

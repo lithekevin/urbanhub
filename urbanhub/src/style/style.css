@@ -78,8 +78,8 @@
     z-index: 3;
     background-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(7px);
     -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
     overflow: hidden;
 }
 
@@ -156,10 +156,11 @@ box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     text-align: center;
     margin-bottom: 30px;
     margin-top: 30px;
+    padding-bottom: 30px;
 }
 
 .label{
-    font-size: 20px;
+    font-size: 15px;
     margin-bottom: 15px;
 }
 
@@ -175,3 +176,14 @@ box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     align-items: center;
     padding-top: 15px;
 }
+
+.form-container {
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    width: auto;
+  }
