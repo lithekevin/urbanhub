@@ -1,6 +1,8 @@
 import React from 'react';
 import { Form, Button, Steps, Row, Col, ConfigProvider } from 'antd';
 import moment from 'moment';
+import questions from '../firebase/questions'; 
+import shuffle from 'lodash/shuffle';
 import colors from '../style/colors';
 import Step0 from '../components/Step0';
 import Step1 from '../components/Step1';
@@ -106,8 +108,16 @@ const NewTrip: React.FC<TripFormProps> = () => {
   
   // New function to check if all questions are answered
   const areAllQuestionsAnswered = () => {
-    return userAnswers.length === allDisplayedQuestions.length && userAnswers.every((answer) => answer.trim() !== '');
+    return userAnswers.length === 9;
   };
+
+  React.useEffect(() => {
+    // Load the initial set of questions when the component mounts
+    let initialQuestions = ["Describe me your ideal trip."];
+    initialQuestions = [...initialQuestions, ...shuffle(questions).slice(0, 2)]
+    setDisplayedQuestions(initialQuestions);
+    setAllDisplayedQuestions(initialQuestions);
+  }, []); 
 
   const isStepValid = () => {
     switch (step) {
