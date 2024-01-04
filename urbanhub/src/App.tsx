@@ -1,4 +1,4 @@
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import { Row } from 'react-bootstrap';
 import NavigationBar from './components/NavigationBar';
@@ -28,6 +28,8 @@ function App() {
 
 function Main() {
 
+  const navigate = useNavigate();
+
   const handleTripSubmission = (data: {
     destination: string;
     dateRange: string[];
@@ -37,7 +39,6 @@ function Main() {
     questions: string[];
     answers: string[];
   }) => {
-    
     
 
     getAllTrips().then((trips: Trip[]) => {
@@ -70,24 +71,61 @@ function Main() {
 
       for (let d = startDate; !d.isAfter(endDate); d = d.add(1, "day")) {
         const date = d.format("DD/MM/YYYY");
-        console.log("d: ", d, "date:", date);
         schedule[date] = [];
       }
 
       for (const date in schedule) {
         const nAttractions = Math.floor(Math.random() * 4) + 3;
+        let entireDuration = 0;
+        let attractions = [...tripCity!.attractions]; 
+
         for (let i = 0; i < nAttractions; i++) {
-          const attraction = tripCity?.attractions[Math.floor(Math.random() * tripCity.attractions.length)];
-          schedule[date].push(attraction);
+          if (attractions.length === 0) {
+            break; 
+          }
+
+          let index = Math.floor(Math.random() * attractions.length);
+
+          if(entireDuration + attractions[index].estimatedTime < 480) {
+            const attractionID = attractions[index].id;
+
+            let tripAttraction = { "id": attractionID, "startDate": "", "endDate": "" };
+
+            let startHour = 8;
+
+            if (schedule[date].length > 0) {
+              const previousAttraction = schedule[date][schedule[date].length - 1];
+              const previousAttractionID = previousAttraction.id;
+              const previousAttractionDuration = tripCity!.attractions.find((attraction) => attraction.id === previousAttractionID)!.estimatedTime;
+              const previousAttractionEndHour = parseInt(previousAttraction.endDate.split(":")[0]);
+              startHour = previousAttractionEndHour + Math.floor(previousAttractionDuration / 60);
+            }
+
+            const startHourString = startHour.toString().padStart(2, "0");
+
+            const endHour = startHour + Math.floor(attractions[index].estimatedTime / 60);
+
+            const endHourString = endHour.toString().padStart(2, "0");
+
+            tripAttraction.startDate = startHourString + ":00";
+            tripAttraction.endDate = endHourString + ":00";
+
+            schedule[date].push(tripAttraction);      
+
+            entireDuration += attractions[index].estimatedTime;
+
+            attractions.splice(index, 1); 
+          }
         }
       }
 
       tripToAdd.schedule = schedule;
 
-      console.log(tripToAdd.schedule);
-
       addTrip(tripToAdd).then(() => {
         console.log("Trip added successfully");
+
+        navigate("/trips/" + tripToAdd.id);
+
       }).catch((error) => {
         console.log(error);
       });

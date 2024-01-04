@@ -55,7 +55,7 @@ function MyTrips() {
       
 
       {
-        (loading || trips.length === 0) && 
+        (loading) && 
         <div className="d-flex flex-column justify-content-center align-items-center" style={{marginTop: "200px"}}>
           <Spinner animation="border" role="status" className="mb-4" />
           <h3>Loading...</h3>
