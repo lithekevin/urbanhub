@@ -26,8 +26,8 @@ interface TripFormProps {
     adults: number;
     kids: number;
     budget: number;
-    questions: [string];
-    answers: [string];
+    questions: string[];
+    answers: string[];
   }) => void;
 }
 
@@ -56,6 +56,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
     kids: 0,
     budget: 0,
     additionalInfo: '',
+    questions: [''],
+    answers: [''],
   });
 
   // Add a state variable to track the input validity
@@ -108,8 +110,17 @@ const NewTrip: React.FC<TripFormProps> = () => {
   
   // New function to check if all questions are answered
   const areAllQuestionsAnswered = () => {
-    return userAnswers.length === 9;
+    return userAnswers.length === 9 && userAnswers.every((answer) => answer.length > 0) && userAnswers.every((answer) => answer.trim().length > 0);
   };
+
+   // useEffect to update formData when userAnswers change
+   React.useEffect(() => {
+    setFormData((prevData) => ({
+      ...prevData,
+      questions: allDisplayedQuestions,
+      answers: userAnswers,
+    }));
+  }, [allDisplayedQuestions, userAnswers]);
 
   React.useEffect(() => {
     // Load the initial set of questions when the component mounts

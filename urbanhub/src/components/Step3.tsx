@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col } from 'antd';
+import { List } from 'antd';
 
 interface Step3Props {
   allDisplayedQuestions: string[];
@@ -10,44 +10,41 @@ interface Step3Props {
     adults: number;
     kids: number;
     budget: number;
+    questions: string[];
+    answers: string[];
   };
   step: number;
 }
 
 const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers, formData }) => {
+  
+  const tripSummaryData = [
+    { label: 'Destination: ', value: formData.destination },
+    { label: 'Date Range: ', value: formData.dateRange.join(' to ') },
+    { label: 'Number of Adults: ', value: formData.adults },
+    { label: 'Number of Kids: ', value: formData.kids },
+    { label: 'Budget: ', value: `${formData.budget} €` },
+    ...formData.questions.map((question, index) => ({
+      label: question,
+      value: formData.answers[index],
+    })),
+  ];
+
   return (
     <>
       <div>
-      <h3 className='step-title'> Trip summary</h3>
-      <br />
-      <p>
-          <strong>Destination:</strong> {formData.destination}
-      </p>
-      <p>
-          <strong>Date Range:</strong> {formData.dateRange.join(' to ')}
-      </p>
-      <p>
-          <strong>Number of Adults:</strong> {formData.adults}
-      </p>
-      <p>
-          <strong>Number of Kids:</strong> {formData.kids}
-      </p>
-      <p>
-          <strong>Budget:</strong> {formData.budget} €
-      </p>
+        <h3 className='step-title'> Trip summary</h3>
+        <List
+          dataSource={tripSummaryData}
+          renderItem={(item) => (
+            <List.Item>
+              <strong>{item.label}</strong> {item.value}
+            </List.Item>
+          )}
+          bordered
+          style={{ borderRadius: '10px', border: '1px solid #d9d9d9', padding: '10px' }}
+        />
       </div>
-      { allDisplayedQuestions.map((question, index) => (
-          <div key={index}>
-          <Row gutter={16}>
-              <Col span={24}>
-              <strong>{question}</strong>
-              </Col>
-              <Col span={24}>
-              <p>{userAnswers[index]}</p>
-              </Col>
-          </Row>
-          </div>
-      ))}
     </>
   );
 };
