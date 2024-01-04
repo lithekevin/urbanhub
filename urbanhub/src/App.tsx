@@ -68,7 +68,7 @@ function Main() {
 
 
 
-      for (let d = startDate; !d.isAfter(endDate); d.add(1, "day")) {
+      for (let d = startDate; !d.isAfter(endDate); d = d.add(1, "day")) {
         const date = d.format("DD/MM/YYYY");
         console.log("d: ", d, "date:", date);
         schedule[date] = [];
