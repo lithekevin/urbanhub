@@ -11,6 +11,7 @@ import { Trip } from './models/trip';
 import { addTrip, getAllTrips } from './firebase/daos/dao-trips';
 import cities from './firebase/cities';
 import dayjs from 'dayjs';
+import { message } from 'antd';
 
 function App() {
   return (
@@ -30,6 +31,8 @@ function Main() {
 
   const navigate = useNavigate();
 
+  const [messageApi, contextHolder] = message.useMessage();
+
   const handleTripSubmission = (data: {
     destination: string;
     dateRange: string[];
@@ -39,6 +42,7 @@ function Main() {
     questions: string[];
     answers: string[];
   }) => {
+    
     
 
     getAllTrips().then((trips: Trip[]) => {
@@ -126,17 +130,43 @@ function Main() {
 
         navigate("/trips/" + tripToAdd.id);
 
+        messageApi.open({
+          type: "success",
+          content: "Trip added successfully!",
+          duration: 3,
+          style: {
+            marginTop: '20px',
+          },
+        });
+
       }).catch((error) => {
         console.log(error);
+        messageApi.open({
+          type: "error",
+          content: "Error while adding trip!",
+          duration: 3,
+          style: {
+            marginTop: '20px',
+          },
+        });
       });
 
     }).catch((error) => {
       console.log(error);
+      messageApi.open({
+        type: "error",
+        content: "Error while adding trip!",
+        duration: 3,
+        style: {
+          marginTop: '20px',
+        },
+      });
     });
 
   };
 
-  return (
+  return (<>
+  {contextHolder}
     <Routes>
       <Route path="/" element={<PageLayout/>}>
         <Route index path='/' element={<MyTrips/>}/>
@@ -144,6 +174,7 @@ function Main() {
         <Route path='/trips/:tripId' element={<TripOverview/>}/>
       </Route>
     </Routes>
+    </>
   );
 }
 
