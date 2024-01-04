@@ -8,6 +8,7 @@ import Step0 from '../components/Step0';
 import Step1 from '../components/Step1';
 import Step2 from '../components/Step2';
 import Step3 from '../components/Step3';
+import { all } from 'axios';
 const { Step } = Steps;
 
 const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
@@ -129,6 +130,13 @@ const NewTrip: React.FC<TripFormProps> = () => {
     setDisplayedQuestions(initialQuestions);
     setAllDisplayedQuestions(initialQuestions);
   }, []); 
+
+  React.useEffect(() => {
+    // Reset the questionsPageNumber and displayedQuestions when the user changes the step
+    setQuestionsPageNumber(0);
+    setDisplayedQuestions(allDisplayedQuestions.slice(0, 3));
+  }
+  , [step]);
 
   const isStepValid = () => {
     switch (step) {
