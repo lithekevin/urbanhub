@@ -6,6 +6,10 @@ export interface Trip {
     city: string;
     startDate: dayjs.Dayjs;
     endDate: dayjs.Dayjs;
+    nAdults: number;
+    nKids: number;
+    budget: number;
+    questions: string[];
     answers: string[];
     schedule: Map<dayjs.Dayjs, TripAttraction[]>;
     location: {

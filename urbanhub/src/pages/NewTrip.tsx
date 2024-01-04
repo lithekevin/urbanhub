@@ -22,7 +22,7 @@ interface CustomEvent {
 interface TripFormProps {
   onSubmit: (data: {
     destination: string;
-    dateRange: [string, string];
+    dateRange: string[];
     adults: number;
     kids: number;
     budget: number;
@@ -31,7 +31,7 @@ interface TripFormProps {
   }) => void;
 }
 
-const NewTrip: React.FC<TripFormProps> = () => {
+const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
   const steps = [
     {
       title: "Trip destination",
@@ -120,7 +120,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
   }, [adultsValue, kidsValue, handleInputChange]);
 
   const handleDateRangeChange = (dates: [moment.Moment, moment.Moment]) => {
-    const dateStrings = dates.map((date) => date.format("YYYY-MM-DD"));
+    const dateStrings = dates.map((date) => date.format("DD/MM/YYYY"));
     handleInputChange({
       target: { name: "dateRange", value: dateStrings },
     } as CustomEvent);
@@ -279,6 +279,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
                 userAnswers={userAnswers}
                 formData={formData}
                 prevStep={prevStep}
+                onSubmit={onSubmit}
               />
             )}
           </Form>
