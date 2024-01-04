@@ -24,6 +24,11 @@ export const setDefaultTrips = async () => {
             city: "Barcelona",
             startDate: "17/08/2024",
             endDate: "19/08/2024",
+            nAdults: 2,
+            nKids: 0,
+            budget: 500,
+            questions: ["What are the best museums in Barcelona?", "What are the best restaurants in Barcelona?"],
+            answers: ["The Picasso Museum is the best museum in Barcelona", "The best restaurant in Barcelona is Can Paixano"],
             location: {
                 latitude: 41.390205,
                 longitude: 2.154007
@@ -36,6 +41,11 @@ export const setDefaultTrips = async () => {
             city: "London",
             startDate: "04/11/2024",
             endDate: "07/11/2024",
+            nAdults: 3,
+            nKids: 1,
+            budget: 800,
+            questions: ["What are the best museums in London?", "What are the best restaurants in London?"],
+            answers: ["The British Museum is the best museum in London", "The best restaurant in London is The Fat Duck"],
             location: {
                 latitude: 51.509865,
                 longitude: -0.118092
@@ -73,6 +83,10 @@ export const getAllTrips = async () => {
                 city: doc.data().city,
                 startDate: dayjs(doc.data().startDate, "DD/MM/YYYY"),
                 endDate: dayjs(doc.data().endDate, "DD/MM/YYYY"),
+                nAdults: doc.data().nAdults,
+                nKids: doc.data().nKids,
+                budget: doc.data().budget,
+                questions: doc.data().questions,
                 answers: doc.data().answers,
                 schedule: new Map<dayjs.Dayjs, TripAttraction[]>(),
                 location: {
@@ -94,3 +108,32 @@ export const getAllTrips = async () => {
     
 }
 
+
+// Add a new trip
+
+interface TripAttractionDB {
+    id: string;
+    city: string;
+    startDate: string;
+    endDate: string;
+    nAdults: number;
+    nKids: number;
+    budget: number;
+    questions: string[];
+    answers: string[];
+    schedule: { [date: string]: any[] };
+    location: {
+        latitude: number;
+        longitude: number;
+    }
+    image: string;
+}
+
+export const addTrip = async (trip: any) => {
+    try {
+        await setDoc(doc(tripsCollection, trip.id), trip);
+    } catch (error) {
+        console.error("Error adding document: ", error);
+        throw error;
+    }
+}

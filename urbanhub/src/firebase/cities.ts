@@ -219,7 +219,7 @@ const cities: City[] = [
       longitude: 16.3738,
     },
     image:
-      "https://images.unsplash.com/photo-1573599852326-2d4da0bbe613?q=80&w=1990&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1558555574-2a1a6e347cf2?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     attractions: [
       {
         id: "A028",

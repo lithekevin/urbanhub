@@ -17,9 +17,18 @@ interface Step3Props {
   };
   step: number;
   prevStep: () => void;
+  onSubmit: (data: {
+    destination: string;
+    dateRange: string[];
+    adults: number;
+    kids: number;
+    budget: number;
+    questions: string[];
+    answers: string[];
+  }) => void;
 }
 
-const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers, formData, prevStep }) => {
+const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers, formData, prevStep, onSubmit }) => {
   
   const tripSummaryData = [
     { label: 'Destination: ', value: formData.destination },
@@ -51,7 +60,7 @@ const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers,
           <Button type="default" onClick={prevStep} className="button">
             Previous
           </Button>
-          <Button type="primary" htmlType="submit" className="button">
+          <Button type="primary" htmlType="submit" className="button" onClick={() => onSubmit(formData)}>
             Submit
           </Button>
         </div>
