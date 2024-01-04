@@ -1,14 +1,13 @@
-import React from 'react';
-import { Form, Steps, Row, Col, ConfigProvider } from 'antd';
-import moment from 'moment';
-import questions from '../firebase/questions'; 
-import shuffle from 'lodash/shuffle';
-import colors from '../style/colors';
-import Step0 from '../components/Step0';
-import Step1 from '../components/Step1';
-import Step2 from '../components/Step2';
-import Step3 from '../components/Step3';
-import { all } from 'axios';
+import React from "react";
+import { Form, Steps, Row, Col, ConfigProvider } from "antd";
+import moment from "moment";
+import questions from "../firebase/questions";
+import shuffle from "lodash/shuffle";
+import colors from "../style/colors";
+import Step0 from "../components/Step0";
+import Step1 from "../components/Step1";
+import Step2 from "../components/Step2";
+import Step3 from "../components/Step3";
 const { Step } = Steps;
 
 const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
@@ -33,7 +32,6 @@ interface TripFormProps {
 }
 
 const NewTrip: React.FC<TripFormProps> = () => {
-
   const steps = [
     {
       title: "Trip destination",
@@ -45,77 +43,100 @@ const NewTrip: React.FC<TripFormProps> = () => {
       title: "Trip preferences",
     },
     {
-      title: "Trip summary"
-    }
+      title: "Trip summary",
+    },
   ];
   const [step, setStep] = React.useState(0);
 
   const [formData, setFormData] = React.useState({
-    destination: '',
-    dateRange: ['', ''],
+    destination: "",
+    dateRange: ["", ""],
     adults: 0,
     kids: 0,
     budget: 0,
-    additionalInfo: '',
-    questions: [''],
-    answers: [''],
+    additionalInfo: "",
+    questions: [""],
+    answers: [""],
   });
 
   // Add a state variable to track the input validity
   const [isDestinationValid, setIsDestinationValid] = React.useState(true);
-  const [isDestinationSelected, setIsDestinationSelected] = React.useState(false);
-  const [cityPosition, setCityPosition] = React.useState({lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng});
+  const [isDestinationSelected, setIsDestinationSelected] =
+    React.useState(false);
+  const [cityPosition, setCityPosition] = React.useState({
+    lat: DEFAULT_LOCATION.lat,
+    lng: DEFAULT_LOCATION.lng,
+  });
   const [mapZoom, setMapZoom] = React.useState(4);
-  
+
   const [adultsValue, setAdultsValue] = React.useState<number>(0);
   const [kidsValue, setKidsValue] = React.useState<number>(0);
 
   const [questionsPageNumber, setQuestionsPageNumber] = React.useState(0);
 
   // State to track the displayed questions
-  const [displayedQuestions, setDisplayedQuestions] = React.useState<string[]>([]);
+  const [displayedQuestions, setDisplayedQuestions] = React.useState<string[]>(
+    []
+  );
 
   // State to store all displayed questions (including previous ones)
-  const [allDisplayedQuestions, setAllDisplayedQuestions] = React.useState<string[]>([]);
- 
+  const [allDisplayedQuestions, setAllDisplayedQuestions] = React.useState<
+    string[]
+  >([]);
+
   // New state to store user answers to questions
-  const [userAnswers, setUserAnswers] = React.useState<string[]>(Array(allDisplayedQuestions.length).fill(''));
+  const [userAnswers, setUserAnswers] = React.useState<string[]>(
+    Array(allDisplayedQuestions.length).fill("")
+  );
 
   // New state to track whether more questions can be loaded
   const [canLoadMoreQuestions, setCanLoadMoreQuestions] = React.useState(true);
 
-  const handleInputChange = React.useCallback((e: CustomEvent) => {
-    const { name, value } = e.target;
-  
-    // Check if the property is 'dateRange' and convert it to the correct type
-    const updatedValue =
-      name === 'dateRange' ? (typeof value === 'string' ? value.split(',') : (value as [string, string])) : value;
-  
-    setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
-  }, [setFormData]);
+  const handleInputChange = React.useCallback(
+    (e: CustomEvent) => {
+      const { name, value } = e.target;
+
+      // Check if the property is 'dateRange' and convert it to the correct type
+      const updatedValue =
+        name === "dateRange"
+          ? typeof value === "string"
+            ? value.split(",")
+            : (value as [string, string])
+          : value;
+
+      setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
+    },
+    [setFormData]
+  );
 
   React.useEffect(() => {
     // Update the form data when adultsValue or kidsValue changes
     handleInputChange({
-      target: { name: 'adults', value: adultsValue },
+      target: { name: "adults", value: adultsValue },
     } as CustomEvent);
     handleInputChange({
-      target: { name: 'kids', value: kidsValue },
+      target: { name: "kids", value: kidsValue },
     } as CustomEvent);
   }, [adultsValue, kidsValue, handleInputChange]);
 
   const handleDateRangeChange = (dates: [moment.Moment, moment.Moment]) => {
-    const dateStrings = dates.map((date) => date.format('YYYY-MM-DD'));
-    handleInputChange({ target: { name: 'dateRange', value: dateStrings } } as CustomEvent);
-  };
-  
-  // New function to check if all questions are answered
-  const areAllQuestionsAnswered = () => {
-    return userAnswers.length === 9 && userAnswers.every((answer) => answer.length > 0) && userAnswers.every((answer) => answer.trim().length > 0);
+    const dateStrings = dates.map((date) => date.format("YYYY-MM-DD"));
+    handleInputChange({
+      target: { name: "dateRange", value: dateStrings },
+    } as CustomEvent);
   };
 
-   // useEffect to update formData when userAnswers change
-   React.useEffect(() => {
+  // New function to check if all questions are answered
+  const areAllQuestionsAnswered = () => {
+    return (
+      userAnswers.length === 9 &&
+      userAnswers.every((answer) => answer.length > 0) &&
+      userAnswers.every((answer) => answer.trim().length > 0)
+    );
+  };
+
+  // useEffect to update formData when userAnswers change
+  React.useEffect(() => {
     setFormData((prevData) => ({
       ...prevData,
       questions: allDisplayedQuestions,
@@ -126,17 +147,16 @@ const NewTrip: React.FC<TripFormProps> = () => {
   React.useEffect(() => {
     // Load the initial set of questions when the component mounts
     let initialQuestions = ["Describe me your ideal trip."];
-    initialQuestions = [...initialQuestions, ...shuffle(questions).slice(0, 2)]
+    initialQuestions = [...initialQuestions, ...shuffle(questions).slice(0, 2)];
     setDisplayedQuestions(initialQuestions);
     setAllDisplayedQuestions(initialQuestions);
-  }, []); 
+  }, []);
 
   React.useEffect(() => {
     // Reset the questionsPageNumber and displayedQuestions when the user changes the step
     setQuestionsPageNumber(0);
     setDisplayedQuestions(allDisplayedQuestions.slice(0, 3));
-  }
-  , [step]);
+  }, [step]);
 
   const isStepValid = () => {
     switch (step) {
@@ -144,9 +164,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
         return isDestinationSelected && isDestinationValid;
       case 1:
         return (
-          formData.dateRange[0] !== '' &&
-          ( formData.adults > 0 ||
-          formData.kids > 0 ) &&
+          formData.dateRange[0] !== "" &&
+          (formData.adults > 0 || formData.kids > 0) &&
           formData.budget > 0
         );
       case 2:
@@ -161,52 +180,67 @@ const NewTrip: React.FC<TripFormProps> = () => {
       setStep((prevStep) => prevStep + 1);
     }
   };
-  const prevStep = () => setStep((prevStep) => prevStep - 1 );
-  
+  const prevStep = () => setStep((prevStep) => prevStep - 1);
+
   return (
     <>
-    <div className='custom-stepper'>
-    <ConfigProvider
-      theme={{
-        components: {
-          Steps: {
-            colorPrimary: colors.hardBackgroundColor,
-          },
-        },
-      }} 
-    >
-      <Row className='w-100 d-flex flex-row justify-content-center'>
-        <Col xs={{span:24}} sm={{span: 24}} md={{span: 20}} lg={{span: 18}} xl={{span: 12}}>
-          <Steps current={step} size="small" className="mb-3 center" style={{paddingLeft: "0%", paddingRight: "0%"}}>
-              {steps.map((s, index) => (
-                <Step key={index} title={s.title} />
-              ))}
-          </Steps>
-        </Col>
-      </Row>
-      
-    </ConfigProvider>
-    </div>
-    <Row justify={'center'} align={"top"} style={{ minHeight: '66vh' }}>
-      <Col sm={{span: 24}} md={{ span: 20 }} lg={{span: 18}} xl={{span: 12}}>
-        <Form>
-          { step === 0 && (
-            <Step0 
-              isDestinationSelected={isDestinationSelected} 
-              setIsDestinationSelected={setIsDestinationSelected}
-              isDestinationValid={isDestinationValid}
-              setIsDestinationValid={setIsDestinationValid} 
-              cityPosition={cityPosition}
-              setCityPosition={setCityPosition}
-              mapZoom={mapZoom}
-              setMapZoom={setMapZoom}
-              formData={formData}
-              handleInputChange={handleInputChange}
-              step = {step}
-              nextStep={nextStep}
-            />
-          )}
-          { step === 1 && (
+      <div className="custom-stepper">
+        <ConfigProvider
+          theme={{
+            components: {
+              Steps: {
+                colorPrimary: colors.hardBackgroundColor,
+              },
+            },
+          }}
+        >
+          <Row className="w-100 d-flex flex-row justify-content-center">
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 20 }}
+              lg={{ span: 18 }}
+              xl={{ span: 12 }}
+            >
+              <Steps
+                current={step}
+                size="small"
+                className="mb-3 center"
+                style={{ paddingLeft: "0%", paddingRight: "0%" }}
+              >
+                {steps.map((s, index) => (
+                  <Step key={index} title={s.title} />
+                ))}
+              </Steps>
+            </Col>
+          </Row>
+        </ConfigProvider>
+      </div>
+      <Row justify={"center"} align={"top"} style={{ minHeight: "66vh" }}>
+        <Col
+          sm={{ span: 24 }}
+          md={{ span: 20 }}
+          lg={{ span: 18 }}
+          xl={{ span: 12 }}
+        >
+          <Form>
+            {step === 0 && (
+              <Step0
+                isDestinationSelected={isDestinationSelected}
+                setIsDestinationSelected={setIsDestinationSelected}
+                isDestinationValid={isDestinationValid}
+                setIsDestinationValid={setIsDestinationValid}
+                cityPosition={cityPosition}
+                setCityPosition={setCityPosition}
+                mapZoom={mapZoom}
+                setMapZoom={setMapZoom}
+                formData={formData}
+                handleInputChange={handleInputChange}
+                step={step}
+                nextStep={nextStep}
+              />
+            )}
+            {step === 1 && (
               <Step1
                 step={step}
                 handleDateRangeChange={handleDateRangeChange}
@@ -219,38 +253,37 @@ const NewTrip: React.FC<TripFormProps> = () => {
                 prevStep={prevStep}
                 nextStep={nextStep}
               />
-          )}
-          { step === 2 && (
-            <Step2
-              step={step}
-              displayedQuestions={displayedQuestions}
-              setDisplayedQuestions={setDisplayedQuestions}
-              allDisplayedQuestions={allDisplayedQuestions}
-              setAllDisplayedQuestions={setAllDisplayedQuestions}
-              canLoadMoreQuestions={canLoadMoreQuestions}
-              setCanLoadMoreQuestions={setCanLoadMoreQuestions}
-              areAllQuestionsAnswered={areAllQuestionsAnswered}
-              userAnswers={userAnswers}
-              setUserAnswers={setUserAnswers}
-              questionsPageNumber={questionsPageNumber}
-              setQuestionsPageNumber={setQuestionsPageNumber}
-              prevStep={prevStep}
-              nextStep={nextStep}
-            />
-          )}
-          { step === 3 && (
-            <Step3
-              step={step}
-              allDisplayedQuestions={allDisplayedQuestions}
-              userAnswers={userAnswers}
-              formData={formData}
-              prevStep={prevStep}
-            />
-          )}
-
-        </Form>
-      </Col>
-    </Row>
+            )}
+            {step === 2 && (
+              <Step2
+                step={step}
+                displayedQuestions={displayedQuestions}
+                setDisplayedQuestions={setDisplayedQuestions}
+                allDisplayedQuestions={allDisplayedQuestions}
+                setAllDisplayedQuestions={setAllDisplayedQuestions}
+                canLoadMoreQuestions={canLoadMoreQuestions}
+                setCanLoadMoreQuestions={setCanLoadMoreQuestions}
+                areAllQuestionsAnswered={areAllQuestionsAnswered}
+                userAnswers={userAnswers}
+                setUserAnswers={setUserAnswers}
+                questionsPageNumber={questionsPageNumber}
+                setQuestionsPageNumber={setQuestionsPageNumber}
+                prevStep={prevStep}
+                nextStep={nextStep}
+              />
+            )}
+            {step === 3 && (
+              <Step3
+                step={step}
+                allDisplayedQuestions={allDisplayedQuestions}
+                userAnswers={userAnswers}
+                formData={formData}
+                prevStep={prevStep}
+              />
+            )}
+          </Form>
+        </Col>
+      </Row>
     </>
   );
 };
