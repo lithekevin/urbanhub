@@ -34,8 +34,7 @@ const Step2: React.FC<Step2Props> = ({ displayedQuestions, setDisplayedQuestions
 
     const newQuestions = shuffle(remainingQuestions).slice(0, 3);
 
-    setDisplayedQuestions((prevDisplayedQuestions) => [
-      ...prevDisplayedQuestions,
+    setDisplayedQuestions(() => [
       ...newQuestions,
     ]);
 
@@ -49,14 +48,6 @@ const Step2: React.FC<Step2Props> = ({ displayedQuestions, setDisplayedQuestions
       setCanLoadMoreQuestions(false);
     }
   };
-
-  React.useEffect(() => {
-    // Load the initial set of questions when the component mounts
-    let initialQuestions = ["Describe me your ideal trip."];
-    initialQuestions = [...initialQuestions, ...shuffle(questions).slice(0, 2)]
-    setDisplayedQuestions(initialQuestions);
-    setAllDisplayedQuestions(initialQuestions);
-  }, [setDisplayedQuestions, setAllDisplayedQuestions]); 
 
    return (
     <>
