@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Steps, Row, Col, ConfigProvider } from 'antd';
+import { Form, Steps, Row, Col, ConfigProvider } from 'antd';
 import moment from 'moment';
 import questions from '../firebase/questions'; 
 import shuffle from 'lodash/shuffle';
@@ -169,7 +169,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
     >
       <Row className='w-100 d-flex flex-row justify-content-center'>
         <Col xs={{span:24}} sm={{span: 24}} md={{span: 20}} lg={{span: 18}} xl={{span: 12}}>
-          <Steps current={step} size="small" className="mb-3" style={{paddingLeft: "0%", paddingRight: "0%"}}>
+          <Steps current={step} size="small" className="mb-3 center" style={{paddingLeft: "0%", paddingRight: "0%"}}>
               {steps.map((s, index) => (
                 <Step key={index} title={s.title} />
               ))}
@@ -195,6 +195,7 @@ const NewTrip: React.FC<TripFormProps> = () => {
               formData={formData}
               handleInputChange={handleInputChange}
               step = {step}
+              nextStep={nextStep}
             />
           )}
           { step === 1 && (
@@ -207,6 +208,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
                 setKidsValue={setKidsValue}
                 handleInputChange={handleInputChange}
                 formData={formData}
+                prevStep={prevStep}
+                nextStep={nextStep}
               />
           )}
           { step === 2 && (
@@ -223,6 +226,8 @@ const NewTrip: React.FC<TripFormProps> = () => {
               setUserAnswers={setUserAnswers}
               questionsPageNumber={questionsPageNumber}
               setQuestionsPageNumber={setQuestionsPageNumber}
+              prevStep={prevStep}
+              nextStep={nextStep}
             />
           )}
           { step === 3 && (
@@ -231,27 +236,10 @@ const NewTrip: React.FC<TripFormProps> = () => {
               allDisplayedQuestions={allDisplayedQuestions}
               userAnswers={userAnswers}
               formData={formData}
+              prevStep={prevStep}
             />
           )}
-          <div className="mb-2 d-flex align-items-center justify-content-center">
-            {step > 0 && (
-              <Button type="default" onClick={prevStep} className="button">
-                Previous
-              </Button>
-            )}
 
-            {step < 3 && (
-              <Button type='primary' onClick={nextStep} className="button" htmlType="submit" disabled={!isStepValid()}>
-                Next
-              </Button>
-            )}
-
-            {step === 3 && (
-              <Button type="primary" htmlType="submit" className="button">
-                Submit
-              </Button>
-            )}
-          </div>
         </Form>
       </Col>
     </Row>

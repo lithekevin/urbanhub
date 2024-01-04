@@ -1,5 +1,7 @@
 import React from 'react';
-import { List } from 'antd';
+import { List, Button, Typography } from 'antd';
+
+const { Title, Text } = Typography;
 
 interface Step3Props {
   allDisplayedQuestions: string[];
@@ -14,9 +16,10 @@ interface Step3Props {
     answers: string[];
   };
   step: number;
+  prevStep: () => void;
 }
 
-const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers, formData }) => {
+const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers, formData, prevStep }) => {
   
   const tripSummaryData = [
     { label: 'Destination: ', value: formData.destination },
@@ -32,18 +35,26 @@ const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers,
 
   return (
     <>
-      <div>
-        <h3 className='step-title'> Trip summary</h3>
+      <div className='form-container'>
+        <Title className='step-title'> Trip summary </Title>
         <List
           dataSource={tripSummaryData}
           renderItem={(item) => (
             <List.Item>
-              <strong>{item.label}</strong> {item.value}
+              <Text strong>{item.label}</Text> {item.value}
             </List.Item>
           )}
           bordered
           style={{ borderRadius: '10px', border: '1px solid #d9d9d9', padding: '10px' }}
         />
+        <div className="mb-2 d-flex align-items-center justify-content-center">
+          <Button type="default" onClick={prevStep} className="button">
+            Previous
+          </Button>
+          <Button type="primary" htmlType="submit" className="button">
+            Submit
+          </Button>
+        </div>
       </div>
     </>
   );
