@@ -62,12 +62,15 @@ function Main() {
         image: tripCity ? tripCity.image : ""
       };
 
-      const startDate = dayjs(tripToAdd.startDate);
-      const endDate = dayjs(tripToAdd.endDate);
+      const startDate = dayjs(tripToAdd.startDate, "DD/MM/YYYY");
+      const endDate = dayjs(tripToAdd.endDate, "DD/MM/YYYY");
       const schedule: { [date: string]: any[] } = {};
+
+
 
       for (let d = startDate; !d.isAfter(endDate); d.add(1, "day")) {
         const date = d.format("DD/MM/YYYY");
+        console.log("d: ", d, "date:", date);
         schedule[date] = [];
       }
 

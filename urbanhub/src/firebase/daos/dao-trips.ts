@@ -121,7 +121,7 @@ interface TripAttractionDB {
     budget: number;
     questions: string[];
     answers: string[];
-    schedule: object;
+    schedule: { [date: string]: any[] };
     location: {
         latitude: number;
         longitude: number;
