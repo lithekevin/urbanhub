@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
 import { Link } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import colors from "../style/colors";
 import dayjs from "dayjs";
 import cities from "../firebase/cities";
@@ -101,8 +101,20 @@ function MyTrips() {
                 <Link to={`/trips/${trip.id}`} className="text-decoration-none">
                   <Card key={trip.id} className="text-center tripCard" style={{backgroundColor: colors.whiteBackgroundColor}}>
                       <div className="city-image-container">
+                        
                         <img src={trip.image} alt={`City: ${trip.city}`} className="city-image" />
                         <div className="gradient-overlay"></div>
+
+                        <div style={{ position: "absolute", top: 0, right: 0, padding: '8px', cursor: 'pointer' }}>
+                          <FaTrash style={{ color: 'red', fontSize: '20px' }} onClick={
+                            (event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              console.log("Delete trip with id: " + trip.id);
+                            }
+                          
+                          } />
+                        </div>
                       </div>
                       <Card.Body>
                         <Card.Title style={{position: "relative", top: -40, fontSize: 30}}>{trip.city}</Card.Title>
