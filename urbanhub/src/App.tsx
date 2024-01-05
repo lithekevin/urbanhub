@@ -51,7 +51,7 @@ function Main() {
       const tripCity = cities.find((city) => city.name === data.destination);
 
       const tripToAdd = {
-        id: "T" + (trips.length + 1).toString().padStart(3, "0"),
+        id: "T" + (Math.max(...(trips.map((trip) => parseInt(trip.id.slice(1))))) + 1).toString().padStart(3, "0"),
         city: data.destination,
         startDate: data.dateRange[0],
         endDate: data.dateRange[1],
@@ -136,7 +136,7 @@ function Main() {
           content: "Trip created successfully!",
           duration: 3,
           style: {
-            marginTop: '20px',
+            marginTop: '70px',
           },
         });
 
@@ -147,7 +147,7 @@ function Main() {
           content: "Error while adding trip!",
           duration: 3,
           style: {
-            marginTop: '20px',
+            marginTop: '70px',
           },
         });
       });

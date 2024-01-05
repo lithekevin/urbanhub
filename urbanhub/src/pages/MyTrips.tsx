@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Alert, Card, Container, Spinner, Row, Col } from "react-bootstrap";
-import { Typography, Dropdown, Menu, Button, Modal } from "antd"
+import { Typography, Dropdown, Menu, Button, Modal, message } from "antd"
 import { MoreOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { getAllTrips } from "../firebase/daos/dao-trips";
+import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
 import { Link } from "react-router-dom";
 import { MenuInfo } from "rc-menu/lib/interface";
@@ -18,6 +18,8 @@ function MyTrips() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
+
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     // load trips from firebase
@@ -60,8 +62,34 @@ function MyTrips() {
         </div>
       ),
       centered: true,      
-      onOk: () => {
+      onOk: async () => {
         // Implement your logic to delete the trip with the given ID
+
+        try{
+
+          await deleteTrip(trip.id);
+
+          messageApi.open({
+            type: "success",
+            content: "Trip deleted successfully!",
+            duration: 3,
+            style: {
+              marginTop: '70px',
+            },
+          });
+
+        } catch (error) {
+          console.log(error);
+          messageApi.open({
+            type: "error",
+            content: "Error while deleting trip!",
+            duration: 3,
+            style: {
+              marginTop: '70px',
+            },
+          });
+        }
+
         console.log(`Deleting trip:
           City: ${trip.city}
           Start Date: ${trip.startDate.format('DD/MM/YYYY')}
@@ -114,6 +142,7 @@ function MyTrips() {
   return (
     <>
     <Container className="d-flex flex-column align-items-center content-padding-top">
+      {contextHolder}
 
       <Container fluid className="position-relative d-flex flex-column align-items-center">
         <Title className="text-center" level={1}>MY TRIPS</Title>

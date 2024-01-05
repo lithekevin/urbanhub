@@ -5,6 +5,7 @@ import {
   doc,
   getDocs,
   getDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { app } from "../firebaseConfig";
 import dayjs from "dayjs";
@@ -297,6 +298,19 @@ export const addTrip = async (trip: any) => {
     await setDoc(doc(tripsCollection, trip.id), trip);
   } catch (error) {
     console.error("Error adding document: ", error);
+    throw error;
+  }
+};
+
+
+
+// Delete a trip
+
+export const deleteTrip = async (id: string) => {
+  try {
+    await deleteDoc(doc(tripsCollection, id));
+  } catch (error) {
+    console.error("Error deleting document: ", error);
     throw error;
   }
 };
