@@ -1,6 +1,7 @@
 import { BrowserRouter, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import { Row } from 'react-bootstrap';
+import { Result, Button } from 'antd';
 import NavigationBar from './components/NavigationBar';
 import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
@@ -126,13 +127,13 @@ function Main() {
       tripToAdd.schedule = schedule;
 
       addTrip(tripToAdd).then(() => {
-        console.log("Trip added successfully");
+        console.log("Trip created successfully");
 
         navigate("/trips/" + tripToAdd.id);
 
         messageApi.open({
           type: "success",
-          content: "Trip added successfully!",
+          content: "Trip created successfully!",
           duration: 3,
           style: {
             marginTop: '20px',
@@ -172,6 +173,7 @@ function Main() {
         <Route index path='/' element={<MyTrips/>}/>
         <Route path='/newtrip' element={<NewTrip onSubmit={handleTripSubmission}/>}/>
         <Route path='/trips/:tripId' element={<TripOverview/>}/>
+        <Route path="/*" element={<Error />} />
       </Route>
     </Routes>
     </>
@@ -184,6 +186,20 @@ function PageLayout() {
       <Outlet/>
     </Row>
   );
+}
+
+function Error(){
+
+  const navigate = useNavigate();
+
+  return (
+    <Result 
+      status="404"
+      title="Sorry, the page you are looking for does not exist."
+      subTitle="Please, double check the address."
+      extra={<Button ghost type="primary" onClick={() => navigate("/")}>Back Home</Button>}
+    />
+  )
 }
 
 export default App;

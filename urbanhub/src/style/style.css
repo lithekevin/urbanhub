@@ -152,6 +152,19 @@ transform: scale(1.05);
 box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.custom-dropdown{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 30px;
+}
+
+.ant-btn-primary:hover {
+    transform: scale(1.1); 
+}
+
 /************
  * NEWTRIP
  ************/
