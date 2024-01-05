@@ -1,6 +1,7 @@
 import { BrowserRouter, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import { Row } from 'react-bootstrap';
+import { Result, Button } from 'antd';
 import NavigationBar from './components/NavigationBar';
 import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
@@ -172,6 +173,7 @@ function Main() {
         <Route index path='/' element={<MyTrips/>}/>
         <Route path='/newtrip' element={<NewTrip onSubmit={handleTripSubmission}/>}/>
         <Route path='/trips/:tripId' element={<TripOverview/>}/>
+        <Route path="/*" element={<Error />} />
       </Route>
     </Routes>
     </>
@@ -184,6 +186,20 @@ function PageLayout() {
       <Outlet/>
     </Row>
   );
+}
+
+function Error(){
+
+  const navigate = useNavigate();
+
+  return (
+    <Result 
+      status="404"
+      title="Sorry, the page you are looking for does not exist."
+      subTitle="Please, double check the address."
+      extra={<Button ghost type="primary" onClick={() => navigate("/")}>Back Home</Button>}
+    />
+  )
 }
 
 export default App;
