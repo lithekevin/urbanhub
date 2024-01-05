@@ -121,12 +121,40 @@ export const getAllTrips = async () => {
 
       const scheduleKeys = Object.keys(doc.data().schedule);
 
+      
+
+        scheduleKeys.sort((a, b) => {
+            const dateA = dayjs(a, "DD/MM/YYYY");
+            const dateB = dayjs(b, "DD/MM/YYYY");
+    
+            if (dateA.isBefore(dateB)) {
+            return -1;
+            } else if (dateA.isAfter(dateB)) {
+            return 1;
+            } else {
+            return 0;
+            }
+        });
+
       scheduleKeys.forEach((key) => {
         const attractions: TripAttraction[] = [];
 
         const attractionsInfo = cities.find(
           (city) => city.name === doc.data().city
         )?.attractions;
+
+        doc.data().schedule[key].sort((a: any, b: any) => {
+          const dateA = dayjs(key + " " + a.startDate, "DD/MM/YYYY HH:mm");
+          const dateB = dayjs(key + " " + b.startDate, "DD/MM/YYYY HH:mm");
+
+          if (dateA.isBefore(dateB)) {
+            return -1;
+          } else if (dateA.isAfter(dateB)) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
 
         doc.data().schedule[key].forEach((attraction: any) => {
           const attractionInfo = attractionsInfo!.find(
@@ -197,9 +225,35 @@ export const getTripById = async (id: string) => {
         // iterate through the schedule keys and convert them to dayjs objects
     
         const scheduleKeys = Object.keys(docData.schedule);
+
+        scheduleKeys.sort((a, b) => {
+            const dateA = dayjs(a, "DD/MM/YYYY");
+            const dateB = dayjs(b, "DD/MM/YYYY");
+    
+            if (dateA.isBefore(dateB)) {
+            return -1;
+            } else if (dateA.isAfter(dateB)) {
+            return 1;
+            } else {
+            return 0;
+            }
+        });
     
         scheduleKeys.forEach((key) => {
             const attractions: TripAttraction[] = [];
+
+            docData.schedule[key].sort((a: any, b: any) => {
+                const dateA = dayjs(key + " " + a.startDate, "DD/MM/YYYY HH:mm");
+                const dateB = dayjs(key + " " + b.startDate, "DD/MM/YYYY HH:mm");
+        
+                if (dateA.isBefore(dateB)) {
+                return -1;
+                } else if (dateA.isAfter(dateB)) {
+                return 1;
+                } else {
+                return 0;
+                }
+            });
     
             const attractionsInfo = cities.find(
             (city) => city.name === docData.city
