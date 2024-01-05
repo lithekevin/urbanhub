@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Input, Row, Col, Button, Progress, Typography } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import questions from '../firebase/questions'; 
 import shuffle from 'lodash/shuffle';
 
@@ -93,25 +94,30 @@ const Step2: React.FC<Step2Props> = ({ displayedQuestions, setDisplayedQuestions
             <Row className='w-100'>
               <Col span={24} className='d-flex flex-row justify-content-between'>
                 <Button 
+                  style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   onClick={() => {
                     setDisplayedQuestions(allDisplayedQuestions.slice((questionsPageNumber-1)*3, (questionsPageNumber-1)*3+3))
                     setQuestionsPageNumber((number) => number-1)
                   }} 
-                  disabled={questionsPageNumber === 0}>{"<"}
+                  disabled={questionsPageNumber === 0}>
+                    <LeftOutlined />
                 </Button>
                 { questionsPageNumber < 2 &&
-                  <Button 
-                    onClick={() => {
-                      if(allDisplayedQuestions.length === questionsPageNumber*3+3){
-                        loadMoreQuestions();
-                      }
-                      else{
-                        setDisplayedQuestions(allDisplayedQuestions.slice((questionsPageNumber+1)*3, (questionsPageNumber+1)*3+3))
-                      }
-                      setQuestionsPageNumber((number) => number+1)
-                    }} 
-                    disabled={questionsPageNumber === 2 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).length < 3 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).some((ans) => ans.length === 0)}>{">"}
-                  </Button>
+                <Button 
+                  style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  onClick={() => {
+                    if(allDisplayedQuestions.length === questionsPageNumber*3+3){
+                      loadMoreQuestions();
+                    }
+                    else{
+                      setDisplayedQuestions(allDisplayedQuestions.slice((questionsPageNumber+1)*3, (questionsPageNumber+1)*3+3))
+                    }
+                    setQuestionsPageNumber((number) => number+1)
+                  }} 
+                  disabled={questionsPageNumber === 2 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).length < 3 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).some((ans) => ans.length === 0)}
+                >
+                  <RightOutlined />
+                </Button>
                 }
               </Col>
             </Row>

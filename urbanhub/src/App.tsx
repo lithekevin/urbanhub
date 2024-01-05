@@ -126,13 +126,13 @@ function Main() {
       tripToAdd.schedule = schedule;
 
       addTrip(tripToAdd).then(() => {
-        console.log("Trip added successfully");
+        console.log("Trip created successfully");
 
         navigate("/trips/" + tripToAdd.id);
 
         messageApi.open({
           type: "success",
-          content: "Trip added successfully!",
+          content: "Trip created successfully!",
           duration: 3,
           style: {
             marginTop: '20px',
