@@ -121,20 +121,18 @@ export const getAllTrips = async () => {
 
       const scheduleKeys = Object.keys(doc.data().schedule);
 
-      
+      scheduleKeys.sort((a, b) => {
+        const dateA = dayjs(a, "DD/MM/YYYY");
+        const dateB = dayjs(b, "DD/MM/YYYY");
 
-        scheduleKeys.sort((a, b) => {
-            const dateA = dayjs(a, "DD/MM/YYYY");
-            const dateB = dayjs(b, "DD/MM/YYYY");
-    
-            if (dateA.isBefore(dateB)) {
-            return -1;
-            } else if (dateA.isAfter(dateB)) {
-            return 1;
-            } else {
-            return 0;
-            }
-        });
+        if (dateA.isBefore(dateB)) {
+          return -1;
+        } else if (dateA.isAfter(dateB)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
 
       scheduleKeys.forEach((key) => {
         const attractions: TripAttraction[] = [];
@@ -194,103 +192,103 @@ export const getAllTrips = async () => {
 // Get a trip by id
 
 export const getTripById = async (id: string) => {
-    try {
-        const docRef = doc(tripsCollection, id);
-        const docSnap = await getDoc(docRef);
-    
-        if (!docSnap.exists()) {
-        console.log("No such document!");
-        return null;
+  try {
+    const docRef = doc(tripsCollection, id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("No such document!");
+      return null;
+    } else {
+      const docData = docSnap.data();
+
+      const trip: Trip = {
+        id: docSnap.id,
+        city: docData.city,
+        startDate: dayjs(docData.startDate, "DD/MM/YYYY"),
+        endDate: dayjs(docData.endDate, "DD/MM/YYYY"),
+        nAdults: docData.nAdults,
+        nKids: docData.nKids,
+        budget: docData.budget,
+        questions: docData.questions,
+        answers: docData.answers,
+        schedule: new Map<dayjs.Dayjs, TripAttraction[]>(),
+        location: {
+          latitude: docData.location.latitude,
+          longitude: docData.location.longitude,
+        },
+        image: docData.image,
+      };
+
+      // iterate through the schedule keys and convert them to dayjs objects
+
+      const scheduleKeys = Object.keys(docData.schedule);
+
+      scheduleKeys.sort((a, b) => {
+        const dateA = dayjs(a, "DD/MM/YYYY");
+        const dateB = dayjs(b, "DD/MM/YYYY");
+
+        if (dateA.isBefore(dateB)) {
+          return -1;
+        } else if (dateA.isAfter(dateB)) {
+          return 1;
         } else {
-        const docData = docSnap.data();
-    
-        const trip: Trip = {
-            id: docSnap.id,
-            city: docData.city,
-            startDate: dayjs(docData.startDate, "DD/MM/YYYY"),
-            endDate: dayjs(docData.endDate, "DD/MM/YYYY"),
-            nAdults: docData.nAdults,
-            nKids: docData.nKids,
-            budget: docData.budget,
-            questions: docData.questions,
-            answers: docData.answers,
-            schedule: new Map<dayjs.Dayjs, TripAttraction[]>(),
-            location: {
-            latitude: docData.location.latitude,
-            longitude: docData.location.longitude,
-            },
-            image: docData.image,
-        };
-    
-        // iterate through the schedule keys and convert them to dayjs objects
-    
-        const scheduleKeys = Object.keys(docData.schedule);
-
-        scheduleKeys.sort((a, b) => {
-            const dateA = dayjs(a, "DD/MM/YYYY");
-            const dateB = dayjs(b, "DD/MM/YYYY");
-    
-            if (dateA.isBefore(dateB)) {
-            return -1;
-            } else if (dateA.isAfter(dateB)) {
-            return 1;
-            } else {
-            return 0;
-            }
-        });
-    
-        scheduleKeys.forEach((key) => {
-            const attractions: TripAttraction[] = [];
-
-            docData.schedule[key].sort((a: any, b: any) => {
-                const dateA = dayjs(key + " " + a.startDate, "DD/MM/YYYY HH:mm");
-                const dateB = dayjs(key + " " + b.startDate, "DD/MM/YYYY HH:mm");
-        
-                if (dateA.isBefore(dateB)) {
-                return -1;
-                } else if (dateA.isAfter(dateB)) {
-                return 1;
-                } else {
-                return 0;
-                }
-            });
-    
-            const attractionsInfo = cities.find(
-            (city) => city.name === docData.city
-            )?.attractions;
-    
-            docData.schedule[key].forEach((attraction: any) => {
-            const attractionInfo = attractionsInfo!.find(
-                (attractionInfo) => attractionInfo.id === attraction.id
-            );
-    
-            attractions.push({
-                id: attraction.id,
-                name: attractionInfo!.name,
-                city: attractionInfo!.city,
-                location: {
-                latitude: attractionInfo!.location.latitude,
-                longitude: attractionInfo!.location.longitude,
-                },
-                estimatedTime: attractionInfo!.estimatedTime,
-                startDate: dayjs(
-                key + " " + attraction.startDate,
-                "DD/MM/YYYY HH:mm"
-                ),
-                endDate: dayjs(key + " " + attraction.endDate, "DD/MM/YYYY HH:mm"),
-            });
-            });
-    
-            trip.schedule.set(dayjs(key, "DD/MM/YYYY"), attractions);
-        });
-    
-        return trip;
+          return 0;
         }
-    } catch (error) {
-        console.error("Error getting document: ", error);
-        throw error;
+      });
+
+      scheduleKeys.forEach((key) => {
+        const attractions: TripAttraction[] = [];
+
+        docData.schedule[key].sort((a: any, b: any) => {
+          const dateA = dayjs(key + " " + a.startDate, "DD/MM/YYYY HH:mm");
+          const dateB = dayjs(key + " " + b.startDate, "DD/MM/YYYY HH:mm");
+
+          if (dateA.isBefore(dateB)) {
+            return -1;
+          } else if (dateA.isAfter(dateB)) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+
+        const attractionsInfo = cities.find(
+          (city) => city.name === docData.city
+        )?.attractions;
+
+        docData.schedule[key].forEach((attraction: any) => {
+          const attractionInfo = attractionsInfo!.find(
+            (attractionInfo) => attractionInfo.id === attraction.id
+          );
+
+          attractions.push({
+            id: attraction.id,
+            name: attractionInfo!.name,
+            city: attractionInfo!.city,
+            location: {
+              latitude: attractionInfo!.location.latitude,
+              longitude: attractionInfo!.location.longitude,
+            },
+            estimatedTime: attractionInfo!.estimatedTime,
+            startDate: dayjs(
+              key + " " + attraction.startDate,
+              "DD/MM/YYYY HH:mm"
+            ),
+            endDate: dayjs(key + " " + attraction.endDate, "DD/MM/YYYY HH:mm"),
+          });
+        });
+
+        trip.schedule.set(dayjs(key, "DD/MM/YYYY"), attractions);
+      });
+
+      return trip;
     }
-    };
+  } catch (error) {
+    console.error("Error getting document: ", error);
+    throw error;
+  }
+};
 
 // Add a new trip
 

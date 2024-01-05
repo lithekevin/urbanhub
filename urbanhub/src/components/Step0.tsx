@@ -81,7 +81,7 @@ const Step0: React.FC<Step0Props> = ({
           style={{ width: '100%' }}
         >
           <AutoComplete
-            options={cities.map((city) => ({ value: city.name }))}
+            options={cities.map((city) => ({ value: city.name })).sort((a, b) => a.value.localeCompare(b.value))}
             placeholder="Type a city"
             filterOption={(inputValue, option) => {
               return option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
