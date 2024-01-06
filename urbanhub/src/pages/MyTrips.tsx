@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Alert, Card, Container, Spinner, Row, Col } from "react-bootstrap";
-import { Typography, Dropdown, Menu, Button, Modal, message } from "antd"
+import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton } from "antd"
 import { MoreOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
@@ -180,8 +180,9 @@ function MyTrips() {
                 <Link to={`/trips/${trip.id}`} className="text-decoration-none">
                   <Card key={trip.id} className="text-center tripCard" style={{backgroundColor: colors.whiteBackgroundColor}}>
                       <div className="city-image-container">
+
+                        <TripImage src={trip.image} alt={`City: ${trip.city}`} />
                         
-                        <img src={trip.image} alt={`City: ${trip.city}`} className="city-image" />
                         <div className="gradient-overlay"></div>
                         <div className="custom-dropdown">
                         <Dropdown dropdownRender={() => menu(trip)}  trigger={['click']} placement="bottomRight" arrow={{pointAtCenter: true}}>
@@ -235,6 +236,28 @@ function MyTrips() {
       </Button>
         
     </Container>
+    </>
+  );
+}
+
+interface TripImageProps {
+  src: string;
+  alt: string;
+}
+
+const TripImage: FC<TripImageProps> = ({ src, alt }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  return (
+    <>
+      {!imageLoaded && <Skeleton.Image style={{width: '350px', height: '300px'}} />}
+      <img 
+        src={src} 
+        alt={alt} 
+        className="city-image" 
+        onLoad={() => setImageLoaded(true)}
+        style={imageLoaded ? {} : { display: 'none' }}
+      />
     </>
   );
 }
