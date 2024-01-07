@@ -1,4 +1,4 @@
-import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space} from 'antd';
+import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space } from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
 import { useState, useEffect } from 'react';
@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
@@ -38,10 +39,10 @@ function TripOverview() {
       <h1 className="text-center">TRIP OVERVIEW</h1>
       <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative' }}>
         <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
-          <div style={{ flex: '0 0 25%', height: '100%' }}>
+          <div style={{ flex: '0 0 33.3%', height: '100%', width: '100%' }}>
             <Sidebar />
           </div>
-          <div style={{ flex: '0 0 75%', height: '100%' }}>
+          <div style={{ flex: '0 0 66.6%', height: '100%' }}>
             <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
               <div style={{ width: '100%', height: '100%' }}>
                 <GoogleMapComponent />
@@ -63,6 +64,7 @@ function Sidebar() {
   const [error, setError] = useState<boolean>(false);
   const { tripId } = useParams();
   const [loading, setLoading] = useState<boolean>(true);
+  const [editing, setEditing] = useState<boolean>(false);
 
   useEffect(() => {
     // load trip details from firebase based on tripId
@@ -88,6 +90,14 @@ function Sidebar() {
     loadTripDetails();
   }, [tripId]);
 
+  const handleEditClick = (attraction: TripAttraction) => {
+    console.log(`Button edit clicked for attraction: ${attraction.name}`);
+  };
+
+  const handleDeleteClick = (attraction: TripAttraction) => {
+    console.log(`Button delete clicked for attraction: ${attraction.name}`);
+  };
+
   const renderAttractionsForDay = (day: dayjs.Dayjs) => {
     let attractionsForDay: TripAttraction[] = [];
   
@@ -110,7 +120,13 @@ function Sidebar() {
   
     const timelineItems = attractionsForDay.map((attraction, index) => ({
       label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
-      children: attraction.name,
+      children: (
+        <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+        <span style={{ marginRight: '10px' }}>{attraction.name}</span>
+        {editing && <button onClick={() => handleEditClick(attraction)}><EditOutlined /></button>}
+        {editing && <button onClick={() => handleDeleteClick(attraction)}><DeleteOutlined /></button>}
+        </div>
+      ),
     }));
   
     return (
