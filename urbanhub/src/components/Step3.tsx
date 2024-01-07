@@ -42,6 +42,8 @@ const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers,
     })),
   ];
 
+  const [loading, setLoading] = React.useState(false);
+
   return (
     <>
       <div className='form-container'>
@@ -60,7 +62,7 @@ const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers,
           <Button type="default" onClick={prevStep} className="button">
             Previous
           </Button>
-          <Button type="primary" htmlType="submit" className="button" onClick={() => onSubmit(formData)}>
+          <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button" onClick={() => {setLoading(true); onSubmit(formData)}}>
             Submit
           </Button>
         </div>

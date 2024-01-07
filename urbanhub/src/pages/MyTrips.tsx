@@ -33,14 +33,17 @@ function MyTrips() {
           processedTrip.image = cities.find((city) => city.name === trip.city)?.image || defaultImageURL;
           return processedTrip;
         }
-        );
+        ).sort((a, b) => {
+            return dayjs(a.startDate).isAfter(dayjs(b.startDate)) ? 1 : -1;
+        });
 
         setTrips(processedTrips);
+        setLoading(false);
       }).catch((error) => {
         console.log(error);
         setError(true);
+        setLoading(false);
       });
-      setLoading(false);
     }
 
     loadTrips();

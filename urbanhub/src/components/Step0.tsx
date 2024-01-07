@@ -99,7 +99,7 @@ const Step0: React.FC<Step0Props> = ({
                 center={cityPosition}
                 zoom={mapZoom}
                 onLoad={(map) => {
-                  console.log('Map loaded:', map);
+                  // console.log('Map loaded:', map);
                   // You can inspect the map instance in the console to check its properties
                 }}
               >

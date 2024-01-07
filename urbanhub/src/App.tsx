@@ -13,6 +13,7 @@ import { addTrip, getAllTrips } from './firebase/daos/dao-trips';
 import cities from './firebase/cities';
 import dayjs from 'dayjs';
 import { message } from 'antd';
+import { Attraction } from './models/attraction';
 
 function App() {
   return (
@@ -50,8 +51,10 @@ function Main() {
       
       const tripCity = cities.find((city) => city.name === data.destination);
 
+      const nextID = trips.length > 0 ? Math.max(...(trips.map((trip) => parseInt(trip.id.slice(1))))) + 1 : 1;
+
       const tripToAdd = {
-        id: "T" + (Math.max(...(trips.map((trip) => parseInt(trip.id.slice(1))))) + 1).toString().padStart(3, "0"),
+        id: "T" + nextID.toString().padStart(3, "0"),
         city: data.destination,
         startDate: data.dateRange[0],
         endDate: data.dateRange[1],
@@ -79,10 +82,11 @@ function Main() {
         schedule[date] = [];
       }
 
+      let attractions: Attraction[] = [...tripCity!.attractions];
+
       for (const date in schedule) {
         const nAttractions = Math.floor(Math.random() * 4) + 3;
         let entireDuration = 0;
-        let attractions = [...tripCity!.attractions]; 
 
         for (let i = 0; i < nAttractions; i++) {
           if (attractions.length === 0) {
