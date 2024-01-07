@@ -1,14 +1,20 @@
-import { CollapseProps, Timeline, Collapse, Layout, Row, Col, Button, Space } from 'antd';
+import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space} from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from 'antd';
-
+import { getTripById } from "../firebase/daos/dao-trips";
+import { useParams } from 'react-router-dom';
+//import cities from "../firebase/cities";
+import dayjs from 'dayjs';
+import { Trip } from "../models/trip";
+import { TripAttraction } from '../models/tripAttraction';
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
 
 function TripOverview() {
+
   const containerStyle = {
     width: '100%',
     height: '100%',
@@ -53,45 +59,95 @@ function TripOverview() {
   
 
 function Sidebar() {
-     //TODO: Invece di avere attrazioni fisse, caricarle da firebase
+  const [trip, setTrip] = useState<Trip | null>(null);
+  const [error, setError] = useState<boolean>(false);
+  const { tripId } = useParams();
+  const [loading, setLoading] = useState<boolean>(true);
 
-     const attractions = [
-        [{children: 'Attraction 1.1',}, {children: 'Attraction 1.2',}, {children: 'Attraction 1.3',}, {children: 'Attraction 1.4'}],
-        [{children: 'Attraction 2.1',}, {children: 'Attraction 2.2',}, {children: 'Attraction 2.3',}],
-        [{children: 'Attraction 3.1',}, {children: 'Attraction 3.2',}, {children: 'Attraction 3.3',}, {children: 'Attraction 3.4'}, {children: 'Attraction 3.5'}],
-      ];
+  useEffect(() => {
+    // load trip details from firebase based on tripId
+    async function loadTripDetails() {
+      setLoading(true);
+      try {
+        if (tripId) {
+          const tripData = await getTripById(tripId);
+          if (tripData) {
+            setTrip(tripData);
+          } else {
+            console.log(`Trip with ID ${tripId} not found.`);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading trip details:', error);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-      const dayLabels = ["12/05/2024","13/05/2024","14/05/2024"];
+    loadTripDetails();
+  }, [tripId]);
 
-      const dailyActivities: CollapseProps['items'] = [
-        {
-          key: '1',
-          label: dayLabels[0],
-          children: <Timeline items={attractions[0]} />,
-        },
-        {
-          key: '2',
-          label: dayLabels[1],
-          children: <Timeline items={attractions[1]} />,
-        },
-        {
-          key: '3',
-          label: dayLabels[2],
-          children: <Timeline items={attractions[2]} />,
-        },
-      ];
-
-    return (<>
-      <div style={{ marginBottom: '30px' }}>
-        <Container fluid className="position-relative d-flex flex-column align-items-left">
-          <h3>City name</h3>
-        </Container>
-      </div>
-      <div>
-      <Collapse size="large" items={dailyActivities} defaultActiveKey={['1']} accordion={true} />
-      </div>
-      </>);
+  const renderAttractionsForDay = (day: dayjs.Dayjs) => {
+    let attractionsForDay: TripAttraction[] = [];
+  
+    // Find the closest matching key
+    let closestKey: dayjs.Dayjs | null = null;
+    let minDifference: number | null = null;
+  
+    trip?.schedule.forEach((attractions, key) => {
+      const difference = Math.abs(day.diff(key, 'days'));
+  
+      if (minDifference === null || difference < minDifference) {
+        minDifference = difference;
+        closestKey = key;
+      }
+    });
+  
+    if (closestKey !== null) {
+      attractionsForDay = trip?.schedule.get(closestKey) || [];
+    }
+  
+    const timelineItems = attractionsForDay.map((attraction, index) => ({
+      label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
+      children: attraction.name,
+    }));
+  
+    return (
+      <>
+        <Timeline mode="left" items={timelineItems} />
+      </>
+    );
   };
+
+  const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
+
+  const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
+    key: `${index}`,
+    label: dayLabel,
+    children: <div>{renderAttractionsForDay(dayjs(dayLabel, 'DD/MM/YYYY'))}</div>,
+  }));
+
+  return (
+    <>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error loading trip details</p>}
+      {!loading && !error && trip && (
+        <>
+          <div style={{ marginBottom: '30px' }}>
+            <Container fluid className="position-relative d-flex flex-column align-items-left">
+              <h3>{trip.city}</h3>
+            </Container>
+          </div>
+          <div>
+            <Collapse size="large" items={dailyActivities} defaultActiveKey={['0']} accordion={true} />
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
 
   function Footer() {
     const [scrollRatio, setScrollRatio] = useState(0);
@@ -149,7 +205,7 @@ function Sidebar() {
 
     return (
       <div className="chatbot-style" style={{ transform: `translateY(calc(-${scrollRatio * 100}% - 10px))` }}>
-        <Row justify="space-between">
+      <Row justify="space-between">
         <Col xs={24} sm={24} md={11}>
           <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start' }}>
             <img src={"/robotassistant.png"} alt="UrbanHub assistant" style={{ width: 'auto', height: '70px', marginRight: '10px' }} />
@@ -161,12 +217,12 @@ function Sidebar() {
         </Col>
         <Col xs={24} sm={24} md={11}>
           <Space.Compact style={{ width: '100%' }}>
-            <TextArea placeholder="Ask something to UrbanHub..." value={inputValue} onChange={handleInputChange} autoSize={{ minRows: 1, maxRows: 3 }} />
+          <TextArea placeholder="Ask something to UrbanHub..." value={inputValue} onChange={handleInputChange} autoSize={{ minRows: 1, maxRows: 3 }} />
             <Button type="primary" onClick={handleSendClick}>Send</Button>
             {undoVisibility && (<Button type="primary" onClick={handleUndoClick}>Undo</Button>)}
           </Space.Compact>
         </Col>
-        </Row>
+      </Row>
       </div>
   );
   };
