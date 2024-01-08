@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Alert, Card, Container, Spinner, Row, Col } from "react-bootstrap";
-import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton } from "antd"
+import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton, Image } from "antd"
 import { MoreOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
@@ -183,24 +183,21 @@ function MyTrips() {
                 <Link to={`/trips/${trip.id}`} className="text-decoration-none">
                   <Card key={trip.id} className="text-center tripCard" style={{backgroundColor: colors.whiteBackgroundColor}}>
                       <div className="city-image-container">
-
                         <TripImage src={trip.image} alt={`City: ${trip.city}`} />
-                        
                         <div className="gradient-overlay"></div>
                         <div className="custom-dropdown">
-                        <Dropdown dropdownRender={() => menu(trip)}  trigger={['click']} placement="bottomRight" arrow={{pointAtCenter: true}}>
-                          <Button
-                            type="text"
-                            icon={<MoreOutlined style={{ fontSize: '24px', color: 'white' }} />}
-                            style={{ background: 'rgba(0, 0, 0, 0.5)', borderRadius: '50%'}}
-                            onClick={(event) => {
-                              event.preventDefault();
-                              event.stopPropagation();
-                            }}
-                          />
-                        </Dropdown>
+                          <Dropdown dropdownRender={() => menu(trip)}  trigger={['click']} placement="bottomRight" arrow={{pointAtCenter: true}}>
+                            <Button
+                              type="text"
+                              icon={<MoreOutlined style={{ fontSize: '24px', color: 'white' }} />}
+                              style={{ background: 'rgba(0, 0, 0, 0.5)', borderRadius: '50%'}}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                              }}
+                            />
+                          </Dropdown>
                         </div>
-                      
                       </div>
                       <Card.Body>
                         <Card.Title style={{position: "relative", top: -40, fontSize: 30}}>{trip.city}</Card.Title>
@@ -254,12 +251,13 @@ const TripImage: FC<TripImageProps> = ({ src, alt }) => {
   return (
     <>
       {!imageLoaded && <Skeleton.Image style={{width: '350px', height: '300px'}} />}
-      <img 
+      <Image 
         src={src} 
         alt={alt} 
         className="city-image" 
         onLoad={() => setImageLoaded(true)}
         style={imageLoaded ? {} : { display: 'none' }}
+        preview={false}
       />
     </>
   );
