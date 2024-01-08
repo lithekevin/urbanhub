@@ -15,58 +15,11 @@ import colors from "../style/colors";
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
 
 function TripOverview() {
-
-  const containerStyle = {
-    width: '100%',
-    height: '100%',
-  };
-  
-  const center = {
-    lat: -34.397,
-    lng: 150.644,
-  };
-  
-  const GoogleMapComponent: React.FC = () => {
-    return (
-        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
-          <Marker position={center} />
-        </GoogleMap>
-    );
-  };
-
-  return (
-    <>
-      <h1 className="text-center">TRIP OVERVIEW</h1>
-      <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative' }}>
-        <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
-          <div style={{ flex: '0 0 33.3%', height: '100%', width: '100%' }}>
-            <Sidebar />
-          </div>
-          <div style={{ flex: '0 0 66.6%', height: '100%' }}>
-            <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
-              <div style={{ width: '100%', height: '100%' }}>
-                <GoogleMapComponent />
-              </div>
-            </Container>
-          </div>
-        </Container>
-      </div>
-      <footer style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#f8f9fa', padding: '10px', textAlign: 'center'}}>
-        <Footer />
-      </footer>
-    </>
-  );
-};
-  
-
-function Sidebar() {
-  const [trip, setTrip] = useState<Trip | null>(null);
-  const [error, setError] = useState<boolean>(false);
-  const { tripId } = useParams();
   const [loading, setLoading] = useState<boolean>(true);
-  const [editing, setEditing] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+  const [trip, setTrip] = useState<Trip | null>(null);
   const [dirty, setDirty] = useState<boolean>(true);
-  const [activeKey, setActiveKey] = useState<string | string[]>([]);
+  const { tripId } = useParams();
 
   useEffect(() => {
     // load trip details from firebase based on tripId
@@ -93,6 +46,79 @@ function Sidebar() {
     loadTripDetails();
   }, [dirty]);
 
+  const containerStyle = {
+    width: '100%',
+    height: '100%',
+  };
+  
+  const center = {
+    lat: -34.397,
+    lng: 150.644,
+  };
+  
+  const GoogleMapComponent: React.FC = () => {
+    return (
+        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
+          <Marker position={center} />
+        </GoogleMap>
+    );
+  };
+
+  return (
+    <>
+      <h1 className="text-center">TRIP OVERVIEW</h1>
+      <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative' }}>
+        <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
+          <div style={{ flex: '0 0 33.3%', height: '100%', width: '100%' }}>
+          <Sidebar
+              tripId={tripId}
+              dirtyState={{ value: dirty, setter: setDirty }}
+              loadingState={{ value: loading, setter: setLoading }}
+              errorState={{ value: error, setter: setError }}
+              tripState={{ value: trip, setter: setTrip }}
+            />
+          </div>
+          <div style={{ flex: '0 0 66.6%', height: '100%' }}>
+            <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
+              <div style={{ width: '100%', height: '100%' }}>
+                <GoogleMapComponent />
+              </div>
+            </Container>
+          </div>
+        </Container>
+      </div>
+      <footer style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#f8f9fa', padding: '10px', textAlign: 'center'}}>
+        <Footer />
+      </footer>
+    </>
+  );
+};
+  
+interface SidebarProps {
+  tripId: string | undefined;
+  dirtyState: {
+    value: boolean;
+    setter: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  loadingState: {
+    value: boolean;
+    setter: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  errorState: {
+    value: boolean;
+    setter: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  tripState: {
+    value: Trip | null;
+    setter: React.Dispatch<React.SetStateAction<Trip | null>>;
+  };
+}
+
+function Sidebar(props: SidebarProps) {
+  const [editing, setEditing] = useState<boolean>(true);
+  const [activeKey, setActiveKey] = useState<string | string[]>([]); 
+  const { tripId, dirtyState, loadingState, errorState, tripState } = props; 
+
   const handleEditClick = (attraction: TripAttraction) => {
     console.log(`Button edit clicked for attraction: ${attraction.name}`);
   };
@@ -102,7 +128,7 @@ function Sidebar() {
 
       if(tripId){
         await deleteAttraction(tripId, attraction.startDate, attraction.id);
-        setDirty(true);
+        dirtyState.setter(true);
       }
 
     } catch (error) {
@@ -117,7 +143,7 @@ function Sidebar() {
     let closestKey: dayjs.Dayjs | null = null;
     let minDifference: number | null = null;
   
-    trip?.schedule.forEach((attractions, key) => {
+    tripState.value?.schedule.forEach((attractions, key) => {
       const difference = Math.abs(day.diff(key, 'days'));
   
       if (minDifference === null || difference < minDifference) {
@@ -127,7 +153,7 @@ function Sidebar() {
     });
   
     if (closestKey !== null) {
-      attractionsForDay = trip?.schedule.get(closestKey) || [];
+      attractionsForDay = tripState.value?.schedule.get(closestKey) || [];
     }
   
     const timelineItems = attractionsForDay.map((attraction, index) => ({
@@ -156,7 +182,7 @@ function Sidebar() {
     );
   };
 
-  const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
+  const dayLabels = Array.from(tripState.value?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
   const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
     key: `${index}`,
@@ -166,13 +192,13 @@ function Sidebar() {
 
   return (
     <>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error loading trip details</p>}
-      {!loading && !error && trip && (
+      {loadingState.value && <p>Loading...</p>}
+      {errorState.value && <p>Error loading trip details</p>}
+      {!loadingState.value && !errorState.value && tripState.value && (
         <>
           <div style={{ marginBottom: '30px' }}>
             <Container fluid className="position-relative d-flex flex-column align-items-left">
-              <h3>{trip.city}</h3>
+              <h3>{tripState.value.city}</h3>
             </Container>
           </div>
           <div>
