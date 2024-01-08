@@ -1,15 +1,15 @@
-import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space } from 'antd';
+import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input} from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
 import { useState, useEffect } from 'react';
-import { Input } from 'antd';
-import { getTripById } from "../firebase/daos/dao-trips";
+import { getTripById, editAttraction, deleteAttraction } from "../firebase/daos/dao-trips";
 import { useParams } from 'react-router-dom';
 //import cities from "../firebase/cities";
 import dayjs from 'dayjs';
 import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
+import colors from "../style/colors";
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
@@ -64,7 +64,9 @@ function Sidebar() {
   const [error, setError] = useState<boolean>(false);
   const { tripId } = useParams();
   const [loading, setLoading] = useState<boolean>(true);
-  const [editing, setEditing] = useState<boolean>(false);
+  const [editing, setEditing] = useState<boolean>(true);
+  const [dirty, setDirty] = useState<boolean>(true);
+  const [activeKey, setActiveKey] = useState<string | string[]>([]);
 
   useEffect(() => {
     // load trip details from firebase based on tripId
@@ -74,6 +76,7 @@ function Sidebar() {
         if (tripId) {
           const tripData = await getTripById(tripId);
           if (tripData) {
+            setDirty(false);
             setTrip(tripData);
           } else {
             console.log(`Trip with ID ${tripId} not found.`);
@@ -88,14 +91,23 @@ function Sidebar() {
     }
 
     loadTripDetails();
-  }, [tripId]);
+  }, [dirty]);
 
   const handleEditClick = (attraction: TripAttraction) => {
     console.log(`Button edit clicked for attraction: ${attraction.name}`);
   };
 
-  const handleDeleteClick = (attraction: TripAttraction) => {
-    console.log(`Button delete clicked for attraction: ${attraction.name}`);
+  const handleDeleteClick = async (attraction: TripAttraction) => {
+    try {
+
+      if(tripId){
+        await deleteAttraction(tripId, attraction.startDate, attraction.id);
+        setDirty(true);
+      }
+
+    } catch (error) {
+      console.error('Error deleting attraction:', error);
+    }
   };
 
   const renderAttractionsForDay = (day: dayjs.Dayjs) => {
@@ -122,9 +134,17 @@ function Sidebar() {
       label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
       children: (
         <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <span style={{ marginRight: '10px' }}>{attraction.name}</span>
-        {editing && <button onClick={() => handleEditClick(attraction)}><EditOutlined /></button>}
-        {editing && <button onClick={() => handleDeleteClick(attraction)}><DeleteOutlined /></button>}
+          <span style={{ marginRight: '10px' }}>{attraction.name}</span>
+          {editing && (
+            <button style={{background: 'none', border: 'none'}} onClick={() => handleEditClick(attraction)}>
+              <EditTwoTone/>
+            </button>
+          )}
+          {editing && (
+            <button style={{background: 'none', border: 'none'}} onClick={() => handleDeleteClick(attraction)}>
+              <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
+            </button>
+          )}
         </div>
       ),
     }));
@@ -156,7 +176,7 @@ function Sidebar() {
             </Container>
           </div>
           <div>
-            <Collapse size="large" items={dailyActivities} defaultActiveKey={['0']} accordion={true} />
+            <Collapse size="large" items={dailyActivities}  accordion={true} activeKey={activeKey} onChange={(keys) => setActiveKey(keys)}/>
           </div>
         </>
       )}

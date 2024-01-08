@@ -291,6 +291,75 @@ export const getTripById = async (id: string) => {
   }
 };
 
+export const editAttraction = async (id: string, originalDate: dayjs.Dayjs, newDate: dayjs.Dayjs, attractionId: string, updatedAttraction: TripAttraction) => {
+
+  try {
+    const docRef = doc(tripsCollection, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const tripData = docSnap.data();
+
+      // Find the schedule for the original date
+      const originalSchedule = tripData.schedule[originalDate.format('DD/MM/YYYY')];
+
+      if (originalSchedule) {
+        // Filter out the attraction from the original date
+        const updatedOriginalSchedule = originalSchedule.filter(
+          (attraction: TripAttraction) => attraction.id !== attractionId
+        );
+
+        // Update the schedule for the original date in the database
+        await setDoc(docRef, {...tripData, schedule: { 
+          ...tripData.schedule, [originalDate.format('DD/MM/YYYY')]: updatedOriginalSchedule,
+          },
+        });
+      }
+
+      // Find the schedule for the new date
+      const newSchedule = tripData.schedule[newDate.format('DD/MM/YYYY')] || [];
+
+      // Add the updated attraction to the new date
+      const updatedNewSchedule = [...newSchedule, { ...updatedAttraction }];
+
+      // Update the schedule for the new date in the database
+      await setDoc(docRef, {
+        ...tripData, schedule: { ...tripData.schedule, [newDate.format('DD/MM/YYYY')]: updatedNewSchedule,
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Error editing/moving attraction: ', error);
+    throw error;
+  }
+};
+
+export const deleteAttraction = async (id: string, date: dayjs.Dayjs, attractionId: string) => {
+  try {
+    const docRef = doc(tripsCollection, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const tripData = docSnap.data();
+
+      // Find the schedule for the specified date
+      const scheduleForDate = tripData.schedule[date.format('DD/MM/YYYY')];
+
+      if (scheduleForDate) {
+        // Filter out the attraction to be deleted
+        const updatedSchedule = scheduleForDate.filter((attraction: TripAttraction) => attraction.id !== attractionId);
+
+        // Update the schedule in the database
+        await setDoc(docRef, { ...tripData, schedule: { ...tripData.schedule, [date.format('DD/MM/YYYY')]: updatedSchedule } });
+      }
+    }
+  } catch (error) {
+    console.error('Error deleting attraction: ', error);
+    throw error;
+  }
+};
+
+
 // Add a new trip
 
 export const addTrip = async (trip: any) => {
