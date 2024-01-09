@@ -21,6 +21,10 @@ function MyTrips() {
 
   const [messageApi, contextHolder] = message.useMessage();
 
+  const [enlargedCard, setEnlargedCard] = useState<string | null>(null);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   useEffect(() => {
     // load trips from firebase
 
@@ -45,12 +49,11 @@ function MyTrips() {
         setLoading(false);
       });
     }
-
     loadTrips();
-
   }, []);
 
   const handleDelete = (trip: Trip) => {
+    setEnlargedCard(trip.id);
     // Display a custom confirmation dialog
     Modal.confirm({
       title: 'Delete Trip',
@@ -109,6 +112,16 @@ function MyTrips() {
     });
   };
 
+  const handleMenuHover = (trip: Trip) => {
+    setEnlargedCard(trip.id);
+  };
+  
+  useEffect(() => {
+    if (!isMenuOpen) {
+      setEnlargedCard(null);
+    }
+  }, [isMenuOpen]);
+
   const menu = (trip: Trip) => (
     <Menu items={[
       {
@@ -119,6 +132,7 @@ function MyTrips() {
             Delete
           </>
         ),
+        onMouseEnter: () => handleMenuHover(trip),
         onClick: (info: MenuInfo) => {
           info.domEvent.preventDefault();
           info.domEvent.stopPropagation();
@@ -133,13 +147,15 @@ function MyTrips() {
             Edit
           </>
         ),
+        onMouseEnter: () => handleMenuHover(trip),
         onClick: (info: MenuInfo) => {
           info.domEvent.preventDefault();
           info.domEvent.stopPropagation();
           console.log("Edit trip with id: " + trip.id);
         }
       }
-    ]} />
+    ]} 
+    />
   );
 
   return (
@@ -181,12 +197,19 @@ function MyTrips() {
             return (
               <Col key={trip.id} xs={11} md={5} lg={3} className="mb-4">
                 <Link to={`/trips/${trip.id}`} className="text-decoration-none">
-                  <Card key={trip.id} className="text-center tripCard" style={{backgroundColor: colors.whiteBackgroundColor}}>
+                  <Card key={trip.id} className={`text-center tripCard ${enlargedCard === trip.id ? 'enlarged' : ''} ${isMenuOpen ? 'enlarged-card' : ''}`} style={{backgroundColor: colors.whiteBackgroundColor}}>
                       <div className="city-image-container">
                         <TripImage src={trip.image} alt={`City: ${trip.city}`} />
                         <div className="gradient-overlay"></div>
                         <div className="custom-dropdown">
-                          <Dropdown dropdownRender={() => menu(trip)}  trigger={['click']} placement="bottomRight" arrow={{pointAtCenter: true}}>
+                          <Dropdown dropdownRender={() => menu(trip)}  
+                                    trigger={['click']} 
+                                    placement="bottomRight" 
+                                    arrow={{pointAtCenter: true}}
+                                    onOpenChange={(visible) => {
+                                      setIsMenuOpen(visible);
+                                      visible ? handleMenuHover(trip) : setEnlargedCard(null);
+                                    }}>
                             <Button
                               type="text"
                               icon={<MoreOutlined style={{ fontSize: '24px', color: 'white' }} />}
