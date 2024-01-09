@@ -175,6 +175,8 @@ function MyTrips() {
       
       }
 
+      <AddTripButton />
+
       <Row className="d-flex flex-row justify-content-center w-100 mt-5 px-5">
         {
           trips.map((trip, index) => {
@@ -192,7 +194,7 @@ function MyTrips() {
                           <Button
                             type="text"
                             icon={<MoreOutlined style={{ fontSize: '24px', color: 'white' }} />}
-                            style={{ background: 'rgba(0, 0, 0, 0.5)', borderRadius: '50%'}}
+                            style={{ background: 'rgba(0, 170, 112, 0.85)', borderRadius: '50%'}}
                             onClick={(event) => {
                               event.preventDefault();
                               event.stopPropagation();
@@ -219,27 +221,31 @@ function MyTrips() {
           })
         }
       </Row>
-     
-      <Button 
-        size="large" 
-        type="primary"
-        style={{ 
-          backgroundColor: colors.hardBackgroundColor,
-          color: colors.whiteBackgroundColor,
-          marginTop: '30px',
-          paddingBottom: '38px',
-          textAlign: 'center',
-          fontSize: '20px',
-        }}
-        href="/newTrip"
-      >
-        <span>
-          <PlusOutlined style={{ marginRight: '8px' }} /> New Trip
-        </span>
-      </Button>
         
     </Container>
     </>
+  );
+}
+
+function AddTripButton() {
+  return (
+    <Button 
+      size="large" 
+      type="primary"
+      style={{ 
+        backgroundColor: colors.hardBackgroundColor,
+        color: colors.whiteBackgroundColor,
+        marginTop: '30px',
+        paddingBottom: '38px',
+        textAlign: 'center',
+        fontSize: '20px',
+      }}
+      href="/newTrip"
+    >
+      <span>
+        <PlusOutlined style={{ marginRight: '8px' }} /> New Trip
+      </span>
+    </Button>
   );
 }
 
