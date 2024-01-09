@@ -10,16 +10,28 @@ import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
 import { EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import colors from "../style/colors";
+import { Console } from 'console';
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
 
 function TripOverview() {
+  const defaultCenter = {
+    lat: 48.7758, 
+    lng: 9.1829
+  };
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [dirty, setDirty] = useState<boolean>(true);
+  const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
+  const [editing, setEditing] = useState<boolean>(true); 
+  const [cityPosition, setCityPosition] = useState({
+    lat: defaultCenter.lat,
+    lng: defaultCenter.lng,
+  });
 
   useEffect(() => {
     // load trip details from firebase based on tripId
@@ -31,6 +43,13 @@ function TripOverview() {
           if (tripData) {
             setDirty(false);
             setTrip(tripData);
+            console.log(trip?.schedule);
+            if (trip?.location?.latitude && trip?.location?.longitude) {
+              setCityPosition({
+                lat: trip.location.latitude,
+                lng: trip.location.longitude,
+              });
+            }
           } else {
             console.log(`Trip with ID ${tripId} not found.`);
           }
@@ -44,25 +63,78 @@ function TripOverview() {
     }
 
     loadTripDetails();
-  }, [dirty]);
+  }, [trip?.location.latitude, trip?.location.longitude, tripId, dirty]);
 
-  const containerStyle = {
-    width: '100%',
-    height: '100%',
+  const handleEditClick = (attraction: TripAttraction) => {
+    console.log(`Button edit clicked for attraction: ${attraction.name}`);
+  };
+
+  const handleDeleteClick = async (attraction: TripAttraction) => {
+    try {
+
+      if(tripId){
+        await deleteAttraction(tripId, attraction.startDate, attraction.id);
+        setDirty(true);
+      }
+
+    } catch (error) {
+      console.error('Error deleting attraction:', error);
+    }
   };
   
-  const center = {
-    lat: -34.397,
-    lng: 150.644,
-  };
+  const renderAttractionsForDay = (day: dayjs.Dayjs) => {
+    let attractionsForDay: TripAttraction[] = [];
   
-  const GoogleMapComponent: React.FC = () => {
+    // Find the closest matching key
+    let closestKey: dayjs.Dayjs | null = null;
+    let minDifference: number | null = null;
+  
+    trip?.schedule.forEach((attractions, key) => {
+      const difference = Math.abs(day.diff(key, 'days'));
+  
+      if (minDifference === null || difference < minDifference) {
+        minDifference = difference;
+        closestKey = key;
+      }
+    });
+  
+    if (closestKey !== null) {
+      attractionsForDay = trip?.schedule.get(closestKey) || [];
+    }
+  
+    const timelineItems = attractionsForDay.map((attraction, index) => ({
+      label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
+      children: (
+        <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+          <span style={{ marginRight: '10px' }}>{attraction.name}</span>
+          {editing && (
+            <button style={{background: 'none', border: 'none'}} onClick={() => handleEditClick(attraction)}>
+              <EditTwoTone/>
+            </button>
+          )}
+          {editing && (
+            <button style={{background: 'none', border: 'none'}} onClick={() => handleDeleteClick(attraction)}>
+              <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
+            </button>
+          )}
+        </div>
+      ),
+    }));
+  
     return (
-        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
-          <Marker position={center} />
-        </GoogleMap>
+      <>
+        <Timeline mode="left" items={timelineItems} />
+      </>
     );
   };
+
+  const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
+
+  const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
+    key: `${index}`,
+    label: dayLabel,
+    children: <div>{renderAttractionsForDay(dayjs(dayLabel, 'DD/MM/YYYY'))}</div>,
+  }));
 
   return (
     <>
@@ -76,12 +148,25 @@ function TripOverview() {
               loadingState={{ value: loading, setter: setLoading }}
               errorState={{ value: error, setter: setError }}
               tripState={{ value: trip, setter: setTrip }}
+              activeKeyState={{value: activeKey, setter: setActiveKey}}
+              dailyActivities={dailyActivities}
             />
           </div>
           <div style={{ flex: '0 0 66.6%', height: '100%' }}>
             <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
               <div style={{ width: '100%', height: '100%' }}>
-                <GoogleMapComponent />
+                <GoogleMap mapContainerStyle={{ width: '100%', height: '100%', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={cityPosition} zoom={10} onLoad={(map) => {}}>
+                  {(cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length === 0 && <Marker position={cityPosition} />)}
+                  {cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length > 0 && (
+                    <>
+                    {trip?.schedule.get(dayjs(String(dailyActivities[parseInt(activeKey[0], 10)]), 'DD/MM/YYYY'))?.forEach((attraction) => {
+                      return (
+                        <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} />
+                      );
+                    })}
+                  </>
+                  )}
+                </GoogleMap>
               </div>
             </Container>
           </div>
@@ -112,83 +197,15 @@ interface SidebarProps {
     value: Trip | null;
     setter: React.Dispatch<React.SetStateAction<Trip | null>>;
   };
+  activeKeyState: {
+    value: string | string[];
+    setter: React.Dispatch<React.SetStateAction<string | string[]>>;
+  };
+  dailyActivities: CollapseProps['items'];
 }
 
 function Sidebar(props: SidebarProps) {
-  const [editing, setEditing] = useState<boolean>(true);
-  const [activeKey, setActiveKey] = useState<string | string[]>([]); 
-  const { tripId, dirtyState, loadingState, errorState, tripState } = props; 
-
-  const handleEditClick = (attraction: TripAttraction) => {
-    console.log(`Button edit clicked for attraction: ${attraction.name}`);
-  };
-
-  const handleDeleteClick = async (attraction: TripAttraction) => {
-    try {
-
-      if(tripId){
-        await deleteAttraction(tripId, attraction.startDate, attraction.id);
-        dirtyState.setter(true);
-      }
-
-    } catch (error) {
-      console.error('Error deleting attraction:', error);
-    }
-  };
-
-  const renderAttractionsForDay = (day: dayjs.Dayjs) => {
-    let attractionsForDay: TripAttraction[] = [];
-  
-    // Find the closest matching key
-    let closestKey: dayjs.Dayjs | null = null;
-    let minDifference: number | null = null;
-  
-    tripState.value?.schedule.forEach((attractions, key) => {
-      const difference = Math.abs(day.diff(key, 'days'));
-  
-      if (minDifference === null || difference < minDifference) {
-        minDifference = difference;
-        closestKey = key;
-      }
-    });
-  
-    if (closestKey !== null) {
-      attractionsForDay = tripState.value?.schedule.get(closestKey) || [];
-    }
-  
-    const timelineItems = attractionsForDay.map((attraction, index) => ({
-      label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
-      children: (
-        <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-          <span style={{ marginRight: '10px' }}>{attraction.name}</span>
-          {editing && (
-            <button style={{background: 'none', border: 'none'}} onClick={() => handleEditClick(attraction)}>
-              <EditTwoTone/>
-            </button>
-          )}
-          {editing && (
-            <button style={{background: 'none', border: 'none'}} onClick={() => handleDeleteClick(attraction)}>
-              <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
-            </button>
-          )}
-        </div>
-      ),
-    }));
-  
-    return (
-      <>
-        <Timeline mode="left" items={timelineItems} />
-      </>
-    );
-  };
-
-  const dayLabels = Array.from(tripState.value?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
-
-  const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
-    key: `${index}`,
-    label: dayLabel,
-    children: <div>{renderAttractionsForDay(dayjs(dayLabel, 'DD/MM/YYYY'))}</div>,
-  }));
+  const { tripId, dirtyState, loadingState, errorState, tripState, activeKeyState, dailyActivities } = props; 
 
   return (
     <>
@@ -202,7 +219,7 @@ function Sidebar(props: SidebarProps) {
             </Container>
           </div>
           <div>
-            <Collapse size="large" items={dailyActivities}  accordion={true} activeKey={activeKey} onChange={(keys) => setActiveKey(keys)}/>
+            <Collapse size="large" items={dailyActivities}  accordion={true} activeKey={activeKeyState.value} onChange={(keys) => activeKeyState.setter(keys)}/>
           </div>
         </>
       )}
