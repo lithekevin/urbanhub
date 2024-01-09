@@ -241,6 +241,7 @@ function MyTrips() {
       </Row>
      
       <Button 
+        className="button-new-trip"
         size="large" 
         type="primary"
         style={{ 
