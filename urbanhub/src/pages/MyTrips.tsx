@@ -177,18 +177,58 @@ function MyTrips() {
 
       <AddTripButton />
 
-      <Row className="d-flex flex-row justify-content-center w-100 mt-5 px-5">
+      <Container fluid className="position-relative d-flex flex-column align-items-start">
+        <Title className="text-center ps-5" level={1}>Ongoing trips</Title>
+      </Container>
+
+      <Row className="d-flex flex-row justify-content-center w-100 mt-2 mb-5 px-5">
         {
-          trips.map((trip, index) => {
+          trips.filter((t) => (t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs()))).length === 0 ? 
+          "You are not currently on any trip" :
+          trips.filter((t) => (t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs()))).map((trip, index) => {
             return (
-              <Col key={trip.id} xs={11} md={5} lg={3} className="mb-4">
+              <TripCard key={index} trip={trip} menu={menu} />
+            );
+          })
+        }
+      </Row>
+
+      <Container fluid className="position-relative d-flex flex-column align-items-start">
+        <Title className="text-center ps-5" level={1}>Future trips</Title>
+      </Container>
+
+      <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
+        {
+          trips.filter((t) => (t.startDate.isAfter(dayjs()))).length === 0 ? 
+          "You don't have any trip planned for the future" :
+          trips.filter((t) => (t.startDate.isAfter(dayjs()))).map((trip, index) => {
+            return (
+              <TripCard key={index} trip={trip} menu={menu} />
+            );
+          })
+        }
+      </Row>
+        
+    </Container>
+    </>
+  );
+}
+
+function TripCard(props: { trip: Trip, menu: (trip: Trip) => JSX.Element }) {
+
+  const { trip } = props;
+  const { menu } = props;
+
+  return (
+    <Col key={trip.id} xs={11} md={5} lg={3} className="mb-4">
                 <Link to={`/trips/${trip.id}`} className="text-decoration-none">
                   <Card key={trip.id} className="text-center tripCard" style={{backgroundColor: colors.whiteBackgroundColor}}>
                       <div className="city-image-container">
 
+            
                         <TripImage src={trip.image} alt={`City: ${trip.city}`} />
                         
-                        <div className="gradient-overlay"></div>
+                        <div className="gradient-overlay-bottom"></div>
                         <div className="custom-dropdown">
                         <Dropdown dropdownRender={() => menu(trip)}  trigger={['click']} placement="bottomRight" arrow={{pointAtCenter: true}}>
                           <Button
@@ -212,18 +252,7 @@ function MyTrips() {
                       </Card.Body>
                   </Card>
                 </Link>
-                {
-                  dayjs().isAfter(trip.startDate) && dayjs().isBefore(trip.endDate) && 
-                  <h5 className="text-start mt-3">ONGOING...</h5>
-                }
               </Col>
-            );
-          })
-        }
-      </Row>
-        
-    </Container>
-    </>
   );
 }
 
