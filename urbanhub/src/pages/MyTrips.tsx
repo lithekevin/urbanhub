@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Alert, Card, Container, Spinner, Row, Col } from "react-bootstrap";
-import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton } from "antd"
+import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton, Image } from "antd"
 import { MoreOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
@@ -20,6 +20,10 @@ function MyTrips() {
   const [error, setError] = useState<boolean>(false);
 
   const [messageApi, contextHolder] = message.useMessage();
+
+  const [enlargedCard, setEnlargedCard] = useState<string | null>(null);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     // load trips from firebase
@@ -51,6 +55,7 @@ function MyTrips() {
   }, []);
 
   const handleDelete = (trip: Trip) => {
+    setEnlargedCard(trip.id);
     // Display a custom confirmation dialog
     Modal.confirm({
       title: 'Delete Trip',
@@ -69,9 +74,7 @@ function MyTrips() {
         // Implement your logic to delete the trip with the given ID
 
         try{
-
           await deleteTrip(trip.id);
-
           messageApi.open({
             type: "success",
             content: "Trip deleted successfully!",
@@ -109,6 +112,11 @@ function MyTrips() {
     });
   };
 
+
+  const handleMenuHover = (trip: Trip) => {
+    setEnlargedCard(trip.id);
+  };
+
   const menu = (trip: Trip) => (
     <Menu items={[
       {
@@ -119,6 +127,7 @@ function MyTrips() {
             Delete
           </>
         ),
+        onMouseEnter: () => handleMenuHover(trip),
         onClick: (info: MenuInfo) => {
           info.domEvent.preventDefault();
           info.domEvent.stopPropagation();
@@ -133,6 +142,7 @@ function MyTrips() {
             Edit
           </>
         ),
+        onMouseEnter: () => handleMenuHover(trip),
         onClick: (info: MenuInfo) => {
           info.domEvent.preventDefault();
           info.domEvent.stopPropagation();
@@ -187,7 +197,7 @@ function MyTrips() {
           "You are not currently on any trip" :
           trips.filter((t) => (t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs()))).map((trip, index) => {
             return (
-              <TripCard key={index} trip={trip} menu={menu} />
+              <TripCard key={index} trip={trip} menu={menu} enlargedCard={enlargedCard} setEnlargedCard={setEnlargedCard} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} handleMenuHover={handleMenuHover}/>
             );
           })
         }
@@ -203,7 +213,7 @@ function MyTrips() {
           "You don't have any trip planned for the future" :
           trips.filter((t) => (t.startDate.isAfter(dayjs()))).map((trip, index) => {
             return (
-              <TripCard key={index} trip={trip} menu={menu} />
+              <TripCard key={index} trip={trip} menu={menu} enlargedCard={enlargedCard} setEnlargedCard={setEnlargedCard} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} handleMenuHover={handleMenuHover}/>
             );
           })
         }
@@ -214,23 +224,40 @@ function MyTrips() {
   );
 }
 
-function TripCard(props: { trip: Trip, menu: (trip: Trip) => JSX.Element }) {
+function TripCard(props: { 
+  trip: Trip, 
+  menu: (trip: Trip) => React.ReactNode, 
+  enlargedCard: string | null, 
+  setEnlargedCard: React.Dispatch<React.SetStateAction<string | null>>, 
+  isMenuOpen: boolean, 
+  setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  handleMenuHover: (trip: Trip) => void
+}) {
 
-  const { trip } = props;
-  const { menu } = props;
+  const { trip, menu, enlargedCard, setEnlargedCard, isMenuOpen, setIsMenuOpen,handleMenuHover } = props;
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      setEnlargedCard(null);
+    }
+  }, [isMenuOpen, setEnlargedCard]);
 
   return (
     <Col key={trip.id} xs={11} md={5} lg={3} className="mb-4">
                 <Link to={`/trips/${trip.id}`} className="text-decoration-none">
-                  <Card key={trip.id} className="text-center tripCard" style={{backgroundColor: colors.whiteBackgroundColor}}>
+                  <Card key={trip.id} className={`text-center tripCard ${enlargedCard === trip.id ? 'enlarged' : ''} ${isMenuOpen ? 'enlarged-card' : ''}`} style={{backgroundColor: colors.whiteBackgroundColor}}>
                       <div className="city-image-container">
-
-            
                         <TripImage src={trip.image} alt={`City: ${trip.city}`} />
-                        
                         <div className="gradient-overlay-bottom"></div>
                         <div className="custom-dropdown">
-                        <Dropdown dropdownRender={() => menu(trip)}  trigger={['click']} placement="bottomRight" arrow={{pointAtCenter: true}}>
+                        <Dropdown dropdownRender={() => menu(trip)}  
+                          trigger={['click']} 
+                          placement="bottomRight" 
+                          arrow={{pointAtCenter: true}}
+                          onOpenChange={(visible) => {
+                            setIsMenuOpen(visible);
+                            visible ? handleMenuHover(trip) : setEnlargedCard(null);
+                          }}>
                           <Button
                             type="text"
                             icon={<MoreOutlined style={{ fontSize: '24px', color: 'white' }} />}
@@ -261,6 +288,7 @@ function AddTripButton() {
     <Button 
       size="large" 
       type="primary"
+      className="button-new-trip"
       style={{ 
         backgroundColor: colors.hardBackgroundColor,
         color: colors.whiteBackgroundColor,
@@ -289,12 +317,13 @@ const TripImage: FC<TripImageProps> = ({ src, alt }) => {
   return (
     <>
       {!imageLoaded && <Skeleton.Image style={{width: '350px', height: '300px'}} />}
-      <img 
+      <Image
         src={src} 
         alt={alt} 
         className="city-image" 
         onLoad={() => setImageLoaded(true)}
         style={imageLoaded ? {} : { display: 'none' }}
+        preview={false}
       />
     </>
   );
