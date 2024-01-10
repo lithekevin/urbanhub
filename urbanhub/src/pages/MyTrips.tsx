@@ -234,7 +234,7 @@ function TripCard(props: { trip: Trip, menu: (trip: Trip) => JSX.Element }) {
                           <Button
                             type="text"
                             icon={<MoreOutlined style={{ fontSize: '24px', color: 'white' }} />}
-                            style={{ background: 'rgba(0, 170, 112, 0.85)', borderRadius: '50%'}}
+                            style={{ background: 'rgba(0, 0, 0, 0.7)', borderRadius: '50%'}}
                             onClick={(event) => {
                               event.preventDefault();
                               event.stopPropagation();
