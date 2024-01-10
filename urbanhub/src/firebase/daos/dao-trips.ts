@@ -6,6 +6,7 @@ import {
   getDocs,
   getDoc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { app } from "../firebaseConfig";
 import dayjs from "dayjs";
@@ -290,6 +291,43 @@ export const getTripById = async (id: string) => {
     throw error;
   }
 };
+
+export const addAttractionToTrip = async (tripId: string, day: string, newAttraction: any) => {
+  try {
+    // Get the trip document
+    const tripRef = doc(tripsCollection, tripId);
+    const tripSnap = await getDoc(tripRef);
+
+    if (!tripSnap.exists()) {
+      console.log("No such document!");
+      return null;
+    } else {
+      // Get the trip data
+      const tripData = tripSnap.data();
+
+      // Convert the day to the required format
+      const formattedDay = dayjs(day, "DD/MM/YYYY").format("DD/MM/YYYY");
+
+      // Check if the day exists in the schedule
+      if (!tripData.schedule[formattedDay]) {
+        tripData.schedule[formattedDay] = [];
+      }
+
+      // Add the new attraction to the day
+      tripData.schedule[formattedDay].push(newAttraction);
+      
+      console.log(tripData);
+      // Update the trip document with the new schedule
+      await updateDoc(tripRef, { schedule: tripData.schedule });
+
+      console.log("Attraction added successfully!");
+    }
+  } catch (error) {
+    console.error("Error updating document: ", error);
+    throw error;
+  }
+};
+
 
 export const editAttraction = async (id: string, originalDate: dayjs.Dayjs, newDate: dayjs.Dayjs, attractionId: string, updatedAttraction: TripAttraction) => {
 
