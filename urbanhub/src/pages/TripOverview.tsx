@@ -43,7 +43,6 @@ function TripOverview() {
           if (tripData) {
             setDirty(false);
             setTrip(tripData);
-            console.log(trip?.schedule);
             if (trip?.location?.latitude && trip?.location?.longitude) {
               setCityPosition({
                 lat: trip.location.latitude,
@@ -128,6 +127,28 @@ function TripOverview() {
     );
   };
 
+  const renderMarkerForDay = (day: dayjs.Dayjs) => {
+    let attractionsForDay: TripAttraction[] = [];
+  
+    // Find the closest matching key
+    let closestKey: dayjs.Dayjs | null = null;
+    let minDifference: number | null = null;
+  
+    trip?.schedule.forEach((attractions, key) => {
+      const difference = Math.abs(day.diff(key, 'days'));
+  
+      if (minDifference === null || difference < minDifference) {
+        minDifference = difference;
+        closestKey = key;
+      }
+    });
+  
+    if (closestKey !== null) {
+      attractionsForDay = trip?.schedule.get(closestKey) || [];
+    }
+    return attractionsForDay;
+  }
+
   const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
   const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
@@ -159,9 +180,11 @@ function TripOverview() {
                   {(cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length === 0 && <Marker position={cityPosition} />)}
                   {cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length > 0 && (
                     <>
-                    {trip?.schedule.get(dayjs(String(dailyActivities[parseInt(activeKey[0], 10)]), 'DD/MM/YYYY'))?.forEach((attraction) => {
+                    {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction) => {
+                      console.log(attraction.location);
                       return (
-                        <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} />
+                        (cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng&& <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} />)
+                        
                       );
                     })}
                   </>
