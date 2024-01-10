@@ -1,16 +1,17 @@
-import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input} from 'antd';
+import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input, Modal, message, DatePicker, TimePicker, Form, Select} from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
 import { useState, useEffect } from 'react';
-import { getTripById, editAttraction, deleteAttraction } from "../firebase/daos/dao-trips";
+import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
 import { useParams } from 'react-router-dom';
-//import cities from "../firebase/cities";
+import cities from "../firebase/cities";
 import dayjs from 'dayjs';
 import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
 import { EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import colors from "../style/colors";
 import { Console } from 'console';
+import moment from 'moment';
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
@@ -25,6 +26,7 @@ function TripOverview() {
   const [error, setError] = useState<boolean>(false);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [dirty, setDirty] = useState<boolean>(true);
+  const [messageApi, contextHolder] = message.useMessage();
   const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
   const [editing, setEditing] = useState<boolean>(true); 
@@ -32,6 +34,8 @@ function TripOverview() {
     lat: defaultCenter.lat,
     lng: defaultCenter.lng,
   });
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  
 
   useEffect(() => {
     // load trip details from firebase based on tripId
@@ -43,7 +47,6 @@ function TripOverview() {
           if (tripData) {
             setDirty(false);
             setTrip(tripData);
-            console.log(trip?.schedule);
             if (trip?.location?.latitude && trip?.location?.longitude) {
               setCityPosition({
                 lat: trip.location.latitude,
@@ -65,22 +68,118 @@ function TripOverview() {
     loadTripDetails();
   }, [trip?.location.latitude, trip?.location.longitude, tripId, dirty]);
 
+  
+
   const handleEditClick = (attraction: TripAttraction) => {
-    console.log(`Button edit clicked for attraction: ${attraction.name}`);
-  };
+    //implement
+  }
 
-  const handleDeleteClick = async (attraction: TripAttraction) => {
-    try {
+const handleDeleteClick = async (attraction: TripAttraction) => {
+  // Display a custom confirmation dialog
+  Modal.confirm({
+    title: 'Delete Attraction',
+    content: (
+      <div>
+        <p>Are you sure you want to delete this attraction?</p>
+        <p>
+          <strong>Name:</strong> {attraction.name}<br />
+          <strong>Date:</strong> {attraction.startDate.format('DD/MM/YYYY')}<br />
+        </p>
+      </div>
+    ),
+    centered: true,
+    onOk: async () => {
+      try {
+        if (tripId) {
+          await deleteAttraction(tripId, attraction.startDate, attraction.id);
+          setDirty(true);
 
-      if(tripId){
-        await deleteAttraction(tripId, attraction.startDate, attraction.id);
-        setDirty(true);
+          // Show success message
+          messageApi.open({
+            type: 'success',
+            content: 'Attraction deleted successfully!',
+            duration: 3,
+            style: {
+              marginTop: '70px',
+            },
+          });
+        }
+      } catch (error) {
+        console.error('Error deleting attraction:', error);
+
+        // Show error message
+        messageApi.open({
+          type: 'error',
+          content: 'Error while deleting attraction!',
+          duration: 3,
+          style: {
+            marginTop: '70px',
+          },
+        });
       }
+    },
+    onCancel: () => {
+      // Handle cancel if needed
+    },
+  });
+};
 
-    } catch (error) {
-      console.error('Error deleting attraction:', error);
-    }
+const renderAddAttractionForm = () => {
+
+  const openForm = () => {
+    setIsFormVisible(true);
   };
+
+  const closeForm = () => {
+    setIsFormVisible(false);
+  };
+
+  const onFinish = (values: any) => {
+    const attraction = {
+      id: values.attraction,
+      startDate: values.startTime.format('HH:mm'),
+      endDate: values.endTime.format('HH:mm'),
+    };
+
+    if(tripId)
+      addAttractionToTrip(tripId, values.date.format('DD/MM/YYYY'), attraction);
+   
+    setDirty(true);
+    setIsFormVisible(false);
+
+  };
+
+  return (
+    <>
+      <Button type="primary" onClick={openForm}>
+        Add Attraction
+      </Button>
+      <Modal title="Add Attraction" open={isFormVisible} onCancel={closeForm} footer={null}>
+        <Form name="add_attraction" onFinish={onFinish}>
+          <Form.Item name="attraction" label="Attraction">
+            <Select options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ label: attraction.name, value: attraction.id }))} />
+          </Form.Item>
+          <Form.Item name="date" label="Date">
+            <DatePicker format="DD/MM/YYYY" defaultValue={dayjs(trip?.startDate, 'DD/MM/YYYY')} />
+          </Form.Item>
+          <Form.Item name="startTime" label="Start Time">
+            <TimePicker format="HH:mm" />
+          </Form.Item>
+          <Form.Item name="endTime" label="End Time">
+            <TimePicker format="HH:mm" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
+  );
+};
+
+
   
   const renderAttractionsForDay = (day: dayjs.Dayjs) => {
     let attractionsForDay: TripAttraction[] = [];
@@ -124,6 +223,7 @@ function TripOverview() {
     return (
       <>
         <Timeline mode="left" items={timelineItems} />
+        {renderAddAttractionForm()}
       </>
     );
   };
@@ -143,8 +243,6 @@ function TripOverview() {
         <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
           <div style={{ flex: '0 0 33.3%', height: '100%', width: '100%' }}>
           <Sidebar
-              tripId={tripId}
-              dirtyState={{ value: dirty, setter: setDirty }}
               loadingState={{ value: loading, setter: setLoading }}
               errorState={{ value: error, setter: setError }}
               tripState={{ value: trip, setter: setTrip }}
@@ -180,11 +278,7 @@ function TripOverview() {
 };
   
 interface SidebarProps {
-  tripId: string | undefined;
-  dirtyState: {
-    value: boolean;
-    setter: React.Dispatch<React.SetStateAction<boolean>>;
-  };
+
   loadingState: {
     value: boolean;
     setter: React.Dispatch<React.SetStateAction<boolean>>;
@@ -205,7 +299,7 @@ interface SidebarProps {
 }
 
 function Sidebar(props: SidebarProps) {
-  const { tripId, dirtyState, loadingState, errorState, tripState, activeKeyState, dailyActivities } = props; 
+  const { loadingState, errorState, tripState, activeKeyState, dailyActivities } = props; 
 
   return (
     <>
@@ -228,8 +322,8 @@ function Sidebar(props: SidebarProps) {
 }
 
 
-  function Footer() {
-    const [scrollRatio, setScrollRatio] = useState(0);
+function Footer() {
+  const [scrollRatio, setScrollRatio] = useState(0);
 
   const handleScroll = () => {
     const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
@@ -304,6 +398,6 @@ function Sidebar(props: SidebarProps) {
       </Row>
       </div>
   );
-  };
+};
 
 export default TripOverview;
