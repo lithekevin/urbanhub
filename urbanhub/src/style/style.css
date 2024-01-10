@@ -130,15 +130,15 @@
     object-fit: cover;
 }
 
-.gradient-overlay {
+
+.gradient-overlay-bottom {
     position: absolute;
     top: 75%;
     left: 0;
     width: 100%;
     height: 25%;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(245, 245, 245, 1));
 }
-  
 
 .tripCard {
     background-color: #ECF5E4;
@@ -151,12 +151,14 @@
 .tripCard.enlarged:hover,
 .tripCard.enlarged .ant-dropdown-trigger:hover,
 .tripCard.enlarged .ant-dropdown-trigger:focus {
+   transform: scale(1.05);
    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
    overflow: hidden;
 }
   
 .tripCard:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .custom-dropdown{
@@ -175,8 +177,10 @@
 }
 
 .button-new-trip:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
 
 /************
  * NEWTRIP

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, AutoComplete, Row, Col, Button, Typography } from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import cities from '../firebase/cities';
+import { set } from 'lodash';
 
 const { Title, Paragraph } = Typography;
 const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
@@ -42,7 +43,22 @@ const Step0: React.FC<Step0Props> = ({
   step,
   nextStep
 }) => {
-  
+
+  const [showMarker, setShowMarker] = useState(false);
+
+  const [mapLoaded, setMapLoaded] = useState(false);
+
+useEffect(() => {
+  if (mapLoaded && cityPosition) {
+    const timer = setTimeout(() => {
+      setShowMarker(true);
+    }, 500); // Imposta un ritardo di 1 secondo
+
+    // Pulisci il timer quando il componente si smonta o quando mapLoaded o cityPosition cambiano
+    return () => clearTimeout(timer);
+  }
+}, [mapLoaded, cityPosition]);
+
   const handleDestinationChange = (value: string) => {
     handleInputChange({ target: { name: 'destination', value } } as CustomEvent);
 
@@ -98,12 +114,14 @@ const Step0: React.FC<Step0Props> = ({
                 mapContainerStyle={{ width: '100%', height: '300px', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }}
                 center={cityPosition}
                 zoom={mapZoom}
+                
                 onLoad={(map) => {
+                  setMapLoaded(true);
                   // console.log('Map loaded:', map);
                   // You can inspect the map instance in the console to check its properties
                 }}
               >
-                {formData.destination && cityPosition.lat !== DEFAULT_LOCATION.lat && cityPosition.lng !== DEFAULT_LOCATION.lng && (
+                {showMarker && formData.destination && cityPosition.lat !== DEFAULT_LOCATION.lat && cityPosition.lng !== DEFAULT_LOCATION.lng && (
                   <Marker position={cityPosition} />
                 )}
               </GoogleMap>
