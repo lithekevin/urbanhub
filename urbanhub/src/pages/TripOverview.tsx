@@ -1,4 +1,4 @@
-import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input, Modal, message, DatePicker, TimePicker, Form, Select} from 'antd';
+import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input, Modal, message, DatePicker, TimePicker, Form, Select, AutoComplete} from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
 import { useState, useEffect } from 'react';
@@ -156,9 +156,15 @@ const renderAddAttractionForm = () => {
       </Button>
       <Modal title="Add Attraction" open={isFormVisible} onCancel={closeForm} footer={null}>
         <Form name="add_attraction" onFinish={onFinish}>
-          <Form.Item name="attraction" label="Attraction">
-            <Select options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ label: attraction.name, value: attraction.id }))} />
-          </Form.Item>
+        <Form.Item name="attraction" label="Attraction">
+          <AutoComplete
+            options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ value: attraction.name }))}
+            placeholder="Type an attraction"
+            filterOption={(inputValue, option) =>
+              option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+            }
+          />
+        </Form.Item>
           <Form.Item name="date" label="Date">
             <DatePicker format="DD/MM/YYYY" defaultValue={dayjs(trip?.startDate, 'DD/MM/YYYY')} />
           </Form.Item>
