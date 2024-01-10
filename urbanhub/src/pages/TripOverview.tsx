@@ -158,7 +158,7 @@ const renderAddAttractionForm = () => {
         <Form name="add_attraction" onFinish={onFinish}>
         <Form.Item name="attraction" label="Attraction">
           <AutoComplete
-            options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ value: attraction.name }))}
+            options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ label: attraction.name, value: attraction.id}))}
             placeholder="Type an attraction"
             filterOption={(inputValue, option) =>
               option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
