@@ -1,5 +1,5 @@
 import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input, Modal, message, DatePicker, TimePicker, Form, Select, AutoComplete} from 'antd';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { GoogleMap, Marker, DirectionsService } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
 import { useState, useEffect } from 'react';
 import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
@@ -285,10 +285,9 @@ const renderAddAttractionForm = () => {
                   {(cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length === 0 && <Marker position={cityPosition} />)}
                   {cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length > 0 && (
                     <>
-                    {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction) => {
-                      console.log(attraction.location);
+                    {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction, index) => {
                       return (
-                        (cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng&& <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} />)
+                        (cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng&& <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} label={(index + 1).toString()}/>)
                         
                       );
                     })}
