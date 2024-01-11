@@ -46,7 +46,8 @@ function TripOverview() {
     routes: [],
     status: "ZERO_RESULTS",
   });  
-  const [form] = Form.useForm();
+  const [formAdding] = Form.useForm();
+  const [formEditing] = Form.useForm();
   const [editingAttraction, setEditingAttraction] = useState<boolean>(false);
   
 
@@ -77,7 +78,10 @@ function TripOverview() {
         setLoading(false);
       }
     }
+    loadTripDetails();
+  }, [dirty]);
 
+  useEffect(() => {
     const directionsService = new google.maps.DirectionsService();
 
     if(activeKey.length === 0){
@@ -87,7 +91,8 @@ function TripOverview() {
         status: "ZERO_RESULTS",
       });
       setAttractionDistances([]);
-    }else{
+      }
+      else{
       //iterate throught all attractions of a day
       renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction, index) => {
         if(index === 0){
@@ -131,23 +136,7 @@ function TripOverview() {
         }
       });
     }
-    
-
-    loadTripDetails();
-  }, [trip?.location.latitude, trip?.location.longitude, tripId, dirty, activeKey]);
-
-  
-
-  const handleEditClick = (attraction : TripAttraction) => {
-    form.setFieldsValue({
-      attraction: attraction.name,
-      date: dayjs(attraction.startDate, 'DD/MM/YYYY'),
-      startTime: dayjs(attraction.startDate, 'HH:mm'),
-      endTime: dayjs(attraction.endDate, 'HH:mm')
-    });
-    setEditingAttraction(true);
-    setIsFormVisible(true);
-  };
+  }, [dirty, activeKey]);
 
   const handleDeleteClick = async (attraction: TripAttraction) => {
     // Display a custom confirmation dialog
@@ -193,21 +182,31 @@ function TripOverview() {
           });
         }
       },
-      onCancel: () => {
-        // Handle cancel if needed
-      },
+
     });
   };
 
+  const handleEditClick = (attraction : TripAttraction) => {
+    formEditing.setFieldsValue({
+      attraction: attraction.name,
+      date: dayjs(attraction.startDate, 'DD/MM/YYYY'),
+      startTime: dayjs(attraction.startDate, 'HH:mm'),
+      endTime: dayjs(attraction.endDate, 'HH:mm')
+    });
+    setEditingAttraction(true);
+    setIsFormVisible(true);
+  };
+
   const openForm = () => {
-    form.resetFields();
+    setEditingAttraction(false);
     setIsFormVisible(true);
   };
 
   const closeForm = () => {
     setIsFormVisible(false);
-
     setEditingAttraction(false);
+    formAdding.resetFields();
+    formEditing.resetFields();
   };
 
   const onFinish = (day: dayjs.Dayjs,values: any) => {
@@ -234,12 +233,14 @@ function TripOverview() {
 
   };
 
-  const renderAddAttractionForm = (day: dayjs.Dayjs) => {
-    
+  const renderAttractionForm = (day: dayjs.Dayjs) => {
+    const form = editingAttraction ? formEditing : formAdding;
+    const formName = editingAttraction ? 'edit_attraction_form' : 'add_attraction_form';
+  
     return (
       <>
         <Modal title={editingAttraction ? "Edit Attraction" : "Add Attraction"} open={isFormVisible} onCancel={closeForm} footer={null}>
-        <Form form={form} name="add_attraction" onFinish={(values) => onFinish(day, values)}>
+          <Form form={form} name={formName} onFinish={(values) => onFinish(day, values)}>
             <Form.Item name="attraction" label="Attraction">
               <AutoComplete
                 options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ label: attraction.name, value: attraction.id}))}
@@ -312,11 +313,11 @@ function TripOverview() {
   
     return (
       <>
-        <Timeline mode="left" items={timelineItems} style={{ marginLeft: '-100px' }} />
+        <Timeline mode="left" items={timelineItems} style={{ marginLeft: '-200px' }} />
         <center><Button type="primary" onClick={openForm} > 
           Add Attraction
         </Button></center>
-        {renderAddAttractionForm(day)}
+        {renderAttractionForm(day) }
       </>
     );
   };
