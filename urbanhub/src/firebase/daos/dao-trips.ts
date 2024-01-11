@@ -329,48 +329,59 @@ export const addAttractionToTrip = async (tripId: string, day: string, newAttrac
 };
 
 
-export const editAttraction = async (id: string, originalDate: dayjs.Dayjs, newDate: dayjs.Dayjs, attractionId: string, updatedAttraction: TripAttraction) => {
-
+export const editAttraction = async (tripId: string, originalDay: dayjs.Dayjs, newDay: string, updatedAttraction: any) => {
   try {
-    const docRef = doc(tripsCollection, id);
-    const docSnap = await getDoc(docRef);
+    // Get the trip document
+    const tripRef = doc(tripsCollection, tripId);
+    const tripSnap = await getDoc(tripRef);
 
-    if (docSnap.exists()) {
-      const tripData = docSnap.data();
+    if (!tripSnap.exists()) {
+      console.log("No such document!");
+      return null;
+    } else {
+      // Get the trip data
+      const tripData = tripSnap.data();
 
-      // Find the schedule for the original date
-      const originalSchedule = tripData.schedule[originalDate.format('DD/MM/YYYY')];
+      // Convert the days to the required format
+      const formattedOriginalDay = originalDay.format("DD/MM/YYYY");
+      const formattedNewDay = dayjs(newDay, "DD/MM/YYYY").format("DD/MM/YYYY");
 
-      if (originalSchedule) {
-        // Filter out the attraction from the original date
-        const updatedOriginalSchedule = originalSchedule.filter(
-          (attraction: TripAttraction) => attraction.id !== attractionId
-        );
-
-        // Update the schedule for the original date in the database
-        await setDoc(docRef, {...tripData, schedule: { 
-          ...tripData.schedule, [originalDate.format('DD/MM/YYYY')]: updatedOriginalSchedule,
-          },
-        });
+      // Check if the original day exists in the schedule
+      if (!tripData.schedule[formattedOriginalDay]) {
+        console.log("No attractions scheduled for this day!");
+        return null;
       }
 
-      // Find the schedule for the new date
-      const newSchedule = tripData.schedule[newDate.format('DD/MM/YYYY')] || [];
+      // Find the attraction to be updated
+      const attractionIndex = tripData.schedule[formattedOriginalDay].findIndex((attraction: { id: string }) => attraction.id === updatedAttraction.id);
 
-      // Add the updated attraction to the new date
-      const updatedNewSchedule = [...newSchedule, { ...updatedAttraction }];
+      if (attractionIndex === -1) {
+        console.log("Attraction not found!");
+        return null;
+      }
 
-      // Update the schedule for the new date in the database
-      await setDoc(docRef, {
-        ...tripData, schedule: { ...tripData.schedule, [newDate.format('DD/MM/YYYY')]: updatedNewSchedule,
-        },
-      });
+      // Remove the attraction from the original day
+      tripData.schedule[formattedOriginalDay].splice(attractionIndex, 1);
+
+      // Check if the new day exists in the schedule
+      if (!tripData.schedule[formattedNewDay]) {
+        tripData.schedule[formattedNewDay] = [];
+      }
+
+      // Add the updated attraction to the new day
+      tripData.schedule[formattedNewDay].push(updatedAttraction);
+
+      // Update the trip document with the new schedule
+      await updateDoc(tripRef, { schedule: tripData.schedule });
+
+      console.log("Attraction updated successfully!");
     }
   } catch (error) {
-    console.error('Error editing/moving attraction: ', error);
+    console.error("Error updating document: ", error);
     throw error;
   }
 };
+
 
 export const deleteAttraction = async (id: string, date: dayjs.Dayjs, attractionId: string) => {
   try {

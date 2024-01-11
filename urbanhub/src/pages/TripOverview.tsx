@@ -35,6 +35,8 @@ function TripOverview() {
     lng: defaultCenter.lng,
   });
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [form] = Form.useForm();
+  const [editingAttraction, setEditingAttraction] = useState<boolean>(false);
   
 
   useEffect(() => {
@@ -70,120 +72,136 @@ function TripOverview() {
 
   
 
-  const handleEditClick = (attraction: TripAttraction) => {
-    //implement
-  }
+  const handleEditClick = (attraction : TripAttraction) => {
+    form.setFieldsValue({
+      attraction: attraction.name,
+      date: dayjs(attraction.startDate, 'DD/MM/YYYY'),
+      startTime: dayjs(attraction.startDate, 'HH:mm'),
+      endTime: dayjs(attraction.endDate, 'HH:mm')
+    });
+    setEditingAttraction(true);
+    setIsFormVisible(true);
+  };
 
-const handleDeleteClick = async (attraction: TripAttraction) => {
-  // Display a custom confirmation dialog
-  Modal.confirm({
-    title: 'Delete Attraction',
-    content: (
-      <div>
-        <p>Are you sure you want to delete this attraction?</p>
-        <p>
-          <strong>Name:</strong> {attraction.name}<br />
-          <strong>Date:</strong> {attraction.startDate.format('DD/MM/YYYY')}<br />
-        </p>
-      </div>
-    ),
-    centered: true,
-    onOk: async () => {
-      try {
-        if (tripId) {
-          await deleteAttraction(tripId, attraction.startDate, attraction.id);
-          setDirty(true);
+  const handleDeleteClick = async (attraction: TripAttraction) => {
+    // Display a custom confirmation dialog
+    Modal.confirm({
+      title: 'Delete Attraction',
+      content: (
+        <div>
+          <p>Are you sure you want to delete this attraction?</p>
+          <p>
+            <strong>Name:</strong> {attraction.name}<br />
+            <strong>Date:</strong> {attraction.startDate.format('DD/MM/YYYY')}<br />
+          </p>
+        </div>
+      ),
+      centered: true,
+      onOk: async () => {
+        try {
+          if (tripId) {
+            await deleteAttraction(tripId, attraction.startDate, attraction.id);
+            setDirty(true);
 
-          // Show success message
+            // Show success message
+            messageApi.open({
+              type: 'success',
+              content: 'Attraction deleted successfully!',
+              duration: 3,
+              style: {
+                marginTop: '70px',
+              },
+            });
+          }
+        } catch (error) {
+          console.error('Error deleting attraction:', error);
+
+          // Show error message
           messageApi.open({
-            type: 'success',
-            content: 'Attraction deleted successfully!',
+            type: 'error',
+            content: 'Error while deleting attraction!',
             duration: 3,
             style: {
               marginTop: '70px',
             },
           });
         }
-      } catch (error) {
-        console.error('Error deleting attraction:', error);
-
-        // Show error message
-        messageApi.open({
-          type: 'error',
-          content: 'Error while deleting attraction!',
-          duration: 3,
-          style: {
-            marginTop: '70px',
-          },
-        });
-      }
-    },
-    onCancel: () => {
-      // Handle cancel if needed
-    },
-  });
-};
-
-const renderAddAttractionForm = () => {
+      },
+      onCancel: () => {
+        // Handle cancel if needed
+      },
+    });
+  };
 
   const openForm = () => {
+    form.resetFields();
     setIsFormVisible(true);
   };
 
   const closeForm = () => {
     setIsFormVisible(false);
+
+    setEditingAttraction(false);
   };
 
-  const onFinish = (values: any) => {
+  const onFinish = (day: dayjs.Dayjs,values: any) => {
     const attraction = {
       id: values.attraction,
       startDate: values.startTime.format('HH:mm'),
       endDate: values.endTime.format('HH:mm'),
     };
 
-    if(tripId)
-      addAttractionToTrip(tripId, values.date.format('DD/MM/YYYY'), attraction);
-   
+    if(editingAttraction){
+      if(tripId)
+        editAttraction(tripId, day, values.date.format('DD/MM/YYYY'), attraction);
+    }
+
+    else{
+      if(tripId)
+        addAttractionToTrip(tripId, values.date.format('DD/MM/YYYY'), attraction);
+    }
+
     setDirty(true);
+
+    setEditingAttraction(false);
     setIsFormVisible(false);
 
   };
 
-  return (
-    <>
-      <Button type="primary" onClick={openForm}>
-        Add Attraction
-      </Button>
-      <Modal title="Add Attraction" open={isFormVisible} onCancel={closeForm} footer={null}>
-        <Form name="add_attraction" onFinish={onFinish}>
-        <Form.Item name="attraction" label="Attraction">
-          <AutoComplete
-            options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ label: attraction.name, value: attraction.id}))}
-            placeholder="Type an attraction"
-            filterOption={(inputValue, option) =>
-              option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-            }
-          />
-        </Form.Item>
-          <Form.Item name="date" label="Date">
-            <DatePicker format="DD/MM/YYYY" defaultValue={dayjs(trip?.startDate, 'DD/MM/YYYY')} />
-          </Form.Item>
-          <Form.Item name="startTime" label="Start Time">
-            <TimePicker format="HH:mm" />
-          </Form.Item>
-          <Form.Item name="endTime" label="End Time">
-            <TimePicker format="HH:mm" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-    </>
-  );
-};
+  const renderAddAttractionForm = (day: dayjs.Dayjs) => {
+    
+    return (
+      <>
+        <Modal title={editingAttraction ? "Edit Attraction" : "Add Attraction"} open={isFormVisible} onCancel={closeForm} footer={null}>
+        <Form form={form} name="add_attraction" onFinish={(values) => onFinish(day, values)}>
+            <Form.Item name="attraction" label="Attraction">
+              <AutoComplete
+                options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ label: attraction.name, value: attraction.id}))}
+                placeholder="Type an attraction"
+                filterOption={(inputValue, option) =>
+                  option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                }
+              />
+            </Form.Item>
+            <Form.Item name="date" label="Date" initialValue={!editingAttraction ? day : undefined}>
+              <DatePicker format="DD/MM/YYYY" />
+            </Form.Item>
+            <Form.Item name="startTime" label="Start Time">
+              <TimePicker format="HH:mm" />
+            </Form.Item>
+            <Form.Item name="endTime" label="End Time">
+              <TimePicker format="HH:mm" />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </>
+    );
+  };
 
 
   
@@ -210,17 +228,17 @@ const renderAddAttractionForm = () => {
     const timelineItems = attractionsForDay.map((attraction, index) => ({
       label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
       children: (
-        <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-          <span style={{ marginRight: '10px' }}>{attraction.name}</span>
+        <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
+          <span>{attraction.name}</span>
           {editing && (
-            <button style={{background: 'none', border: 'none'}} onClick={() => handleEditClick(attraction)}>
+            <Button style={{border: 'none'}} onClick={() => handleEditClick(attraction)}>
               <EditTwoTone/>
-            </button>
+            </Button>
           )}
           {editing && (
-            <button style={{background: 'none', border: 'none'}} onClick={() => handleDeleteClick(attraction)}>
+            <Button style={{border: 'none'}} onClick={() => handleDeleteClick(attraction)}>
               <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
-            </button>
+            </Button>
           )}
         </div>
       ),
@@ -228,8 +246,11 @@ const renderAddAttractionForm = () => {
   
     return (
       <>
-        <Timeline mode="left" items={timelineItems} />
-        {renderAddAttractionForm()}
+        <Timeline mode="left" items={timelineItems} style={{ marginLeft: '-100px' }} />
+        <center><Button type="primary" onClick={openForm} > 
+          Add Attraction
+        </Button></center>
+        {renderAddAttractionForm(day)}
       </>
     );
   };
@@ -261,7 +282,10 @@ const renderAddAttractionForm = () => {
   const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
     key: `${index}`,
     label: dayLabel,
-    children: <div>{renderAttractionsForDay(dayjs(dayLabel, 'DD/MM/YYYY'))}</div>,
+    children: 
+      <div>
+        {renderAttractionsForDay(dayjs(dayLabel, 'DD/MM/YYYY'))}
+      </div>,
   }));
 
   return (
