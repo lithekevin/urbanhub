@@ -1,5 +1,5 @@
 import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input, Modal, message, DatePicker, TimePicker, Form, Select, AutoComplete} from 'antd';
-import { GoogleMap, Marker, DirectionsService } from '@react-google-maps/api';
+import { GoogleMap, Marker, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import { Container } from "react-bootstrap";
 import { useState, useEffect } from 'react';
 import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
@@ -35,6 +35,17 @@ function TripOverview() {
     lng: defaultCenter.lng,
   });
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [attractionDistances, setAttractionDistances] = useState<any>([]);
+  
+  //used for path between attractions
+  var origin : any = null;
+  var destination : any = null;
+  var waypt : any[] = [];
+  const [directions, setDirections] = useState<any>({
+    geocoded_waypoints: [],
+    routes: [],
+    status: "ZERO_RESULTS",
+  });  
   const [form] = Form.useForm();
   const [editingAttraction, setEditingAttraction] = useState<boolean>(false);
   
@@ -67,8 +78,63 @@ function TripOverview() {
       }
     }
 
+    const directionsService = new google.maps.DirectionsService();
+
+    if(activeKey.length === 0){
+      setDirections({
+        geocoded_waypoints: [],
+        routes: [],
+        status: "ZERO_RESULTS",
+      });
+      setAttractionDistances([]);
+    }else{
+      //iterate throught all attractions of a day
+      renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction, index) => {
+        if(index === 0){
+          //update first element
+          origin = { lat: attraction.location.latitude, lng: attraction.location.longitude };
+          destination = null;
+          waypt = [];
+        }else if(index === (renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).length - 1)){
+          //update last element and caluclate route for the day
+          destination = { lat: attraction.location.latitude, lng: attraction.location.longitude };
+
+          directionsService.route(
+            {
+              origin: origin,
+              destination: destination,
+              waypoints: waypt,
+              travelMode: google.maps.TravelMode.DRIVING,
+              unitSystem: google.maps.UnitSystem.METRIC,
+            },
+            (result, status) => {
+              if (status === google.maps.DirectionsStatus.OK) {
+                setDirections(result);
+                 // Extract distances between waypoints
+                if (result?.routes && result?.routes.length > 0 && result?.routes[0].legs) {
+                  const distances = result?.routes[0].legs.map(leg => leg?.distance?.text);
+                  setAttractionDistances(distances);
+                  console.log(distances);
+                }
+              } else {
+                console.error(`error fetching directions ${result}`);
+                setAttractionDistances([]);
+              }
+            }
+          );
+        }else{
+          //update middle elements
+          waypt.push({
+            location: { lat: attraction.location.latitude, lng: attraction.location.longitude },
+            stopover: true,
+          });
+        }
+      });
+    }
+    
+
     loadTripDetails();
-  }, [trip?.location.latitude, trip?.location.longitude, tripId, dirty]);
+  }, [trip?.location.latitude, trip?.location.longitude, tripId, dirty, activeKey]);
 
   
 
@@ -300,13 +366,15 @@ function TripOverview() {
               tripState={{ value: trip, setter: setTrip }}
               activeKeyState={{value: activeKey, setter: setActiveKey}}
               dailyActivities={dailyActivities}
+              activeAttractionDistances={attractionDistances}
             />
           </div>
           <div style={{ flex: '0 0 66.6%', height: '100%' }}>
             <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
               <div style={{ width: '100%', height: '100%' }}>
-                <GoogleMap mapContainerStyle={{ width: '100%', height: '100%', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={cityPosition} zoom={10} onLoad={(map) => {}}>
+                <GoogleMap mapContainerStyle={{ width: '100%', height: '400px', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={cityPosition} zoom={10} onLoad={(map) => {}}>
                   {(cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length === 0 && <Marker position={cityPosition} />)}
+                  {/* MARKERS NO MORE NEEDED, ALREADY INCLUDED IN PATH
                   {cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length > 0 && (
                     <>
                     {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction, index) => {
@@ -317,6 +385,8 @@ function TripOverview() {
                     })}
                   </>
                   )}
+                  */}             
+                  {activeKey.length === 1 && <DirectionsRenderer directions={directions}/>}
                 </GoogleMap>
               </div>
             </Container>
@@ -349,10 +419,11 @@ interface SidebarProps {
     setter: React.Dispatch<React.SetStateAction<string | string[]>>;
   };
   dailyActivities: CollapseProps['items'];
+  activeAttractionDistances: any[];
 }
 
 function Sidebar(props: SidebarProps) {
-  const { loadingState, errorState, tripState, activeKeyState, dailyActivities } = props; 
+  const { loadingState, errorState, tripState, activeKeyState, dailyActivities, activeAttractionDistances } = props; 
 
   return (
     <>
@@ -363,6 +434,7 @@ function Sidebar(props: SidebarProps) {
           <div style={{ marginBottom: '30px' }}>
             <Container fluid className="position-relative d-flex flex-column align-items-left">
               <h3>{tripState.value.city}</h3>
+              <p>{activeAttractionDistances}</p>
             </Container>
           </div>
           <div>
