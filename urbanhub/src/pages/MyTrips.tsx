@@ -218,6 +218,22 @@ function MyTrips() {
           })
         }
       </Row>
+
+      <Container fluid className="position-relative d-flex flex-column align-items-start">
+        <Title className="text-center ps-5" level={1}>Past trips</Title>
+      </Container>
+
+      <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
+        {
+          trips.filter((t) => (t.endDate.isBefore(dayjs()))).length === 0 ? 
+          "You don't have any past trip" :
+          trips.filter((t) => (t.endDate.isBefore(dayjs()))).map((trip, index) => {
+            return (
+              <TripCard key={index} trip={trip} menu={menu} enlargedCard={enlargedCard} setEnlargedCard={setEnlargedCard} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} handleMenuHover={handleMenuHover}/>
+            );
+          })
+        }
+      </Row>
         
     </Container>
     </>

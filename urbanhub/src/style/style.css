@@ -119,12 +119,14 @@
 .city-image-container {
     position: relative;
     width: 100%;
+    aspect-ratio: 3/2;
     
     overflow: hidden;
   }
   
 .city-image {
     width: 100%;
+    aspect-ratio: 3/2;
     height: auto;
     display: block;
     object-fit: cover;
