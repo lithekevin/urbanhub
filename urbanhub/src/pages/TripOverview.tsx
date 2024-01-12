@@ -324,10 +324,9 @@ function TripOverview() {
   const timelineItems = attractionsForDay.flatMap((attraction, index) => {
     const items: any[] = [
       {
-        dot: <ClockCircleOutlined style={{ fontSize: '16px' }} />,
         label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
         children: (
-          <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto',  alignItems: 'left' }}>
+          <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto',  alignItems: 'center' }}>
             <span>{attraction.name}</span>
             {editing && (
               <Button style={{border: 'none', marginTop: '-5px'}} onClick={() => handleEditClick(attraction)}>
@@ -348,8 +347,7 @@ function TripOverview() {
     if (index < attractionsForDay.length - 1) {
       const distance = attractionDistances[index];
       items.push({
-        color: 'gray',
-        label: ``, 
+        color: 'white',
         children: (
         <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
           <span>{distance}</span>
