@@ -8,7 +8,7 @@ import cities from "../firebase/cities";
 import dayjs from 'dayjs';
 import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
-import { EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
+import { EditTwoTone, DeleteTwoTone, ClockCircleOutlined } from '@ant-design/icons';
 import colors from "../style/colors";
 import GoogleMapsComponent from "../components/GoogleMapsComponent";
 
@@ -34,7 +34,6 @@ function TripOverview() {
     lng: defaultCenter.lng,
   });
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [attractionDistances, setAttractionDistances] = useState<any>([]);
   
   //used for path between attractions
   var origin : any = null;
@@ -45,6 +44,8 @@ function TripOverview() {
     routes: [],
     status: "ZERO_RESULTS",
   });  
+  const [attractionDistances, setAttractionDistances] = useState<any>([]);
+  
   const [form] = Form.useForm();
   const [editingAttraction, setEditingAttraction] = useState<TripAttraction | null>(null);
   const [selectedAttractionId, setSelectedAttractionId] = useState<string | null>(null);
@@ -279,57 +280,6 @@ function TripOverview() {
     );
   };
 
-
-  
-  const renderAttractionsForDay = (day: dayjs.Dayjs) => {
-    let attractionsForDay: TripAttraction[] = [];
-  
-    // Find the closest matching key
-    let closestKey: dayjs.Dayjs | null = null;
-    let minDifference: number | null = null;
-  
-    trip?.schedule.forEach((attractions, key) => {
-      const difference = Math.abs(day.diff(key, 'days'));
-  
-      if (minDifference === null || difference < minDifference) {
-        minDifference = difference;
-        closestKey = key;
-      }
-    });
-  
-    if (closestKey !== null) {
-      attractionsForDay = trip?.schedule.get(closestKey) || [];
-    }
-  
-    const timelineItems = attractionsForDay.map((attraction, index) => ({
-      label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
-      children: (
-        <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
-          <span>{attraction.name}</span>
-          {editing && (
-            <Button style={{border: 'none'}} onClick={() => handleEditClick(attraction)}>
-              <EditTwoTone/>
-            </Button>
-          )}
-          {editing && (
-            <Button style={{border: 'none'}} onClick={() => handleDeleteClick(attraction)}>
-              <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
-            </Button>
-          )}
-        </div>
-      ),
-    }));
-  
-    return (
-      <>
-        <Timeline mode="left" items={timelineItems} style={{ marginLeft: '-200px' }} />
-        <center><Button type="primary" onClick={() => openForm(day)}>
-          Add Attraction
-        </Button></center>
-      </>
-    );
-  };
-
   const renderMarkerForDay = (day: dayjs.Dayjs) => {
     let attractionsForDay: TripAttraction[] = [];
   
@@ -351,6 +301,79 @@ function TripOverview() {
     }
     return attractionsForDay;
   }
+  
+  const renderAttractionsForDay = (day: dayjs.Dayjs) => {
+  let attractionsForDay: TripAttraction[] = [];
+
+  // Find the closest matching key
+  let closestKey: dayjs.Dayjs | null = null;
+  let minDifference: number | null = null;
+
+  trip?.schedule.forEach((attractions, key) => {
+    const difference = Math.abs(day.diff(key, 'days'));
+
+    if (minDifference === null || difference < minDifference) {
+      minDifference = difference;
+      closestKey = key;
+    }
+  });
+
+  if (closestKey !== null) {
+    attractionsForDay = trip?.schedule.get(closestKey) || [];
+  }
+
+  const timelineItems = attractionsForDay.flatMap((attraction, index) => {
+    const items: any[] = [
+      {
+        dot: <ClockCircleOutlined style={{ fontSize: '16px' }} />,
+        label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
+        children: (
+          <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto',  alignItems: 'left' }}>
+            <span>{attraction.name}</span>
+            {editing && (
+              <Button style={{border: 'none', marginTop: '-5px'}} onClick={() => handleEditClick(attraction)}>
+                <EditTwoTone/>
+              </Button>
+            )}
+            {editing && (
+              <Button style={{border: 'none', marginTop: '-5px'}} onClick={() => handleDeleteClick(attraction)}>
+                <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
+              </Button>
+            )}
+          </div>
+        ),
+      },
+    ];
+
+    // Add distance text between attractions
+    if (index < attractionsForDay.length - 1) {
+      const distance = attractionDistances[index];
+      items.push({
+        color: 'gray',
+        label: ``, 
+        children: (
+        <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
+          <span>{distance}</span>
+        </div>
+        ),
+      });
+    }
+
+    return items;
+  });
+
+  return (
+    <>
+      <Timeline mode="left" items={timelineItems} style={{ marginLeft: '-150px' }} />
+      <center>
+        <Button type="primary" onClick={openForm}>
+          Add Attraction
+        </Button>
+      </center>
+      {renderAttractionForm(day)}
+    </>
+  );
+};
 
   const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
@@ -435,7 +458,6 @@ function Sidebar(props: SidebarProps) {
           <div style={{ marginBottom: '30px' }}>
             <Container fluid className="position-relative d-flex flex-column align-items-left">
               <h3>{tripState.value.city}</h3>
-              <p>{activeAttractionDistances}</p>
             </Container>
           </div>
           <div>
