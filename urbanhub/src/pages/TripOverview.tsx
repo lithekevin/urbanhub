@@ -122,7 +122,6 @@ function TripOverview() {
                 if (result?.routes && result?.routes.length > 0 && result?.routes[0].legs) {
                   const distances = result?.routes[0].legs.map(leg => leg?.distance?.text);
                   setAttractionDistances(distances);
-                  console.log(distances);
                 }
               } else {
                 console.error(`error fetching directions ${result}`);
@@ -366,11 +365,10 @@ function TripOverview() {
     <>
       <Timeline mode="left" items={timelineItems} style={{ marginLeft: '-150px' }} />
       <center>
-        <Button type="primary" onClick={openForm}>
+        <Button type="primary" onClick={() => openForm(day)}>
           Add Attraction
         </Button>
       </center>
-      {renderAttractionForm(day)}
     </>
   );
 };
