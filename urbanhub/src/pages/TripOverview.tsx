@@ -10,8 +10,7 @@ import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
 import { EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import colors from "../style/colors";
-import { Console } from 'console';
-import moment from 'moment';
+import GoogleMapsComponent from "../components/GoogleMapsComponent";
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
@@ -373,22 +372,12 @@ function TripOverview() {
           <div style={{ flex: '0 0 66.6%', height: '100%' }}>
             <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
               <div style={{ width: '100%', height: '100%' }}>
-                <GoogleMap mapContainerStyle={{ width: '100%', height: '400px', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={cityPosition} zoom={10} onLoad={(map) => {}}>
-                  {(cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length === 0 && <Marker position={cityPosition} />)}
-                  {/* MARKERS NO MORE NEEDED, ALREADY INCLUDED IN PATH
-                  {cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng && activeKey.length > 0 && (
-                    <>
-                    {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction, index) => {
-                      return (
-                        (cityPosition.lat !== defaultCenter.lat && cityPosition.lng !== defaultCenter.lng&& <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} label={(index + 1).toString()}/>)
-                        
-                      );
-                    })}
-                  </>
-                  )}
-                  */}             
-                  {activeKey.length === 1 && <DirectionsRenderer directions={directions}/>}
-                </GoogleMap>
+                <GoogleMapsComponent 
+                  activeKeyState={{value: activeKey, setter: setActiveKey}}
+                  cityPositionState={{value: cityPosition, setter: setCityPosition}}
+                  directionsState={{value: directions, setter: setDirections}}
+                  defaultCenter={defaultCenter}
+                />
               </div>
             </Container>
           </div>
