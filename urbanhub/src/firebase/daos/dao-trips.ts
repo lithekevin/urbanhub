@@ -329,7 +329,7 @@ export const addAttractionToTrip = async (tripId: string, day: string, newAttrac
 };
 
 
-export const editAttraction = async (tripId: string, originalDay: dayjs.Dayjs, newDay: string, updatedAttraction: any) => {
+export const editAttraction = async (tripId: string, originalAttractionId : string, originalDay: dayjs.Dayjs, newDay: string, updatedAttraction: any) => {
   try {
     // Get the trip document
     const tripRef = doc(tripsCollection, tripId);
@@ -353,7 +353,7 @@ export const editAttraction = async (tripId: string, originalDay: dayjs.Dayjs, n
       }
 
       // Find the attraction to be updated
-      const attractionIndex = tripData.schedule[formattedOriginalDay].findIndex((attraction: { id: string }) => attraction.id === updatedAttraction.id);
+      const attractionIndex = tripData.schedule[formattedOriginalDay].findIndex((attraction: { id: string }) => attraction.id === originalAttractionId);
 
       if (attractionIndex === -1) {
         console.log("Attraction not found!");
@@ -383,6 +383,7 @@ export const editAttraction = async (tripId: string, originalDay: dayjs.Dayjs, n
 };
 
 
+
 export const deleteAttraction = async (id: string, date: dayjs.Dayjs, attractionId: string) => {
   try {
     const docRef = doc(tripsCollection, id);
@@ -400,6 +401,7 @@ export const deleteAttraction = async (id: string, date: dayjs.Dayjs, attraction
 
         // Update the schedule in the database
         await setDoc(docRef, { ...tripData, schedule: { ...tripData.schedule, [date.format('DD/MM/YYYY')]: updatedSchedule } });
+        console.log("Attraction deleted successfully!");
       }
     }
   } catch (error) {

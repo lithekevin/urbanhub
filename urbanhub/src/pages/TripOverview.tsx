@@ -45,9 +45,12 @@ function TripOverview() {
     routes: [],
     status: "ZERO_RESULTS",
   });  
-  const [formAdding] = Form.useForm();
-  const [formEditing] = Form.useForm();
-  const [editingAttraction, setEditingAttraction] = useState<boolean>(false);
+  const [form] = Form.useForm();
+  const [editingAttraction, setEditingAttraction] = useState<TripAttraction | null>(null);
+  const [selectedAttractionId, setSelectedAttractionId] = useState<string | null>(null);
+  const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs | null>(null); 
+
+
   
 
   useEffect(() => {
@@ -186,38 +189,43 @@ function TripOverview() {
   };
 
   const handleEditClick = (attraction : TripAttraction) => {
-    formEditing.setFieldsValue({
+    form.setFieldsValue({
       attraction: attraction.name,
       date: dayjs(attraction.startDate, 'DD/MM/YYYY'),
       startTime: dayjs(attraction.startDate, 'HH:mm'),
       endTime: dayjs(attraction.endDate, 'HH:mm')
     });
-    setEditingAttraction(true);
+    setSelectedDay(dayjs(attraction.startDate, 'DD/MM/YYYY'))
+    setEditingAttraction(attraction);
     setIsFormVisible(true);
   };
 
-  const openForm = () => {
-    setEditingAttraction(false);
+  const openForm = (selectedDay: dayjs.Dayjs) => {
+    form.resetFields();
+    form.setFieldsValue({ date: selectedDay });
+    setEditingAttraction(null);
     setIsFormVisible(true);
+
   };
 
   const closeForm = () => {
     setIsFormVisible(false);
-    setEditingAttraction(false);
-    formAdding.resetFields();
-    formEditing.resetFields();
+    setEditingAttraction(null);
   };
 
-  const onFinish = (day: dayjs.Dayjs,values: any) => {
+  const onFinish = (values: any) => {
     const attraction = {
-      id: values.attraction,
+      id: selectedAttractionId,
       startDate: values.startTime.format('HH:mm'),
       endDate: values.endTime.format('HH:mm'),
     };
 
     if(editingAttraction){
-      if(tripId)
-        editAttraction(tripId, day, values.date.format('DD/MM/YYYY'), attraction);
+
+      if(tripId&&selectedDay)
+        editAttraction(tripId, editingAttraction.id ,selectedDay, values.date.format('DD/MM/YYYY'), attraction);
+      else
+        console.log("error");
     }
 
     else{
@@ -226,30 +234,32 @@ function TripOverview() {
     }
 
     setDirty(true);
-
-    setEditingAttraction(false);
+    setEditingAttraction(null);
     setIsFormVisible(false);
 
   };
 
-  const renderAttractionForm = (day: dayjs.Dayjs) => {
-    const form = editingAttraction ? formEditing : formAdding;
-    const formName = editingAttraction ? 'edit_attraction_form' : 'add_attraction_form';
+  const renderAttractionForm = () => {
   
     return (
       <>
         <Modal title={editingAttraction ? "Edit Attraction" : "Add Attraction"} open={isFormVisible} onCancel={closeForm} footer={null}>
-          <Form form={form} name={formName} onFinish={(values) => onFinish(day, values)}>
-            <Form.Item name="attraction" label="Attraction">
-              <AutoComplete
-                options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ label: attraction.name, value: attraction.id}))}
-                placeholder="Type an attraction"
-                filterOption={(inputValue, option) =>
-                  option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                }
-              />
-            </Form.Item>
-            <Form.Item name="date" label="Date" initialValue={!editingAttraction ? day : undefined}>
+          <Form form={form} name={"formName"} onFinish={(values) => onFinish(values)}>
+          <Form.Item name="attraction" label="Attraction">
+            <AutoComplete
+              options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ value: attraction.name}))}
+              placeholder="Type an attraction"
+              filterOption={(inputValue, option) =>
+                option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+              }
+              onSelect={(value) => {
+                const selectedAttraction = cities.find(city => city.name === trip?.city)?.attractions.find(attraction => attraction.name === value);
+                if(selectedAttraction)
+                  setSelectedAttractionId(selectedAttraction.id);
+              }}
+            />
+          </Form.Item>
+            <Form.Item name="date" label="Date">
               <DatePicker format="DD/MM/YYYY" />
             </Form.Item>
             <Form.Item name="startTime" label="Start Time">
@@ -313,10 +323,9 @@ function TripOverview() {
     return (
       <>
         <Timeline mode="left" items={timelineItems} style={{ marginLeft: '-200px' }} />
-        <center><Button type="primary" onClick={openForm} > 
+        <center><Button type="primary" onClick={() => openForm(day)}>
           Add Attraction
         </Button></center>
-        {renderAttractionForm(day) }
       </>
     );
   };
@@ -344,6 +353,7 @@ function TripOverview() {
   }
 
   const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
+
 
   const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
     key: `${index}`,
@@ -379,6 +389,7 @@ function TripOverview() {
                   defaultCenter={defaultCenter}
                 />
               </div>
+            {renderAttractionForm()}
             </Container>
           </div>
         </Container>
