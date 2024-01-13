@@ -138,7 +138,7 @@ function TripOverview() {
         }
       });
     }
-  }, [dirty, activeKey]);
+  }, [trip, activeKey]);
 
   const handleDeleteClick = async (attraction: TripAttraction) => {
     // Display a custom confirmation dialog
