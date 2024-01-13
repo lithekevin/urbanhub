@@ -512,10 +512,38 @@ function Footer() {
       setInputValue('');
     };
 
+    function parseInput(input: string) {
+      const regexDelete = /^(delete|Delete) "(.+)" from (\d{2}\/\d{2}\/\d{4})$/;  //Ex: 'Delete "Attraction to delete" from 12/01/2024'
+      const matchDelete = input.match(regexDelete);
+      const regexAdd = /^(add|Add) "(.+)" to (\d{2}\/\d{2}\/\d{4}) with time: (\d{2}:\d{2}) - (\d{2}:\d{2})$/; //Ex: 'Add "Attraction to add" to 12/01/2024 with time: 00:00 - 04:00'
+      const matchAdd = input.match(regexAdd);
+      const regexEdit = /^(edit|Edit) "(.+)" from (\d{2}\/\d{2}\/\d{4}) to have time: (\d{2}:\d{2}) - (\d{2}:\d{2})$/; //Ex: 'Edit "Attraction to edit" from 12/01/2024 to have time: 00:00 - 04:00'
+      const matchEdit = input.match(regexEdit);
+  
+
+      if(matchDelete){
+        const [, action, description, date] = matchDelete;
+        console.log(action + " " + description + " from day " + date);
+      } else if (matchAdd){
+        const [, action, description, date, startTime, endTime] = matchAdd;
+        console.log(action + " " + description + " in day " + date + " with time: " + startTime + " - " + endTime);
+      } else if (matchEdit){
+        const [, action, description, date, startTime, endTime] = matchEdit;
+        console.log(action + " " + description + " in day " + date + " with time: " + startTime + " - " + endTime);
+      } else{
+          console.log("Error: Invalid input format");
+          return;
+      }
+    }
+
     const handleSendClick = () => {
-      setUndoVisibility(true);
-      updateMessage('Here is the proposed solution to your problem');
-      setInputValue('');
+      if(inputValue !== ''){
+        setUndoVisibility(true);
+        updateMessage('Here is the proposed solution to your problem');
+        const text : string = inputValue;
+        parseInput(text);
+        setInputValue('');
+      }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -529,7 +557,7 @@ function Footer() {
           <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start' }}>
             <img src={"/robotassistant.png"} alt="UrbanHub assistant" style={{ width: 'auto', height: '70px', marginRight: '10px' }} />
             <div style={{ flex: '1', position: 'relative', backgroundColor: '#fff', padding: '10px', borderRadius: '10px' }}>
-              <div style={{ position: 'absolute', top: '50%', left: '-10px', transform: 'translateY(-50%)', width: 0, height: 0, borderTop: '10px solid transparent', borderBottom: '10px solid transparent', borderRight: '10px solid #fff' }} />
+              <div style={{ position: 'absolute', top: '50%', left: '-10px', transform: 'translateY(-50%)', width: 0, height: 0, borderTop: '10px solid transparent', borderBottom: '10px solid transparent', borderRight: '10px solid #fff', backgroundColor: 'white' }} />
               <p>{message}</p>
             </div>
           </div>
