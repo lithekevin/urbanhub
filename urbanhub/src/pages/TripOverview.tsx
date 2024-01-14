@@ -11,6 +11,7 @@ import { TripAttraction } from '../models/tripAttraction';
 import { EditTwoTone, DeleteTwoTone, ClockCircleOutlined } from '@ant-design/icons';
 import colors from "../style/colors";
 import GoogleMapsComponent from "../components/GoogleMapsComponent";
+import Chatbot from '../components/ChatbotComponent';
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
@@ -414,7 +415,7 @@ function TripOverview() {
         </Container>
       </div>
       <footer style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#f8f9fa', padding: '10px', textAlign: 'center'}}>
-        <Footer />
+        <Chatbot tripState={{ value: trip, setter: setTrip }} dirtyState={{ value: dirty, setter: setDirty }} tripId={tripId} messageApi={messageApi}/>
       </footer>
     </>
   );
@@ -464,112 +465,5 @@ function Sidebar(props: SidebarProps) {
     </>
   );
 }
-
-
-function Footer() {
-  const [scrollRatio, setScrollRatio] = useState(0);
-
-  const handleScroll = () => {
-    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-    const windowHeight = window.innerHeight;
-    const documentHeight = Math.max(
-      document.body.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.clientHeight,
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
-    );
-
-    const maxScroll = documentHeight - windowHeight;
-    const currentScrollRatio = scrollTop / maxScroll;
-    setScrollRatio(currentScrollRatio);
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-
-    // Clean up the event listener when the component is unmounted
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-    const { TextArea } = Input;
-
-    const [message, setMessage] = useState('Is there anything I can do for you?');
-    const [undoVisibility, setUndoVisibility] = useState(false);
-    const [inputValue, setInputValue] = useState('');
-
-    const updateMessage = (msg: string) => {
-      setMessage(msg);
-    };
-
-    const handleUndoClick = () => {
-      setUndoVisibility(false);
-      setMessage('Operation undone, is there anything else I can do for you?');
-      setInputValue('');
-    };
-
-    function parseInput(input: string) {
-      const regexDelete = /^(delete|Delete) "(.+)" from (\d{2}\/\d{2}\/\d{4})$/;  //Ex: 'Delete "Attraction to delete" from 12/01/2024'
-      const matchDelete = input.match(regexDelete);
-      const regexAdd = /^(add|Add) "(.+)" to (\d{2}\/\d{2}\/\d{4}) with time: (\d{2}:\d{2}) - (\d{2}:\d{2})$/; //Ex: 'Add "Attraction to add" to 12/01/2024 with time: 00:00 - 04:00'
-      const matchAdd = input.match(regexAdd);
-      const regexEdit = /^(edit|Edit) "(.+)" from (\d{2}\/\d{2}\/\d{4}) to have time: (\d{2}:\d{2}) - (\d{2}:\d{2})$/; //Ex: 'Edit "Attraction to edit" from 12/01/2024 to have time: 00:00 - 04:00'
-      const matchEdit = input.match(regexEdit);
-  
-
-      if(matchDelete){
-        const [, action, description, date] = matchDelete;
-        console.log(action + " " + description + " from day " + date);
-      } else if (matchAdd){
-        const [, action, description, date, startTime, endTime] = matchAdd;
-        console.log(action + " " + description + " in day " + date + " with time: " + startTime + " - " + endTime);
-      } else if (matchEdit){
-        const [, action, description, date, startTime, endTime] = matchEdit;
-        console.log(action + " " + description + " in day " + date + " with time: " + startTime + " - " + endTime);
-      } else{
-          console.log("Error: Invalid input format");
-          return;
-      }
-    }
-
-    const handleSendClick = () => {
-      if(inputValue !== ''){
-        setUndoVisibility(true);
-        updateMessage('Here is the proposed solution to your problem');
-        const text : string = inputValue;
-        parseInput(text);
-        setInputValue('');
-      }
-    };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setInputValue(e.target.value);
-    };
-
-    return (
-      <div className="chatbot-style" style={{ transform: `translateY(calc(-${scrollRatio * 100}% - 10px))` }}>
-      <Row justify="space-between">
-        <Col xs={24} sm={24} md={11}>
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start' }}>
-            <img src={"/robotassistant.png"} alt="UrbanHub assistant" style={{ width: 'auto', height: '70px', marginRight: '10px' }} />
-            <div style={{ flex: '1', position: 'relative', backgroundColor: '#fff', padding: '10px', borderRadius: '10px' }}>
-              <div style={{ position: 'absolute', top: '50%', left: '-10px', transform: 'translateY(-50%)', width: 0, height: 0, borderTop: '10px solid transparent', borderBottom: '10px solid transparent', borderRight: '10px solid #fff', backgroundColor: 'white' }} />
-              <p>{message}</p>
-            </div>
-          </div>
-        </Col>
-        <Col xs={24} sm={24} md={11}>
-          <Space.Compact style={{ width: '100%' }}>
-          <TextArea placeholder="Ask something to UrbanHub..." value={inputValue} onChange={handleInputChange} autoSize={{ minRows: 1, maxRows: 3 }} />
-            <Button type="primary" onClick={handleSendClick}>Send</Button>
-            {undoVisibility && (<Button type="primary" onClick={handleUndoClick}>Undo</Button>)}
-          </Space.Compact>
-        </Col>
-      </Row>
-      </div>
-  );
-};
 
 export default TripOverview;
