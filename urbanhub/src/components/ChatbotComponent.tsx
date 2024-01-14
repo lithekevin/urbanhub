@@ -7,6 +7,14 @@ import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
 import GoogleMapsComponent from "../components/GoogleMapsComponent";
 
+/*
+   USAGE:
+    -delete: 'Delete "Attraction to delete" from DD/MM/AAAA'
+    -add: 'Add "Attraction to add" to DD/MM/AAAA with time: hh:mm - hh:mm'
+    -edit: 'Edit "Attraction to edit" from DD/MM/AAAA to have time: hh:mm - hh:mm' 
+*/
+
+
 interface ChatbotProps {
     tripState: {
       value: Trip | null;
