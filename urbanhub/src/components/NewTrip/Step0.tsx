@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, AutoComplete, Row, Col, Button, Typography } from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import cities from '../firebase/cities';
+import cities from '../../firebase/cities';
 import { set } from 'lodash';
 
 const { Title, Paragraph } = Typography;

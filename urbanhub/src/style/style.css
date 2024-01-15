@@ -222,4 +222,8 @@
     padding-right: 20px;
     padding-bottom: 20px;
     width: auto;
-  }
+}
+
+.ant-progress.ant-progress-status-success .ant-progress-bg{
+    background-color: #00AA70;
+}

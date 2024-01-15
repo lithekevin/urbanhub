@@ -36,11 +36,12 @@ const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers,
     { label: 'Number of Adults: ', value: formData.adults },
     { label: 'Number of Kids: ', value: formData.kids },
     { label: 'Budget: ', value: `${formData.budget} €` },
-    ...formData.questions.map((question, index) => ({
-      label: question,
-      value: formData.answers[index],
-    })),
-  ];
+    ...formData.questions.map((question, index) => (
+      formData.answers[index] !== undefined ? 
+        { label: question, value: formData.answers[index] } :
+        null
+    )),
+  ].filter(Boolean); // Filter out null values;
 
   const [loading, setLoading] = React.useState(false);
 
@@ -52,7 +53,7 @@ const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers,
           dataSource={tripSummaryData}
           renderItem={(item) => (
             <List.Item>
-              <Text strong>{item.label}</Text> {item.value}
+              <Text strong>{item?.label}</Text> {item?.value}
             </List.Item>
           )}
           bordered

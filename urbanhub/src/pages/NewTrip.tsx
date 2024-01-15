@@ -4,10 +4,10 @@ import moment from "moment";
 import questions from "../firebase/questions";
 import shuffle from "lodash/shuffle";
 import colors from "../style/colors";
-import Step0 from "../components/Step0";
-import Step1 from "../components/Step1";
-import Step2 from "../components/Step2";
-import Step3 from "../components/Step3";
+import Step0 from "../components/NewTrip/Step0";
+import Step1 from "../components/NewTrip/Step1";
+import Step2 from "../components/NewTrip/Step2";
+import Step3 from "../components/NewTrip/Step3";
 const { Step } = Steps;
 
 const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
@@ -126,15 +126,6 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
     } as CustomEvent);
   };
 
-  // New function to check if all questions are answered
-  const areAllQuestionsAnswered = () => {
-    return (
-      userAnswers.length === 9 &&
-      userAnswers.every((answer) => answer.length > 0) &&
-      userAnswers.every((answer) => answer.trim().length > 0)
-    );
-  };
-
   // useEffect to update formData when userAnswers change
   React.useEffect(() => {
     setFormData((prevData) => ({
@@ -169,7 +160,7 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
           formData.budget > 0
         );
       case 2:
-        return areAllQuestionsAnswered();
+        return true;
       default:
         return true;
     }
@@ -263,7 +254,6 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
                 setAllDisplayedQuestions={setAllDisplayedQuestions}
                 canLoadMoreQuestions={canLoadMoreQuestions}
                 setCanLoadMoreQuestions={setCanLoadMoreQuestions}
-                areAllQuestionsAnswered={areAllQuestionsAnswered}
                 userAnswers={userAnswers}
                 setUserAnswers={setUserAnswers}
                 questionsPageNumber={questionsPageNumber}

@@ -10,8 +10,8 @@ import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
 import { EditTwoTone, DeleteTwoTone, ClockCircleOutlined } from '@ant-design/icons';
 import colors from "../style/colors";
-import GoogleMapsComponent from "../components/GoogleMapsComponent";
-import Chatbot from '../components/ChatbotComponent';
+import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
+import Chatbot from '../components/TripOverview/ChatbotComponent';
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
