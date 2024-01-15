@@ -113,7 +113,7 @@ function TripOverview() {
               origin: origin,
               destination: destination,
               waypoints: waypt,
-              travelMode: google.maps.TravelMode.DRIVING,
+              travelMode: google.maps.TravelMode.DRIVING,         //volendo possiamo cercare di capire dalle risposte se l'utente vuole andare a piedi o in macchina, analizzando la risposta alla domanda dei trasporti nelle preferences
               unitSystem: google.maps.UnitSystem.METRIC,
             },
             (result, status) => {
