@@ -1,5 +1,5 @@
 import { PiUserCircleFill } from "react-icons/pi";
-import { Layout, Row, Col } from 'antd';
+import { Layout, Row, Col, Image } from 'antd';
 import { Link } from 'react-router-dom';
 
 const { Header } = Layout;
@@ -11,7 +11,7 @@ function NavigationBar() {
         <Col>
           <div className="d-flex align-items-center">
           <Link to="/" style={{ textDecoration: 'none', color: 'black' }}>
-              <img src="/smart-city.png" alt="logo" width="50" height="50" className="d-inline-block website-icon" />
+              <Image src="/smart-city.png" alt="logo" style={{ width: '50px', marginBottom: '23px'}} preview={false}/>
               <span className="projectName">UrbanHub</span>
           </Link>
           </div>
