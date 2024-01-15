@@ -120,10 +120,12 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
   }, [adultsValue, kidsValue, handleInputChange]);
 
   const handleDateRangeChange = (dates: [moment.Moment, moment.Moment]) => {
-    const dateStrings = dates.map((date) => date.format("DD/MM/YYYY"));
-    handleInputChange({
-      target: { name: "dateRange", value: dateStrings },
-    } as CustomEvent);
+    if(dates){
+      const dateStrings = dates.map((date) => date.format("DD/MM/YYYY"));
+      handleInputChange({
+        target: { name: "dateRange", value: dateStrings },
+      } as CustomEvent);
+    }
   };
 
   // useEffect to update formData when userAnswers change
