@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Form, AutoComplete, Row, Col, Button, Typography } from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import cities from '../../firebase/cities';
-import { set } from 'lodash';
 
 const { Title, Paragraph } = Typography;
 const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
@@ -102,8 +101,9 @@ useEffect(() => {
             filterOption={(inputValue, option) => {
               return option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
             }}
-            value={formData.destination}
-            onChange={(value) => { handleDestinationChange(value.charAt(0).toUpperCase() + value.slice(1));}}
+            value={formData.destination || ''}
+            onChange={(value) => { handleDestinationChange(value ? (value.charAt(0).toUpperCase() + value.slice(1)) : '');}}
+            allowClear={true}
           />
         </Form.Item>
         <Form.Item>

@@ -73,7 +73,8 @@ const Step2: React.FC<Step2Props> = ({ displayedQuestions, setDisplayedQuestions
         },
         onCancel: () => {
           return;
-        }
+        },
+        centered: true,
       })  
     }
     else {
@@ -112,7 +113,7 @@ const Step2: React.FC<Step2Props> = ({ displayedQuestions, setDisplayedQuestions
                         <Input.TextArea
                           value={userAnswers[index + questionsPageNumber * 3]}
                           onChange={(e) => handleAnswerChange(index + questionsPageNumber * 3, e.target.value)}
-                          rows={4}
+                          autoSize={{ minRows: 3, maxRows: 5 }}
                         />
                       </Form.Item>
                     </Col>
