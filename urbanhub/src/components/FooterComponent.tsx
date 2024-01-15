@@ -1,4 +1,4 @@
-import { Layout, Row, Col } from 'antd';
+import { Layout, Row, Col, Image } from 'antd';
 
 const { Footer } = Layout;  
 
@@ -7,7 +7,7 @@ function FooterComponent() {
       <Footer className="footer-style">
       <Row justify="space-between" align="middle" style={{ paddingLeft: '5%', paddingRight: '5%'}}>
         <Col style={{ fontStyle: 'normal', display: 'flex', alignItems: 'center' }}>
-          <img src="/smart-city.png" alt="logo" width="30" height="30" className="d-inline-block website-icon" style={{marginRight: '10px'}}/>
+          <Image src="/smart-city.png" alt="logo" style={{marginRight: '10px', marginBottom: '1rem', width: '30px', height: 'auto'}} preview={false}/>
           <p>UrbanHub - Inclusive And Effortless Urban Travel</p>
         </Col>
         <Col style={{ fontStyle: 'italic', display: 'flex', alignItems: 'center' }}>

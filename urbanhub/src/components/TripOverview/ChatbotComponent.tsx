@@ -1,11 +1,11 @@
 import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input, Modal, message, DatePicker, TimePicker, Form, Select, AutoComplete} from 'antd';
 import { useState, useEffect } from 'react';
-import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
-import cities from "../firebase/cities";
+import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../../firebase/daos/dao-trips";
+import cities from "../../firebase/cities";
 import dayjs from 'dayjs';
-import { Trip } from "../models/trip";
-import { TripAttraction } from '../models/tripAttraction';
-import GoogleMapsComponent from "../components/GoogleMapsComponent";
+import { Trip } from "../../models/trip";
+import { TripAttraction } from '../../models/tripAttraction';
+import GoogleMapsComponent from "./GoogleMapsComponent";
 
 /*
    USAGE:

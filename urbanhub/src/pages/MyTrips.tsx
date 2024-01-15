@@ -171,144 +171,142 @@ function MyTrips() {
   );
 
   return (
-    <>
-      <Container className="d-flex flex-column align-items-center content-padding-top">
-        {contextHolder}
+    <Container className="d-flex flex-column align-items-center content-padding-top">
+      {contextHolder}
 
-        <Container
-          fluid
-          className="position-relative d-flex flex-column align-items-center"
-        >
-          <Title className="text-center" level={1}>
-            MY TRIPS
-          </Title>
-        </Container>
-
-        {loading && (
-          <div className="d-flex flex-column justify-content-center align-items-center">
-            <Spinner animation="border" role="status" className="mb-4" />
-            <Title level={2}>Loading...</Title>
-          </div>
-        )}
-
-        {error && (
-          <Col xs={11} md={9} lg={5}>
-            <Alert variant="danger">
-              <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-              <p>You got an error while loading your trips.</p>
-              <span>Please refresh the page.</span>
-            </Alert>
-          </Col>
-        )}
-
-        {!loading && !error && (
-          <>
-            <AddTripButton />
-
-            <Container
-              fluid
-              className="position-relative d-flex flex-column align-items-start"
-            >
-              <Title className="text-center ps-5" level={1}>
-                Ongoing trips
-              </Title>
-            </Container>
-
-            <Row className="d-flex flex-row justify-content-center w-100 mt-2 mb-5 px-5">
-              {trips.filter(
-                (t) =>
-                  t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())
-              ).length === 0
-                ? "You are not currently on any trip"
-                : trips
-                    .filter(
-                      (t) =>
-                        t.startDate.isBefore(dayjs()) &&
-                        t.endDate.isAfter(dayjs())
-                    )
-                    .map((trip, index) => {
-                      return (
-                        <TripCard
-                          key={index}
-                          trip={trip}
-                          menu={menu}
-                          enlargedCard={enlargedCard}
-                          setEnlargedCard={setEnlargedCard}
-                          isMenuOpen={isMenuOpen}
-                          setIsMenuOpen={setIsMenuOpen}
-                          handleMenuHover={handleMenuHover}
-                        />
-                      );
-                    })}
-            </Row>
-
-            <Container
-              fluid
-              className="position-relative d-flex flex-column align-items-start"
-            >
-              <Title className="text-center ps-5" level={1}>
-                Future trips
-              </Title>
-            </Container>
-
-            <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
-              {trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0
-                ? "You don't have any trip planned for the future"
-                : trips
-                    .filter((t) => t.startDate.isAfter(dayjs()))
-                    .map((trip, index) => {
-                      return (
-                        <TripCard
-                          key={index}
-                          trip={trip}
-                          menu={menu}
-                          enlargedCard={enlargedCard}
-                          setEnlargedCard={setEnlargedCard}
-                          isMenuOpen={isMenuOpen}
-                          setIsMenuOpen={setIsMenuOpen}
-                          handleMenuHover={handleMenuHover}
-                        />
-                      );
-                    })}
-            </Row>
-
-            <Container
-              fluid
-              className="position-relative d-flex flex-column align-items-start"
-            >
-              <Title className="text-center ps-5" level={1}>
-                Past trips
-              </Title>
-            </Container>
-
-            <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
-              {trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0
-                ? "You don't have any past trip"
-                : trips
-                    .filter((t) => t.endDate.isBefore(dayjs()))
-                    .map((trip, index) => {
-                      return (
-                        <TripCard
-                          key={index}
-                          trip={trip}
-                          menu={menu}
-                          enlargedCard={enlargedCard}
-                          setEnlargedCard={setEnlargedCard}
-                          isMenuOpen={isMenuOpen}
-                          setIsMenuOpen={setIsMenuOpen}
-                          handleMenuHover={handleMenuHover}
-                        />
-                      );
-                    })}
-            </Row>
-          </>
-        )}
+      <Container
+        fluid
+        className="position-relative d-flex flex-column align-items-center"
+      >
+        <Title className="text-center" level={1}>
+          MY TRIPS
+        </Title>
       </Container>
-    </>
+
+      {loading && (
+        <div className="d-flex flex-column justify-content-center align-items-center">
+          <Spinner animation="border" role="status" className="mb-4" />
+          <Title level={2}>Loading...</Title>
+        </div>
+      )}
+
+      {error && (
+        <Col xs={11} md={9} lg={5}>
+          <Alert variant="danger">
+            <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+            <p>You got an error while loading your trips.</p>
+            <span>Please refresh the page.</span>
+          </Alert>
+        </Col>
+      )}
+
+      {!loading && !error && (
+        <>
+          <AddTripButton />
+
+          <Container
+            fluid
+            className="position-relative d-flex flex-column align-items-start"
+          >
+            <Title className="text-center ps-5" level={1}>
+              Ongoing trips
+            </Title>
+          </Container>
+
+          <Row className="d-flex flex-row justify-content-center w-100 mt-2 mb-5 px-5">
+            {trips.filter(
+              (t) =>
+                t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())
+            ).length === 0
+              ? "You are not currently on any trip"
+              : trips
+                  .filter(
+                    (t) =>
+                      t.startDate.isBefore(dayjs()) &&
+                      t.endDate.isAfter(dayjs())
+                  )
+                  .map((trip, index) => {
+                    return (
+                      <TripCard
+                        key={index}
+                        trip={trip}
+                        menu={menu}
+                        enlargedCard={enlargedCard}
+                        setEnlargedCard={setEnlargedCard}
+                        isMenuOpen={isMenuOpen}
+                        setIsMenuOpen={setIsMenuOpen}
+                        handleMenuHover={handleMenuHover}
+                      />
+                    );
+                  })}
+          </Row>
+
+          <Container
+            fluid
+            className="position-relative d-flex flex-column align-items-start"
+          >
+            <Title className="text-center ps-5" level={1}>
+              Future trips
+            </Title>
+          </Container>
+
+          <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
+            {trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0
+              ? "You don't have any trip planned for the future"
+              : trips
+                  .filter((t) => t.startDate.isAfter(dayjs()))
+                  .map((trip, index) => {
+                    return (
+                      <TripCard
+                        key={index}
+                        trip={trip}
+                        menu={menu}
+                        enlargedCard={enlargedCard}
+                        setEnlargedCard={setEnlargedCard}
+                        isMenuOpen={isMenuOpen}
+                        setIsMenuOpen={setIsMenuOpen}
+                        handleMenuHover={handleMenuHover}
+                      />
+                    );
+                  })}
+          </Row>
+
+          <Container
+            fluid
+            className="position-relative d-flex flex-column align-items-start"
+          >
+            <Title className="text-center ps-5" level={1}>
+              Past trips
+            </Title>
+          </Container>
+
+          <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
+            {trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0
+              ? "You don't have any past trip"
+              : trips
+                  .filter((t) => t.endDate.isBefore(dayjs()))
+                  .map((trip, index) => {
+                    return (
+                      <TripCard
+                        key={index}
+                        trip={trip}
+                        menu={menu}
+                        enlargedCard={enlargedCard}
+                        setEnlargedCard={setEnlargedCard}
+                        isMenuOpen={isMenuOpen}
+                        setIsMenuOpen={setIsMenuOpen}
+                        handleMenuHover={handleMenuHover}
+                      />
+                    );
+                  })}
+          </Row>
+        </>
+      )}
+    </Container>
   );
 }
 
-function TripCard(props: {
+function TripCard(props: Readonly<{
   trip: Trip;
   menu: (trip: Trip) => React.ReactNode;
   enlargedCard: string | null;
@@ -316,7 +314,7 @@ function TripCard(props: {
   isMenuOpen: boolean;
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleMenuHover: (trip: Trip) => void;
-}) {
+}>) {
   const {
     trip,
     menu,

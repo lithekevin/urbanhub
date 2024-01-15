@@ -107,10 +107,6 @@
     color: black;
 }
 
-.website-icon{
-    margin-bottom: 20px;
-}
-
 
 /************
  * MYTRIPS
@@ -222,4 +218,12 @@
     padding-right: 20px;
     padding-bottom: 20px;
     width: auto;
-  }
+}
+
+.ant-progress.ant-progress-status-success .ant-progress-bg{
+    background-color: #00AA70;
+}
+
+.summary-card{
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
