@@ -90,7 +90,7 @@ function Main() {
 
         for (let i = 0; i < nAttractions; i++) {
           if (attractions.length === 0) {
-            break; 
+            attractions = [...tripCity!.attractions]; 
           }
 
           let index = Math.floor(Math.random() * attractions.length);
