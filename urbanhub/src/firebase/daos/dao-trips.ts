@@ -395,40 +395,16 @@ export const editTrip = async (tripId: string | undefined, trip: Trip | null) =>
       return null;
     } else {  
       const tripData = tripSnap.data();
+      tripData.schedule.length = 0; //Clear the scehdule
 
-      const copyDaySchedule = (day: dayjs.Dayjs) => {
-        let attractionsForDay: TripAttraction[] = [];
-      
-        // Find the closest matching key
-        let closestKey: dayjs.Dayjs | null = null;
-        let minDifference: number | null = null;
-      
-        trip?.schedule.forEach((attractions, key) => {
-          const difference = Math.abs(day.diff(key, 'days'));
-      
-          if (minDifference === null || difference < minDifference) {
-            minDifference = difference;
-            closestKey = key;
-          }
+      trip?.schedule.forEach((attractions, date) =>{
+        tripData.schedule[date.format("DD/MM/YYYY")] = [];
+        attractions.forEach((attraction) => {
+          tripData.schedule[date.format("DD/MM/YYYY")].push(attraction);
         });
-      
-        if (closestKey !== null) {
-          attractionsForDay = trip?.schedule.get(closestKey) || [];
-        }
-      
-        attractionsForDay.map((attraction) => {
-          tripData.schedule[day.format('DD/MM/YYYY')].push(attraction);
-        });
-      };
-      
-      const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
-
-      dayLabels.map((dayLabel, index) => {
-        copyDaySchedule(dayjs(dayLabel, 'DD/MM/YYYY'));
       });
-
       // Update the trip document with the new schedule
-      await updateDoc(tripRef, { schedule: tripData.schedule } );
+      await updateDoc(tripRef, { schedule: tripData.schedule });
 
       console.log("Trip updated successfully!");
     }
