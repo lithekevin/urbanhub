@@ -10,7 +10,7 @@ import Step2 from "../components/NewTrip/Step2";
 import Step3 from "../components/NewTrip/Step3";
 const { Step } = Steps;
 
-const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
+export const DEFAULT_LOCATION = { lat: 45.95941, lng: -47.66127 };
 
 interface CustomEvent {
   target: {
@@ -67,7 +67,7 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
     lat: DEFAULT_LOCATION.lat,
     lng: DEFAULT_LOCATION.lng,
   });
-  const [mapZoom, setMapZoom] = React.useState(4);
+  const [mapZoom, setMapZoom] = React.useState(3);
 
   const [adultsValue, setAdultsValue] = React.useState<number>(0);
   const [kidsValue, setKidsValue] = React.useState<number>(0);

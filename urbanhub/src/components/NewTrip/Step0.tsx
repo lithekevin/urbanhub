@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Form, AutoComplete, Row, Col, Button, Typography } from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import cities from '../../firebase/cities';
+import { DEFAULT_LOCATION } from '../../pages/NewTrip';
+import { set } from 'lodash';
 
 const { Title, Paragraph } = Typography;
-const DEFAULT_LOCATION = { lat: 48.7758, lng: 9.1829 };
+
+
+
 
 interface CustomEvent {
   target: {
@@ -58,7 +62,10 @@ useEffect(() => {
   }
 }, [mapLoaded, cityPosition]);
 
+console.log("mapZoom: ", mapZoom)
+
   const handleDestinationChange = (value: string) => {
+    
     handleInputChange({ target: { name: 'destination', value } } as CustomEvent);
 
     setIsDestinationSelected(value !== '');
@@ -73,9 +80,10 @@ useEffect(() => {
         lng: selectedCity?.location.longitude || DEFAULT_LOCATION.lng,
       });
       setMapZoom(7);
+      console.log("Match is done and the zoom is set to 7");
     } else {
       setCityPosition({ lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng });
-      setMapZoom(4);
+      setMapZoom(3);
     }
   };
 
@@ -89,7 +97,6 @@ useEffect(() => {
         <Title level={2} className='step-title'> Choose your trip destination </Title>
         <Paragraph className='label'> Where would you want to go? </Paragraph>
         <Form.Item
-          name="destination"
           hidden={step !== 0}
           validateStatus={isDestinationValid ? 'success' : 'error'}
           help={!isDestinationValid && 'Please type a valid city'}
@@ -117,12 +124,26 @@ useEffect(() => {
                 
                 onLoad={(map) => {
                   setMapLoaded(true);
-                  // console.log('Map loaded:', map);
-                  // You can inspect the map instance in the console to check its properties
+                  
+                  
+                  map.addListener('zoom_changed', () => {
+                    const currentZoom = map.getZoom();
+                    setMapZoom(currentZoom || 3);
+                  });
                 }}
-              >
-                {showMarker && formData.destination && cityPosition.lat !== DEFAULT_LOCATION.lat && cityPosition.lng !== DEFAULT_LOCATION.lng && (
-                  <Marker position={cityPosition} />
+                              
+                
+                >
+               { // Non-selected markers
+                  showMarker && 
+                  cities.filter((city) => !formData.destination || !(city.name.toLowerCase() === formData.destination.toLowerCase())).map((city) => (
+                    <Marker key={city.name} position={{ lat: city.location.latitude, lng: city.location.longitude }} title={city.name} opacity={0.5} onClick={() => {handleDestinationChange(cities.find((c) => c.location.latitude === city.location.latitude && c.location.longitude === city.location.longitude)!!.name)}}/>
+                  ))
+                }
+                
+                { // Selected marker
+                showMarker && formData.destination && cityPosition.lat !== DEFAULT_LOCATION.lat && cityPosition.lng !== DEFAULT_LOCATION.lng && (
+                  <Marker position={cityPosition} title={formData.destination} opacity={1.0}/>
                 )}
               </GoogleMap>
             </Col>
