@@ -52,8 +52,9 @@ function TripOverview() {
   const [selectedAttractionId, setSelectedAttractionId] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs | null>(null); 
 
-
-  
+  //Used for undo button and message in chatbot 
+  const [undoVisibility, setUndoVisibility] = useState(false);
+  const [messageAI, setMessageAI] = useState('Is there anything I can do for you?');  
 
   useEffect(() => {
     // load trip details from firebase based on tripId
@@ -160,6 +161,8 @@ function TripOverview() {
           if (tripId) {
             await deleteAttraction(tripId, attraction.startDate, attraction.id);
             setDirty(true);
+            setMessageAI("Attraction deleted succesully! Is there anything else I can do for you?");
+            setUndoVisibility(false);
 
             // Show success message
             messageApi.open({
@@ -223,15 +226,22 @@ function TripOverview() {
 
     if(editingAttraction){
 
-      if(tripId&&selectedDay)
+      if(tripId&&selectedDay){
         editAttraction(tripId, editingAttraction.id ,selectedDay, values.date.format('DD/MM/YYYY'), attraction);
-      else
+        setMessageAI("Attraction edited succesully! Is there anything else I can do for you?");
+        setUndoVisibility(false);
+      }
+      else{
         console.log("error");
+      }
     }
 
     else{
-      if(tripId)
+      if(tripId){
         addAttractionToTrip(tripId, values.date.format('DD/MM/YYYY'), attraction);
+        setMessageAI("Attraction deleted succesully! Is there anything else I can do for you?");
+        setUndoVisibility(false);
+      }
     }
 
     setDirty(true);
@@ -302,7 +312,7 @@ function TripOverview() {
     return attractionsForDay;
   }
   
-  const renderAttractionsForDay = (day: dayjs.Dayjs) => {
+const renderAttractionsForDay = (day: dayjs.Dayjs) => {
   let attractionsForDay: TripAttraction[] = [];
 
   // Find the closest matching key
@@ -415,7 +425,7 @@ function TripOverview() {
         </Container>
       </div>
       <footer style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#f8f9fa', padding: '10px', textAlign: 'center'}}>
-        <Chatbot tripState={{ value: trip, setter: setTrip }} dirtyState={{ value: dirty, setter: setDirty }} tripId={tripId} messageApi={messageApi}/>
+        <Chatbot tripState={{ value: trip, setter: setTrip }} dirtyState={{ value: dirty, setter: setDirty }} undoState={{ value: undoVisibility, setter: setUndoVisibility }} messageAIState={{ value: messageAI, setter: setMessageAI }} tripId={tripId} messageApi={messageApi}/>
       </footer>
     </>
   );

@@ -382,6 +382,60 @@ export const editAttraction = async (tripId: string, originalAttractionId : stri
   }
 };
 
+export const editTrip = async (tripId: string | undefined, trip: Trip | null) => {
+  try {
+    // Get the trip document
+    const tripRef = doc(tripsCollection, tripId);
+    const tripSnap = await getDoc(tripRef);
+
+    if (!tripSnap.exists()) {
+      console.log("No such document!");
+      return null;
+    } else {  
+      const tripData = tripSnap.data();
+
+      const copyDaySchedule = (day: dayjs.Dayjs) => {
+        let attractionsForDay: TripAttraction[] = [];
+      
+        // Find the closest matching key
+        let closestKey: dayjs.Dayjs | null = null;
+        let minDifference: number | null = null;
+      
+        trip?.schedule.forEach((attractions, key) => {
+          const difference = Math.abs(day.diff(key, 'days'));
+      
+          if (minDifference === null || difference < minDifference) {
+            minDifference = difference;
+            closestKey = key;
+          }
+        });
+      
+        if (closestKey !== null) {
+          attractionsForDay = trip?.schedule.get(closestKey) || [];
+        }
+      
+        attractionsForDay.map((attraction) => {
+          tripData.schedule[day.format('DD/MM/YYYY')].push(attraction);
+        });
+      };
+      
+      const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
+
+      dayLabels.map((dayLabel, index) => {
+        copyDaySchedule(dayjs(dayLabel, 'DD/MM/YYYY'));
+      });
+
+      // Update the trip document with the new schedule
+      await updateDoc(tripRef, { schedule: tripData.schedule } );
+
+      console.log("Trip updated successfully!");
+    }
+  } catch (error) {
+    console.error("Error updating document: ", error);
+    throw error;
+  }
+};
+
 
 
 export const deleteAttraction = async (id: string, date: dayjs.Dayjs, attractionId: string) => {
