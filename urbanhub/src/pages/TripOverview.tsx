@@ -10,8 +10,8 @@ import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
 import { EditTwoTone, DeleteTwoTone, ClockCircleOutlined } from '@ant-design/icons';
 import colors from "../style/colors";
-import GoogleMapsComponent from "../components/GoogleMapsComponent";
-import Chatbot from '../components/ChatbotComponent';
+import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
+import Chatbot from '../components/TripOverview/ChatbotComponent';
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
@@ -114,7 +114,7 @@ function TripOverview() {
               origin: origin,
               destination: destination,
               waypoints: waypt,
-              travelMode: google.maps.TravelMode.DRIVING,
+              travelMode: google.maps.TravelMode.DRIVING,         //volendo possiamo cercare di capire dalle risposte se l'utente vuole andare a piedi o in macchina, analizzando la risposta alla domanda dei trasporti nelle preferences
               unitSystem: google.maps.UnitSystem.METRIC,
             },
             (result, status) => {

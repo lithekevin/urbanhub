@@ -170,6 +170,7 @@ export const getAllTrips = async () => {
               longitude: attractionInfo!.location.longitude,
             },
             estimatedTime: attractionInfo!.estimatedTime,
+            perPersonCost: attractionInfo!.perPersonCost,
             startDate: dayjs(
               key + " " + attraction.startDate,
               "DD/MM/YYYY HH:mm"
@@ -273,6 +274,7 @@ export const getTripById = async (id: string) => {
               longitude: attractionInfo!.location.longitude,
             },
             estimatedTime: attractionInfo!.estimatedTime,
+            perPersonCost: attractionInfo!.perPersonCost,
             startDate: dayjs(
               key + " " + attraction.startDate,
               "DD/MM/YYYY HH:mm"

@@ -16,6 +16,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.4036, longitude: 2.1744 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A002",
@@ -23,6 +24,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.4145, longitude: 2.152 },
         estimatedTime: 120,
+        perPersonCost: 10,
       },
       {
         id: "A003",
@@ -30,6 +32,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3794, longitude: 2.175 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A004",
@@ -37,6 +40,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3916, longitude: 2.1641 },
         estimatedTime: 120,
+        perPersonCost: 25,
       },
       {
         id: "A005",
@@ -44,6 +48,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3833, longitude: 2.1764 },
         estimatedTime: 180,
+        perPersonCost: 0,
       },
       {
         id: "A006",
@@ -51,6 +56,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3646, longitude: 2.1526 },
         estimatedTime: 240,
+        perPersonCost: 0,
       },
       {
         id: "A007",
@@ -58,6 +64,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3634, longitude: 2.1509 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A008",
@@ -65,6 +72,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3952, longitude: 2.1619 },
         estimatedTime: 120,
+        perPersonCost: 25,
       },
       {
         id: "A009",
@@ -72,6 +80,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3809, longitude: 2.1228 },
         estimatedTime: 180,
+        perPersonCost: 25,
       },
 
       {
@@ -80,6 +89,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3767, longitude: 2.1899 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
 
       {
@@ -88,6 +98,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3852, longitude: 2.1804 },
         estimatedTime: 120,
+        perPersonCost: 15,
       },
 
       {
@@ -96,6 +107,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.4216, longitude: 2.119 },
         estimatedTime: 180,
+        perPersonCost: 30,
       },
 
       {
@@ -104,6 +116,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3839, longitude: 2.1761 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
 
       {
@@ -112,6 +125,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3871, longitude: 2.1754 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
 
       {
@@ -120,6 +134,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3876, longitude: 2.1821 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
 
       {
@@ -128,6 +143,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3686, longitude: 2.1535 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
 
       {
@@ -136,6 +152,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3867, longitude: 2.1691 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
 
       {
@@ -144,6 +161,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3685, longitude: 2.1473 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
 
       {
@@ -152,6 +170,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.4135, longitude: 2.1793 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
 
       {
@@ -160,6 +179,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.4135, longitude: 2.1305 },
         estimatedTime: 120,
+        perPersonCost: 10,
       },
 
       {
@@ -168,6 +188,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3684, longitude: 2.1599 },
         estimatedTime: 90,
+        perPersonCost: 15,
       },
 
       {
@@ -176,6 +197,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3816, longitude: 2.1714 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
 
       {
@@ -184,14 +206,16 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3784, longitude: 2.1686 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
 
       {
         id: "A024",
-        name: "Gothic Quarter",
+        name: "Casa Vicens",
         city: "Barcelona",
-        location: { latitude: 41.3833, longitude: 2.1764 },
+        location: { latitude: 41.4036, longitude: 2.1564 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
 
       {
@@ -200,6 +224,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3834, longitude: 2.1824 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
 
       {
@@ -208,6 +233,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3762, longitude: 2.1893 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
 
       {
@@ -216,6 +242,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3895, longitude: 2.1871 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
 
       {
@@ -224,6 +251,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3769, longitude: 2.1529 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
 
       {
@@ -232,6 +260,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.3786, longitude: 2.1758 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
 
       {
@@ -240,6 +269,7 @@ const cities: City[] = [
         city: "Barcelona",
         location: { latitude: 41.4036, longitude: 2.1899 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
     ],
   },
@@ -258,6 +288,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5081, longitude: -0.0759 },
         estimatedTime: 180,
+        perPersonCost: 30,
       },
       {
         id: "A032",
@@ -265,6 +296,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5194, longitude: -0.127 },
         estimatedTime: 240,
+        perPersonCost: 20,
       },
       {
         id: "A033",
@@ -272,6 +304,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5014, longitude: -0.1419 },
         estimatedTime: 120,
+        perPersonCost: 10,
       },
       {
         id: "A034",
@@ -279,6 +312,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5007, longitude: -0.1246 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A035",
@@ -286,6 +320,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.529, longitude: -0.1277 },
         estimatedTime: 90,
+        perPersonCost: 10,
       },
       {
         id: "A036",
@@ -293,6 +328,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5076, longitude: -0.0994 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A037",
@@ -300,6 +336,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5045, longitude: -0.0865 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A038",
@@ -307,6 +344,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5073, longitude: -0.1657 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A039",
@@ -314,6 +352,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.4994, longitude: -0.127 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A040",
@@ -321,6 +360,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.4966, longitude: -0.1765 },
         estimatedTime: 120,
+        perPersonCost: 30,
       },
       {
         id: "A041",
@@ -328,6 +368,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.4966, longitude: -0.1722 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A042",
@@ -335,6 +376,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5138, longitude: -0.0984 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A043",
@@ -342,6 +384,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5076, longitude: -0.0976 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A044",
@@ -349,6 +392,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5055, longitude: -0.0754 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A045",
@@ -356,6 +400,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5416, longitude: -0.1464 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A046",
@@ -363,6 +408,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5117, longitude: -0.1224 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A047",
@@ -370,6 +416,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.4911, longitude: -0.127 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A048",
@@ -377,6 +424,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5051, longitude: -0.1874 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A049",
@@ -384,6 +432,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5071, longitude: -0.1664 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A050",
@@ -391,6 +440,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5067, longitude: -0.081 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A051",
@@ -398,6 +448,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.4779, longitude: -0.0015 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A052",
@@ -405,6 +456,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5033, longitude: -0.1195 },
         estimatedTime: 60,
+        perPersonCost: 30,
       },
       {
         id: "A053",
@@ -412,13 +464,15 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.4978, longitude: -0.1747 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A054",
-        name: "The Shard",
+        name: "The National Maritime Museum",
         city: "London",
-        location: { latitude: 51.5045, longitude: -0.0865 },
-        estimatedTime: 60,
+        location: { latitude: 51.4814, longitude: -0.0059 },
+        estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A055",
@@ -426,6 +480,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.503, longitude: 0.0035 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A056",
@@ -433,6 +488,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5117, longitude: -0.1218 },
         estimatedTime: 180,
+        perPersonCost: 0,
       },
       {
         id: "A057",
@@ -440,6 +496,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5099, longitude: -0.1286 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A058",
@@ -447,6 +504,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.5114, longitude: -0.1224 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A059",
@@ -454,6 +512,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.4839, longitude: -0.0059 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A060",
@@ -461,6 +520,7 @@ const cities: City[] = [
         city: "London",
         location: { latitude: 51.512, longitude: -0.0836 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
     ],
   },
@@ -479,6 +539,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.1852, longitude: 16.3124 },
         estimatedTime: 180,
+        perPersonCost: 20,
       },
       {
         id: "A062",
@@ -486,6 +547,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2082, longitude: 16.3738 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A063",
@@ -493,6 +555,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.1914, longitude: 16.3803 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A064",
@@ -500,6 +563,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2025, longitude: 16.3685 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A065",
@@ -507,6 +571,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2084, longitude: 16.3641 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A066",
@@ -514,6 +579,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2168, longitude: 16.3966 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A067",
@@ -521,6 +587,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2031, longitude: 16.3615 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A068",
@@ -528,6 +595,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.1985, longitude: 16.3674 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A069",
@@ -535,6 +603,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2045, longitude: 16.3688 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A070",
@@ -542,6 +611,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.21, longitude: 16.357 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A071",
@@ -549,6 +619,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2057, longitude: 16.3664 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A072",
@@ -556,6 +627,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2175, longitude: 16.3993 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A073",
@@ -563,6 +635,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2056, longitude: 16.3589 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A074",
@@ -570,6 +643,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.1827, longitude: 16.3021 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A075",
@@ -577,6 +651,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2005, longitude: 16.3663 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A076",
@@ -584,6 +659,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2074, longitude: 16.3816 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A077",
@@ -591,6 +667,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.263, longitude: 16.414 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A078",
@@ -598,6 +675,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2058, longitude: 16.3591 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A079",
@@ -605,6 +683,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.1184, longitude: 16.2994 },
         estimatedTime: 180,
+        perPersonCost: 0,
       },
       {
         id: "A080",
@@ -612,6 +691,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.3, longitude: 16.3589 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A081",
@@ -619,6 +699,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2048, longitude: 16.3651 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A082",
@@ -626,6 +707,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2105, longitude: 16.3667 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A083",
@@ -633,6 +715,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2033, longitude: 16.3585 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A084",
@@ -640,6 +723,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2054, longitude: 16.3661 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A085",
@@ -647,6 +731,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2031, longitude: 16.3806 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A086",
@@ -654,6 +739,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.229, longitude: 16.3684 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A087",
@@ -661,6 +747,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2165, longitude: 16.3988 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A088",
@@ -668,6 +755,7 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.1555, longitude: 16.2425 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A089",
@@ -675,13 +763,15 @@ const cities: City[] = [
         city: "Vienna",
         location: { latitude: 48.2431, longitude: 16.4175 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A090",
-        name: "Giant Ferris Wheel in the Prater",
+        name: "Museum of Military History",
         city: "Vienna",
-        location: { latitude: 48.2165, longitude: 16.3988 },
-        estimatedTime: 60,
+        location: { latitude: 48.1781, longitude: 16.3611 },
+        estimatedTime: 90,
+        perPersonCost: 20,
       },
     ],
   },
@@ -699,42 +789,48 @@ const cities: City[] = [
         name: "Eiffel Tower",
         city: "Paris",
         location: { latitude: 48.8584, longitude: 2.2944 },
-        estimatedTime: 280,
+        estimatedTime: 100,
+        perPersonCost: 20,
       },
       {
         id: "A092",
         name: "Louvre Museum",
         city: "Paris",
         location: { latitude: 48.8606, longitude: 2.3376 },
-        estimatedTime: 340,
+        estimatedTime: 180,
+        perPersonCost: 20,
       },
       {
         id: "A093",
         name: "Notre-Dame Cathedral",
         city: "Paris",
         location: { latitude: 48.853, longitude: 2.3499 },
-        estimatedTime: 320,
+        estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A094",
-        name: "Montmartre and Sacré-Cœur Basilica",
+        name: "Montmartre",
         city: "Paris",
         location: { latitude: 48.8867, longitude: 2.3431 },
-        estimatedTime: 220,
+        estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A095",
         name: "Musée d'Orsay",
         city: "Paris",
         location: { latitude: 48.8599, longitude: 2.3266 },
-        estimatedTime: 320,
+        estimatedTime: 180,
+        perPersonCost: 20,
       },
       {
         id: "A096",
         name: "Seine River Cruise",
         city: "Paris",
         location: { latitude: 48.8588, longitude: 2.295 },
-        estimatedTime: 250,
+        estimatedTime: 180,
+        perPersonCost: 20,
       },
       {
         id: "A097",
@@ -742,6 +838,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8555, longitude: 2.3453 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A098",
@@ -749,27 +846,31 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8635, longitude: 2.3224 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A099",
         name: "Champs-Élysées and Arc de Triomphe",
         city: "Paris",
         location: { latitude: 48.8738, longitude: 2.295 },
-        estimatedTime: 320,
+        estimatedTime: 180,
+        perPersonCost: 0,
       },
       {
         id: "A100",
         name: "Panthéon",
         city: "Paris",
         location: { latitude: 48.8462, longitude: 2.3465 },
-        estimatedTime: 220,
+        estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A101",
         name: "Centre Pompidou",
         city: "Paris",
         location: { latitude: 48.8606, longitude: 2.3522 },
-        estimatedTime: 220,
+        estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A102",
@@ -777,13 +878,15 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8554, longitude: 2.3159 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A103",
         name: "Luxembourg Gardens",
         city: "Paris",
         location: { latitude: 48.8462, longitude: 2.3374 },
-        estimatedTime: 220,
+        estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A104",
@@ -791,6 +894,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8587, longitude: 2.3144 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A105",
@@ -798,6 +902,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8718, longitude: 2.3311 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A106",
@@ -805,6 +910,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8599, longitude: 2.3624 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A107",
@@ -812,6 +918,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.853, longitude: 2.3338 },
         estimatedTime: 180,
+        perPersonCost: 0,
       },
       {
         id: "A108",
@@ -819,6 +926,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8843, longitude: 2.3323 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A109",
@@ -826,6 +934,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8956, longitude: 2.386 },
         estimatedTime: 180,
+        perPersonCost: 20,
       },
       {
         id: "A110",
@@ -833,6 +942,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8558, longitude: 2.3131 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A111",
@@ -840,6 +950,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8638, longitude: 2.313 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A112",
@@ -847,13 +958,15 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.853, longitude: 2.3488 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A113",
         name: "Musée Carnavalet",
         city: "Paris",
         location: { latitude: 48.857, longitude: 2.362 },
-        estimatedTime: 220,
+        estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A114",
@@ -861,6 +974,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8789, longitude: 2.3817 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A115",
@@ -868,6 +982,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8554, longitude: 2.3676 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A116",
@@ -875,6 +990,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.861, longitude: 2.3934 },
         estimatedTime: 180,
+        perPersonCost: 0,
       },
       {
         id: "A117",
@@ -882,13 +998,15 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8708, longitude: 2.3632 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A118",
         name: "Basilique du Sacré-Cœur",
         city: "Paris",
         location: { latitude: 48.8867, longitude: 2.3431 },
-        estimatedTime: 220,
+        estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A119",
@@ -896,6 +1014,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8634, longitude: 2.337 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A120",
@@ -903,6 +1022,7 @@ const cities: City[] = [
         city: "Paris",
         location: { latitude: 48.8886, longitude: 2.2418 },
         estimatedTime: 220,
+        perPersonCost: 0,
       },
     ],
   },
@@ -921,6 +1041,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.6892, longitude: -74.0445 },
         estimatedTime: 280,
+        perPersonCost: 20,
       },
       {
         id: "A122",
@@ -928,6 +1049,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7851, longitude: -73.9683 },
         estimatedTime: 280,
+        perPersonCost: 0,
       },
       {
         id: "A123",
@@ -935,6 +1057,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7589, longitude: -73.9851 },
         estimatedTime: 220,
+        perPersonCost: 0,
       },
       {
         id: "A124",
@@ -942,6 +1065,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7484, longitude: -73.9857 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A125",
@@ -949,6 +1073,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7794, longitude: -73.9632 },
         estimatedTime: 180,
+        perPersonCost: 20,
       },
       {
         id: "A126",
@@ -956,6 +1081,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7061, longitude: -73.9969 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A127",
@@ -963,6 +1089,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7127, longitude: -74.0134 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A128",
@@ -970,6 +1097,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7479, longitude: -74.0048 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A129",
@@ -977,6 +1105,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7587, longitude: -73.9787 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A130",
@@ -984,6 +1113,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7614, longitude: -73.9776 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A131",
@@ -991,6 +1121,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7527, longitude: -73.9772 },
         estimatedTime: 140,
+        perPersonCost: 0,
       },
       {
         id: "A132",
@@ -998,6 +1129,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7829, longitude: -73.958 },
         estimatedTime: 140,
+        perPersonCost: 30,
       },
       {
         id: "A133",
@@ -1005,6 +1137,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7033, longitude: -74.017 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A134",
@@ -1012,6 +1145,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.5755, longitude: -73.9707 },
         estimatedTime: 220,
+        perPersonCost: 0,
       },
       {
         id: "A135",
@@ -1019,6 +1153,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.8506, longitude: -73.8785 },
         estimatedTime: 220,
+        perPersonCost: 20,
       },
       {
         id: "A136",
@@ -1026,6 +1161,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.8645, longitude: -73.9312 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A137",
@@ -1033,6 +1169,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7536, longitude: -74.0029 },
         estimatedTime: 100,
+        perPersonCost: 0,
       },
       {
         id: "A138",
@@ -1040,6 +1177,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7646, longitude: -73.9991 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A139",
@@ -1047,6 +1185,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7587, longitude: -73.9764 },
         estimatedTime: 100,
+        perPersonCost: 0,
       },
       {
         id: "A140",
@@ -1054,6 +1193,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7308, longitude: -73.9973 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A141",
@@ -1061,6 +1201,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7711, longitude: -73.9672 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A142",
@@ -1068,6 +1209,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7424, longitude: -74.006 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A143",
@@ -1075,6 +1217,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7587, longitude: -73.9787 },
         estimatedTime: 100,
+        perPersonCost: 20,
       },
       {
         id: "A144",
@@ -1082,6 +1225,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7813, longitude: -73.9734 },
         estimatedTime: 160,
+        perPersonCost: 20,
       },
       {
         id: "A145",
@@ -1089,6 +1233,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7493, longitude: -73.9817 },
         estimatedTime: 100,
+        perPersonCost: 20,
       },
       {
         id: "A146",
@@ -1096,6 +1241,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7505, longitude: -73.9934 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A147",
@@ -1103,6 +1249,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.8626, longitude: -73.8773 },
         estimatedTime: 220,
+        perPersonCost: 10,
       },
       {
         id: "A148",
@@ -1110,6 +1257,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7926, longitude: -73.9514 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A149",
@@ -1117,6 +1265,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7115, longitude: -74.0134 },
         estimatedTime: 220,
+        perPersonCost: 20,
       },
       {
         id: "A150",
@@ -1124,6 +1273,7 @@ const cities: City[] = [
         city: "New York",
         location: { latitude: 40.7395, longitude: -74.0089 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
     ],
   },
@@ -1142,6 +1292,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8902, longitude: 12.4924 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A152",
@@ -1149,6 +1300,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8925, longitude: 12.4864 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A153",
@@ -1156,6 +1308,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8986, longitude: 12.4768 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A154",
@@ -1163,6 +1316,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9009, longitude: 12.4832 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A155",
@@ -1170,6 +1324,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9022, longitude: 12.4538 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A156",
@@ -1177,6 +1332,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9022, longitude: 12.4539 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A157",
@@ -1184,6 +1340,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9029, longitude: 12.4541 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
       {
         id: "A158",
@@ -1191,13 +1348,15 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9051, longitude: 12.4828 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A159",
-        name: "Piazza Navona",
+        name: "Navona Square",
         city: "Rome",
         location: { latitude: 41.8992, longitude: 12.4733 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A160",
@@ -1205,6 +1364,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9029, longitude: 12.4663 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A161",
@@ -1212,6 +1372,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8898, longitude: 12.4674 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A162",
@@ -1219,6 +1380,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8923, longitude: 12.4821 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A163",
@@ -1226,13 +1388,15 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9123, longitude: 12.4851 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A164",
-        name: "Roman Pantheon",
+        name: "Venezia Square",
         city: "Rome",
-        location: { latitude: 41.8986, longitude: 12.4768 },
+        location: { latitude: 41.9016, longitude: 12.4828 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A165",
@@ -1240,6 +1404,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8782, longitude: 12.4924 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A166",
@@ -1247,6 +1412,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8947, longitude: 12.4833 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A167",
@@ -1254,6 +1420,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8956, longitude: 12.4724 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A168",
@@ -1261,6 +1428,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8839, longitude: 12.4845 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A169",
@@ -1268,13 +1436,15 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8895, longitude: 12.4883 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A170",
-        name: "Mouth of Truth (Bocca della Verità)",
+        name: "Mouth of Truth",
         city: "Rome",
         location: { latitude: 41.8882, longitude: 12.4815 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A171",
@@ -1282,6 +1452,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9109, longitude: 12.4764 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A172",
@@ -1289,6 +1460,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8962, longitude: 12.4819 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
       {
         id: "A173",
@@ -1296,6 +1468,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9057, longitude: 12.4829 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A174",
@@ -1303,6 +1476,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9022, longitude: 12.4944 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A175",
@@ -1310,6 +1484,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8976, longitude: 12.4982 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A176",
@@ -1317,6 +1492,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.9145, longitude: 12.4924 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A177",
@@ -1324,6 +1500,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8886, longitude: 12.4871 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A178",
@@ -1331,6 +1508,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8899, longitude: 12.4645 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A179",
@@ -1338,6 +1516,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8946, longitude: 12.4836 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A180",
@@ -1345,6 +1524,7 @@ const cities: City[] = [
         city: "Rome",
         location: { latitude: 41.8966, longitude: 12.4758 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
     ],
   },
@@ -1363,6 +1543,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7735, longitude: 11.2559 },
         estimatedTime: 160,
+        perPersonCost: 20,
       },
       {
         id: "A182",
@@ -1370,6 +1551,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7696, longitude: 11.2558 },
         estimatedTime: 200,
+        perPersonCost: 20,
       },
       {
         id: "A183",
@@ -1377,6 +1559,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7686, longitude: 11.2567 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A184",
@@ -1384,6 +1567,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7784, longitude: 11.2584 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A185",
@@ -1391,6 +1575,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7696, longitude: 11.2558 },
         estimatedTime: 100,
+        perPersonCost: 20,
       },
       {
         id: "A186",
@@ -1398,6 +1583,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7684, longitude: 11.2624 },
         estimatedTime: 130,
+        perPersonCost: 20,
       },
       {
         id: "A187",
@@ -1405,6 +1591,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7629, longitude: 11.2486 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A188",
@@ -1412,6 +1599,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7696, longitude: 11.2558 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A189",
@@ -1419,6 +1607,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7687, longitude: 11.2591 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A190",
@@ -1426,6 +1615,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.777, longitude: 11.2525 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A191",
@@ -1433,6 +1623,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7622, longitude: 11.265 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A192",
@@ -1440,6 +1631,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7623, longitude: 11.2652 },
         estimatedTime: 80,
+        perPersonCost: 0,
       },
       {
         id: "A193",
@@ -1447,6 +1639,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7771, longitude: 11.2549 },
         estimatedTime: 100,
+        perPersonCost: 0,
       },
       {
         id: "A194",
@@ -1454,6 +1647,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7677, longitude: 11.2494 },
         estimatedTime: 130,
+        perPersonCost: 20,
       },
       {
         id: "A195",
@@ -1461,6 +1655,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7748, longitude: 11.253 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A196",
@@ -1468,6 +1663,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7709, longitude: 11.2549 },
         estimatedTime: 100,
+        perPersonCost: 20,
       },
       {
         id: "A197",
@@ -1475,6 +1671,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7675, longitude: 11.2496 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A198",
@@ -1482,6 +1679,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7774, longitude: 11.2619 },
         estimatedTime: 80,
+        perPersonCost: 20,
       },
       {
         id: "A199",
@@ -1489,6 +1687,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7688, longitude: 11.2527 },
         estimatedTime: 100,
+        perPersonCost: 0,
       },
       {
         id: "A200",
@@ -1496,6 +1695,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7739, longitude: 11.2569 },
         estimatedTime: 90,
+        perPersonCost: 15,
       },
       {
         id: "A201",
@@ -1503,6 +1703,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7737, longitude: 11.2568 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A202",
@@ -1510,6 +1711,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7688, longitude: 11.2569 },
         estimatedTime: 100,
+        perPersonCost: 10,
       },
       {
         id: "A203",
@@ -1517,6 +1719,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7722, longitude: 11.2509 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A204",
@@ -1524,6 +1727,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7737, longitude: 11.2535 },
         estimatedTime: 100,
+        perPersonCost: 20,
       },
       {
         id: "A205",
@@ -1531,6 +1735,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7642, longitude: 11.2756 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A206",
@@ -1538,6 +1743,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7514, longitude: 11.2956 },
         estimatedTime: 170,
+        perPersonCost: 20,
       },
       {
         id: "A207",
@@ -1545,6 +1751,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.767, longitude: 11.2639 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A208",
@@ -1552,6 +1759,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7684, longitude: 11.2624 },
         estimatedTime: 100,
+        perPersonCost: 0,
       },
       {
         id: "A209",
@@ -1559,6 +1767,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7678, longitude: 11.2498 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A210",
@@ -1566,6 +1775,7 @@ const cities: City[] = [
         city: "Florence",
         location: { latitude: 43.7797, longitude: 11.2465 },
         estimatedTime: 100,
+        perPersonCost: 20,
       },
     ],
   },
@@ -1584,6 +1794,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8199, longitude: -122.4783 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A212",
@@ -1591,6 +1802,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8267, longitude: -122.4233 },
         estimatedTime: 180,
+        perPersonCost: 20,
       },
       {
         id: "A213",
@@ -1598,6 +1810,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8097, longitude: -122.4166 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A214",
@@ -1605,6 +1818,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8021, longitude: -122.4187 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A215",
@@ -1612,6 +1826,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7694, longitude: -122.4862 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A216",
@@ -1619,6 +1834,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8087, longitude: -122.4098 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A217",
@@ -1626,6 +1842,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7941, longitude: -122.4078 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A218",
@@ -1633,6 +1850,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8024, longitude: -122.4058 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A219",
@@ -1640,6 +1858,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8029, longitude: -122.4487 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A220",
@@ -1647,6 +1866,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7699, longitude: -122.4662 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A221",
@@ -1654,6 +1874,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7857, longitude: -122.4011 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A222",
@@ -1661,6 +1882,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.801, longitude: -122.397 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A223",
@@ -1668,6 +1890,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8916, longitude: -122.5774 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A224",
@@ -1675,6 +1898,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7665, longitude: -122.4674 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A225",
@@ -1682,6 +1906,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7544, longitude: -122.4477 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A226",
@@ -1689,6 +1914,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7807, longitude: -122.416 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
       {
         id: "A227",
@@ -1696,6 +1922,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7711, longitude: -122.4686 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A228",
@@ -1703,6 +1930,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8645, longitude: -122.4354 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A229",
@@ -1710,6 +1938,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.78, longitude: -122.5139 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A230",
@@ -1717,6 +1946,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7834, longitude: -122.5118 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A231",
@@ -1724,6 +1954,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.794, longitude: -122.4076 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A232",
@@ -1731,6 +1962,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8102, longitude: -122.4765 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A233",
@@ -1738,6 +1970,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.732, longitude: -122.503 },
         estimatedTime: 90,
+        perPersonCost: 30,
       },
       {
         id: "A234",
@@ -1745,6 +1978,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7858, longitude: -122.4031 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
       {
         id: "A235",
@@ -1752,6 +1986,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8013, longitude: -122.4584 },
         estimatedTime: 60,
+        perPersonCost: 50,
       },
       {
         id: "A236",
@@ -1759,6 +1994,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7701, longitude: -122.4707 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A237",
@@ -1766,6 +2002,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7649, longitude: -122.4389 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A238",
@@ -1773,6 +2010,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7864, longitude: -122.4019 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
       {
         id: "A239",
@@ -1780,6 +2018,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.7727, longitude: -122.4615 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A240",
@@ -1787,6 +2026,7 @@ const cities: City[] = [
         city: "San Francisco",
         location: { latitude: 37.8058, longitude: -122.4314 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
     ],
   },
@@ -1805,6 +2045,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3783, longitude: 4.8975 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A242",
@@ -1812,6 +2053,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3752, longitude: 4.8835 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A243",
@@ -1819,6 +2061,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3599, longitude: 4.8852 },
         estimatedTime: 180,
+        perPersonCost: 10,
       },
       {
         id: "A244",
@@ -1826,6 +2069,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3676, longitude: 4.9041 },
         estimatedTime: 90,
+        perPersonCost: 40,
       },
       {
         id: "A245",
@@ -1833,6 +2077,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3731, longitude: 4.8924 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A246",
@@ -1840,6 +2085,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3584, longitude: 4.8796 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A247",
@@ -1847,6 +2093,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3587, longitude: 4.8683 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A248",
@@ -1854,6 +2101,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3578, longitude: 4.8914 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A249",
@@ -1861,6 +2109,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3721, longitude: 4.8966 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A250",
@@ -1868,6 +2117,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.4736, longitude: 4.8207 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A251",
@@ -1875,6 +2125,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.366, longitude: 4.8893 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A252",
@@ -1882,6 +2133,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3675, longitude: 4.9123 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A253",
@@ -1889,6 +2141,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3685, longitude: 4.8906 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
       {
         id: "A254",
@@ -1896,6 +2149,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3696, longitude: 4.9011 },
         estimatedTime: 90,
+        perPersonCost: 10,
       },
       {
         id: "A255",
@@ -1903,6 +2157,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3669, longitude: 4.9037 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A256",
@@ -1910,6 +2165,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3732, longitude: 4.891 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A257",
@@ -1917,6 +2173,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3738, longitude: 4.8806 },
         estimatedTime: 90,
+        perPersonCost: 0,
       },
       {
         id: "A258",
@@ -1924,6 +2181,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3661, longitude: 4.9138 },
         estimatedTime: 120,
+        perPersonCost: 30,
       },
       {
         id: "A259",
@@ -1931,6 +2189,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3584, longitude: 4.881 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A260",
@@ -1938,6 +2197,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.358, longitude: 4.8796 },
         estimatedTime: 90,
+        perPersonCost: 20,
       },
       {
         id: "A261",
@@ -1945,6 +2205,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.374, longitude: 4.8918 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A262",
@@ -1952,6 +2213,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3676, longitude: 4.8908 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
       {
         id: "A263",
@@ -1959,6 +2221,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3599, longitude: 4.8852 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A264",
@@ -1966,6 +2229,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3725, longitude: 4.8963 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A265",
@@ -1973,6 +2237,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3864, longitude: 4.8693 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A266",
@@ -1980,6 +2245,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3549, longitude: 4.8943 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A267",
@@ -1987,6 +2253,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3583, longitude: 4.882 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
       {
         id: "A268",
@@ -1994,6 +2261,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3625, longitude: 4.8834 },
         estimatedTime: 60,
+        perPersonCost: 20,
       },
       {
         id: "A269",
@@ -2001,6 +2269,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3316, longitude: 4.8915 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A270",
@@ -2008,6 +2277,7 @@ const cities: City[] = [
         city: "Amsterdam",
         location: { latitude: 52.3749, longitude: 4.8981 },
         estimatedTime: 60,
+        perPersonCost: 0,
       },
     ],
   },
@@ -2026,6 +2296,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0865, longitude: 14.4119 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A272",
@@ -2033,6 +2304,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.091, longitude: 14.3996 },
         estimatedTime: 170,
+        perPersonCost: 20,
       },
       {
         id: "A273",
@@ -2040,6 +2312,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.087, longitude: 14.4204 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A274",
@@ -2047,6 +2320,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0875, longitude: 14.4215 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A275",
@@ -2054,6 +2328,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.087, longitude: 14.4284 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A276",
@@ -2061,6 +2336,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0909, longitude: 14.3995 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A277",
@@ -2068,6 +2344,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0812, longitude: 14.4279 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A278",
@@ -2075,6 +2352,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0813, longitude: 14.4143 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A279",
@@ -2082,6 +2360,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0833, longitude: 14.4046 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A280",
@@ -2089,6 +2368,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0646, longitude: 14.4208 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A281",
@@ -2096,6 +2376,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0862, longitude: 14.4084 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A282",
@@ -2103,6 +2384,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0842, longitude: 14.4093 },
         estimatedTime: 130,
+        perPersonCost: 0,
       },
       {
         id: "A283",
@@ -2110,6 +2392,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0755, longitude: 14.4144 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A284",
@@ -2117,6 +2400,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0755, longitude: 14.4378 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A285",
@@ -2124,6 +2408,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0851, longitude: 14.3915 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A286",
@@ -2131,6 +2416,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0863, longitude: 14.4185 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A287",
@@ -2138,6 +2424,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0863, longitude: 14.4119 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A288",
@@ -2145,6 +2432,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0884, longitude: 14.4056 },
         estimatedTime: 120,
+        perPersonCost: 30,
       },
       {
         id: "A289",
@@ -2152,6 +2440,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.117, longitude: 14.413 },
         estimatedTime: 220,
+        perPersonCost: 20,
       },
       {
         id: "A290",
@@ -2159,6 +2448,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0905, longitude: 14.419 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A291",
@@ -2166,6 +2456,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0885, longitude: 14.4115 },
         estimatedTime: 150,
+        perPersonCost: 20,
       },
       {
         id: "A292",
@@ -2173,6 +2464,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0874, longitude: 14.4257 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A293",
@@ -2180,6 +2472,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.085, longitude: 14.3932 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A294",
@@ -2187,6 +2480,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0885, longitude: 14.4081 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A295",
@@ -2194,6 +2488,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0634, longitude: 14.4178 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A296",
@@ -2201,6 +2496,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0849, longitude: 14.4209 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A297",
@@ -2208,6 +2504,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0644, longitude: 14.4045 },
         estimatedTime: 120,
+        perPersonCost: 20,
       },
       {
         id: "A298",
@@ -2215,6 +2512,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0833, longitude: 14.4021 },
         estimatedTime: 120,
+        perPersonCost: 0,
       },
       {
         id: "A299",
@@ -2222,6 +2520,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0642, longitude: 14.4194 },
         estimatedTime: 150,
+        perPersonCost: 0,
       },
       {
         id: "A300",
@@ -2229,6 +2528,7 @@ const cities: City[] = [
         city: "Prague",
         location: { latitude: 50.0848, longitude: 14.4073 },
         estimatedTime: 130,
+        perPersonCost: 20,
       },
     ],
   },

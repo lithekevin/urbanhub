@@ -7,4 +7,5 @@ export interface Attraction {
         longitude: number;
     }
     estimatedTime: number; // in minutes
+    perPersonCost: number;
 }
