@@ -48,6 +48,7 @@ const Step0: React.FC<Step0Props> = ({
 }) => {
 
   const [showMarker, setShowMarker] = useState(false);
+  const [hoveredMarker, setHoveredMarker] = useState<string | null>(null); 
 
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -137,7 +138,7 @@ console.log("mapZoom: ", mapZoom)
                { // Non-selected markers
                   showMarker && 
                   cities.filter((city) => !formData.destination || !(city.name.toLowerCase() === formData.destination.toLowerCase())).map((city) => (
-                    <Marker key={city.name} position={{ lat: city.location.latitude, lng: city.location.longitude }} title={city.name} opacity={0.5} onClick={() => {handleDestinationChange(cities.find((c) => c.location.latitude === city.location.latitude && c.location.longitude === city.location.longitude)!!.name)}}/>
+                    <Marker key={city.name} position={{ lat: city.location.latitude, lng: city.location.longitude }} title={city.name} opacity={city.name === hoveredMarker ? 0.8 : 0.5} onMouseOver={() => {setHoveredMarker(city.name)}} onMouseOut={() => {setHoveredMarker(null)}} onClick={() => {handleDestinationChange(cities.find((c) => c.location.latitude === city.location.latitude && c.location.longitude === city.location.longitude)!!.name)}}/>
                   ))
                 }
                 

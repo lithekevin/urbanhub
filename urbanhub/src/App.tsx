@@ -93,22 +93,15 @@ function Main() {
             attractions = [...tripCity!.attractions]; 
           }
 
-          let index = Math.floor(Math.random() * attractions.length);
+          // if the schedule date is empty, add the first attraction in a random way starting from 8:00
 
-          if(entireDuration + attractions[index].estimatedTime < 480) {
+          if (schedule[date].length === 0) {
+            const index = Math.floor(Math.random() * attractions.length);
             const attractionID = attractions[index].id;
 
             let tripAttraction = { "id": attractionID, "startDate": "", "endDate": "" };
 
-            let startHour = 8;
-
-            if (schedule[date].length > 0) {
-              const previousAttraction = schedule[date][schedule[date].length - 1];
-              const previousAttractionID = previousAttraction.id;
-              const previousAttractionDuration = tripCity!.attractions.find((attraction) => attraction.id === previousAttractionID)!.estimatedTime;
-              const previousAttractionEndHour = parseInt(previousAttraction.endDate.split(":")[0]);
-              startHour = previousAttractionEndHour + Math.floor(previousAttractionDuration / 60);
-            }
+            const startHour = 8;
 
             const startHourString = startHour.toString().padStart(2, "0");
 
@@ -119,12 +112,128 @@ function Main() {
             tripAttraction.startDate = startHourString + ":00";
             tripAttraction.endDate = endHourString + ":00";
 
-            schedule[date].push(tripAttraction);      
+            schedule[date].push(tripAttraction);
 
             entireDuration += attractions[index].estimatedTime;
 
-            attractions.splice(index, 1); 
+            attractions.splice(index, 1);
+          } else {
+            // if the schedule date is not empty, add the attraction picking from the attraction list the one whose latitude and longitude are the closest to the previous attraction trying to ignore the estimated time
+
+            const previousAttraction = schedule[date][schedule[date].length - 1];
+
+            const previousAttractionID = previousAttraction.id;
+
+            const previousAttractionDuration = tripCity!.attractions.find((attraction) => attraction.id === previousAttractionID)!.estimatedTime;
+
+            const previousAttractionEndHour = parseInt(previousAttraction.endDate.split(":")[0]);
+
+            const previousAttractionEndMinute = parseInt(previousAttraction.endDate.split(":")[1]);
+
+            const previousAttractionEndHourMinutes = previousAttractionEndHour * 60 + previousAttractionEndMinute;
+
+            const previousAttractionEndHourMinutesString = previousAttractionEndHourMinutes.toString().padStart(4, "0");
+
+            const previousAttractionEndHourMinutesNumber = parseInt(previousAttractionEndHourMinutesString);
+
+            let minDistance = 100000
+
+            let attractionIndex = 0;
+
+            for (let i = 0; i < attractions.length; i++) {
+              const attraction = attractions[i];
+
+              const attractionLatitude = attraction.location.latitude;
+
+              const attractionLongitude = attraction.location.longitude;
+
+              const previousAttractionLatitude = tripCity!.attractions.find((attraction) => attraction.id === previousAttractionID)!.location.latitude;
+
+              const previousAttractionLongitude = tripCity!.attractions.find((attraction) => attraction.id === previousAttractionID)!.location.longitude;
+
+              const distance = Math.sqrt(Math.pow(attractionLatitude - previousAttractionLatitude, 2) + Math.pow(attractionLongitude - previousAttractionLongitude, 2));
+
+              if (distance < minDistance) {
+                minDistance = distance;
+                attractionIndex = i;
+              }
+            }
+
+            const attractionID = attractions[attractionIndex].id;
+
+            let tripAttraction = { "id": attractionID, "startDate": "", "endDate": "" };
+
+            const startHour = Math.floor(previousAttractionEndHourMinutesNumber / 60);
+
+            const startHourString = startHour.toString().padStart(2, "0");
+
+            const endHour = startHour + Math.floor(attractions[attractionIndex].estimatedTime / 60);
+
+            const endHourString = endHour.toString().padStart(2, "0");
+
+            tripAttraction.startDate = startHourString + ":00";
+
+            tripAttraction.endDate = endHourString + ":00";
+
+            schedule[date].push(tripAttraction);
+
+            entireDuration += attractions[attractionIndex].estimatedTime;
+
+            attractions.splice(attractionIndex, 1);
+
+            
+
+
+
+            
+
+
+
+            
+
+
+
+            
           }
+
+
+
+
+
+
+
+          // let index = Math.floor(Math.random() * attractions.length);
+
+          // if(entireDuration + attractions[index].estimatedTime < 480) {
+          //   const attractionID = attractions[index].id;
+
+          //   let tripAttraction = { "id": attractionID, "startDate": "", "endDate": "" };
+
+          //   let startHour = 8;
+
+          //   if (schedule[date].length > 0) {
+          //     const previousAttraction = schedule[date][schedule[date].length - 1];
+          //     const previousAttractionID = previousAttraction.id;
+          //     const previousAttractionDuration = tripCity!.attractions.find((attraction) => attraction.id === previousAttractionID)!.estimatedTime;
+          //     const previousAttractionEndHour = parseInt(previousAttraction.endDate.split(":")[0]);
+          //     startHour = previousAttractionEndHour + Math.floor(previousAttractionDuration / 60);
+          //   }
+
+          //   const startHourString = startHour.toString().padStart(2, "0");
+
+          //   const endHour = startHour + Math.floor(attractions[index].estimatedTime / 60);
+
+          //   const endHourString = endHour.toString().padStart(2, "0");
+
+          //   tripAttraction.startDate = startHourString + ":00";
+          //   tripAttraction.endDate = endHourString + ":00";
+
+          //   schedule[date].push(tripAttraction);      
+
+          //   entireDuration += attractions[index].estimatedTime;
+
+          //   attractions.splice(index, 1); 
+          // }
         }
       }
 
