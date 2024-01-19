@@ -63,8 +63,6 @@ useEffect(() => {
   }
 }, [mapLoaded, cityPosition]);
 
-console.log("mapZoom: ", mapZoom)
-
   const handleDestinationChange = (value: string) => {
     
     handleInputChange({ target: { name: 'destination', value } } as CustomEvent);
@@ -81,7 +79,6 @@ console.log("mapZoom: ", mapZoom)
         lng: selectedCity?.location.longitude || DEFAULT_LOCATION.lng,
       });
       setMapZoom(7);
-      console.log("Match is done and the zoom is set to 7");
     } else {
       setCityPosition({ lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng });
       setMapZoom(3);
