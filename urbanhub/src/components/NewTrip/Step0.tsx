@@ -3,11 +3,8 @@ import { Form, AutoComplete, Row, Col, Button, Typography } from 'antd';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import cities from '../../firebase/cities';
 import { DEFAULT_LOCATION } from '../../pages/NewTrip';
-import { set } from 'lodash';
 
 const { Title, Paragraph } = Typography;
-
-
 
 
 interface CustomEvent {
@@ -75,8 +72,8 @@ useEffect(() => {
     if (isMatch) {
       const selectedCity = cities.find((city) => city.name.toLowerCase() === value.toLowerCase());
       setCityPosition({
-        lat: selectedCity?.location.latitude || DEFAULT_LOCATION.lat,
-        lng: selectedCity?.location.longitude || DEFAULT_LOCATION.lng,
+        lat: selectedCity?.location.latitude ?? DEFAULT_LOCATION.lat,
+        lng: selectedCity?.location.longitude ?? DEFAULT_LOCATION.lng,
       });
       setMapZoom(7);
     } else {
@@ -90,14 +87,13 @@ useEffect(() => {
   };
 
   return (
-    <>
       <div className='form-container'>
         <Title level={2} className='step-title'> Choose your trip destination </Title>
         <Paragraph className='label'> Where would you want to go? </Paragraph>
         <Form.Item
           hidden={step !== 0}
           validateStatus={isDestinationValid ? 'success' : 'error'}
-          help={!isDestinationValid && 'Please type a valid city'}
+          help={(!isDestinationValid || !isDestinationSelected) && 'Please type or select on the map a valid city'}
           style={{ width: '100%' }}
         >
           <AutoComplete
@@ -126,7 +122,7 @@ useEffect(() => {
                   
                   map.addListener('zoom_changed', () => {
                     const currentZoom = map.getZoom();
-                    setMapZoom(currentZoom || 3);
+                    setMapZoom(currentZoom ?? 3);
                   });
                 }}
                               
@@ -134,7 +130,7 @@ useEffect(() => {
                 >
                { // Non-selected markers
                   showMarker && 
-                  cities.filter((city) => !formData.destination || !(city.name.toLowerCase() === formData.destination.toLowerCase())).map((city) => (
+                  cities.filter((city) => !formData.destination || (city.name.toLowerCase() !== formData.destination.toLowerCase())).map((city) => (
                     <Marker key={city.name} position={{ lat: city.location.latitude, lng: city.location.longitude }} title={city.name} opacity={city.name === hoveredMarker ? 0.8 : 0.5} onMouseOver={() => {setHoveredMarker(city.name)}} onMouseOut={() => {setHoveredMarker(null)}} onClick={() => {handleDestinationChange(cities.find((c) => c.location.latitude === city.location.latitude && c.location.longitude === city.location.longitude)!!.name)}}/>
                   ))
                 }
@@ -153,7 +149,6 @@ useEffect(() => {
           </Button>
         </div>
       </div>
-    </>
   );
 };
 
