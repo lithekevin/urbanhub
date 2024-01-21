@@ -55,7 +55,7 @@ const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers,
       <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="1. Trip Destination" className='summary-card' headStyle={{ fontSize: '24px' }}>
         <Space direction="vertical">
           {step1Data.map((item, index) => (
-            <Space key={index} align="baseline">
+            <Space key={item.value} align="baseline">
               <Text strong>{item?.label}</Text>
               <span>{item?.value}</span>
             </Space>
@@ -66,7 +66,7 @@ const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers,
       <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="2. Trip settings" className='summary-card' headStyle={{ fontSize: '24px' }}>
         <Space direction="vertical" align="center">
           {step2Data.map((item, index) => (
-            <Space key={index} direction="horizontal" align="baseline">
+            <Space key={item.value} direction="horizontal" align="baseline">
               <Text strong>{item?.label}</Text>
               <span>{item?.value}</span>
             </Space>

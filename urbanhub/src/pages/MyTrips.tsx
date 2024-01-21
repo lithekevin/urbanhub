@@ -9,6 +9,7 @@ import {
   message,
   Skeleton,
   Image,
+  Empty
 } from "antd";
 import {
   MoreOutlined,
@@ -49,7 +50,7 @@ function MyTrips() {
           let processedTrips: Trip[] = DBtrips.map((trip) => {
             let processedTrip: Trip = trip;
             processedTrip.image =
-              cities.find((city) => city.name === trip.city)?.image ||
+              cities.find((city) => city.name === trip.city)?.image ??
               defaultImageURL;
             return processedTrip;
           }).sort((a, b) => {
@@ -218,7 +219,7 @@ function MyTrips() {
               (t) =>
                 t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())
             ).length === 0
-              ? "You are not currently on any trip"
+              ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You are not currently on any trip"/>
               : trips
                   .filter(
                     (t) =>
@@ -228,7 +229,7 @@ function MyTrips() {
                   .map((trip, index) => {
                     return (
                       <TripCard
-                        key={index}
+                        key={trip.id}
                         trip={trip}
                         menu={menu}
                         enlargedCard={enlargedCard}
@@ -252,13 +253,13 @@ function MyTrips() {
 
           <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
             {trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0
-              ? "You don't have any trip planned for the future"
+              ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any trip planned for the future"/>
               : trips
                   .filter((t) => t.startDate.isAfter(dayjs()))
                   .map((trip, index) => {
                     return (
                       <TripCard
-                        key={index}
+                        key={trip.id}
                         trip={trip}
                         menu={menu}
                         enlargedCard={enlargedCard}
@@ -282,13 +283,13 @@ function MyTrips() {
 
           <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
             {trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0
-              ? "You don't have any past trip"
+              ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any past trip"/>
               : trips
                   .filter((t) => t.endDate.isBefore(dayjs()))
                   .map((trip, index) => {
                     return (
                       <TripCard
-                        key={index}
+                        key={trip.id}
                         trip={trip}
                         menu={menu}
                         enlargedCard={enlargedCard}

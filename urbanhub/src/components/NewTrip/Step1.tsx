@@ -64,7 +64,6 @@ const Step1: React.FC<Step1Props> = ({
   }
 
   return (
-    <>
       <div className='form-container'>
         <Title level={2} className='step-title'> Select your trip settings </Title>
         <Paragraph className='label'> When would you like to go? </Paragraph>
@@ -84,7 +83,7 @@ const Step1: React.FC<Step1Props> = ({
                 min={0}
                 keyboard={false}
                 value={adultsValue}
-                onChange={(value) => setAdultsValue(value || 0)}
+                onChange={(value) => setAdultsValue(value ?? 0)}
                 controls={false}
                 style={{ width: 'auto', marginRight: '8px' }}
               />
@@ -110,7 +109,7 @@ const Step1: React.FC<Step1Props> = ({
                 min={0}
                 value={kidsValue}
                 keyboard={false}
-                onChange={(value) => setKidsValue(value || 0)}
+                onChange={(value) => setKidsValue(value ?? 0)}
                 controls={false}
                 style={{ textAlign: 'center', width: 'auto', marginRight: '8px' }}
               />
@@ -151,7 +150,6 @@ const Step1: React.FC<Step1Props> = ({
           </Button>
         </div>
       </div>
-    </>
   );
 };
 
