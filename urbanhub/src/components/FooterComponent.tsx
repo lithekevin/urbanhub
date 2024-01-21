@@ -14,11 +14,6 @@ function FooterComponent() {
           <p>Creators: Alessandro Bianco, Elia Ferraro, Kevin Gjeka, Sylvie Molinatto</p>
         </Col>
       </Row>
-      <Row justify="center" style={{ padding: 0, background: 'black', color: 'white'}}>
-        <Col>
-          <p>All rights reserved &copy; 2023</p>
-        </Col>
-      </Row>
     </Footer>
     );
 }
