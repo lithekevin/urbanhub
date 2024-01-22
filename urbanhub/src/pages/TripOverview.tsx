@@ -199,6 +199,7 @@ function TripOverview() {
       startTime: dayjs(attraction.startDate, 'HH:mm'),
       endTime: dayjs(attraction.endDate, 'HH:mm')
     });
+    setSelectedAttractionId(attraction.id);
     setSelectedDay(dayjs(attraction.startDate, 'DD/MM/YYYY'))
     setEditingAttraction(attraction);
     setIsFormVisible(true);

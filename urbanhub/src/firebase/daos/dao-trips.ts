@@ -386,33 +386,52 @@ export const editAttraction = async (tripId: string, originalAttractionId : stri
 
 export const editTrip = async (tripId: string | undefined, trip: Trip | null) => {
   try {
-    // Get the trip document
-    const tripRef = doc(tripsCollection, tripId);
-    const tripSnap = await getDoc(tripRef);
+    if (!tripId || !trip) {
+      throw new Error("Invalid tripId or trip object");
+    }
 
-    if (!tripSnap.exists()) {
+    const docRef = doc(tripsCollection, tripId);
+
+    // Retrieve the existing document to get the current state
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
       console.log("No such document!");
       return null;
-    } else {  
-      const tripData = tripSnap.data();
-      tripData.schedule.length = 0; //Clear the scehdule
-
-      trip?.schedule.forEach((attractions, date) =>{
-        tripData.schedule[date.format("DD/MM/YYYY")] = [];
-        attractions.forEach((attraction) => {
-          tripData.schedule[date.format("DD/MM/YYYY")].push(attraction);
-        });
-      });
-      // Update the trip document with the new schedule
-      await updateDoc(tripRef, { schedule: tripData.schedule });
-
-      console.log("Trip updated successfully!");
     }
+
+    // Extract the schedule from the existing document
+    const existingSchedule = docSnap.data()?.schedule || {};
+
+    // Convert the trip.schedule Map to a plain object for Firestore
+    // Convert the trip.schedule Map to a plain object for Firestore
+    const updatedSchedule = Array.from(trip.schedule.entries()).reduce(
+      (acc, [date, attractions]) => {
+        const formattedDate = date.format("DD/MM/YYYY");
+        acc[formattedDate] = attractions.map(attraction => ({
+          id: attraction.id,
+          startDate: attraction.startDate.format("HH:mm"),
+          endDate: attraction.endDate.format("HH:mm"),
+        }));
+        return acc;
+      },
+      {} as Record<string, any>  // Explicitly define the type of the accumulator
+    );
+
+
+    // Merge the existing schedule with the updated schedule
+    const mergedSchedule = { ...existingSchedule, ...updatedSchedule };
+
+    // Update the document with the new schedule
+    await updateDoc(docRef, { schedule: mergedSchedule });
+
+    console.log("Trip successfully updated!");
   } catch (error) {
-    console.error("Error updating document: ", error);
+    console.error("Error editing trip: ", error);
     throw error;
   }
 };
+
 
 
 
