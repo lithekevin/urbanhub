@@ -1,5 +1,4 @@
-import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input, Modal, message, DatePicker, TimePicker, Form, Select, AutoComplete} from 'antd';
-import { GoogleMap, Marker, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete} from 'antd';
 import { Container } from "react-bootstrap";
 import { useState, useEffect } from 'react';
 import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
@@ -26,10 +25,10 @@ function TripOverview() {
   const [error, setError] = useState<boolean>(false);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [dirty, setDirty] = useState<boolean>(true);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = message.useMessage();
   const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
-  const [editing, setEditing] = useState<boolean>(true); 
+  const [editing] = useState<boolean>(true); 
   const [cityPosition, setCityPosition] = useState({
     lat: defaultCenter.lat,
     lng: defaultCenter.lng,
@@ -336,17 +335,17 @@ const renderAttractionsForDay = (day: dayjs.Dayjs) => {
   const timelineItems = attractionsForDay.flatMap((attraction, index) => {
     const items: any[] = [
       {
-        label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
+        label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")} | ${attraction.perPersonCost}€`,
         children: (
-          <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto',  alignItems: 'center' }}>
+          <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto',  alignItems: 'baseline' }}>
             <span>{attraction.name}</span>
             {editing && (
-              <Button style={{border: 'none', marginTop: '-5px'}} onClick={() => handleEditClick(attraction)}>
+              <Button style={{border: 'none', marginTop: '-8px'}} onClick={() => handleEditClick(attraction)}>
                 <EditTwoTone/>
               </Button>
             )}
             {editing && (
-              <Button style={{border: 'none', marginTop: '-5px'}} onClick={() => handleDeleteClick(attraction)}>
+              <Button style={{border: 'none', marginTop: '-8px'}} onClick={() => handleDeleteClick(attraction)}>
                 <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
               </Button>
             )}
@@ -361,12 +360,13 @@ const renderAttractionsForDay = (day: dayjs.Dayjs) => {
       items.push({
         color: 'white',
         children: (
-        <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
-          <span>{distance}</span>
-        </div>
+          <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
+            <span style={{ fontSize: '13px' }}>{distance}</span>
+          </div>
         ),
       });
     }
+    
 
     return items;
   });
