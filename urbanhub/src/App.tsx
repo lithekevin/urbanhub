@@ -88,7 +88,25 @@ function Main() {
           schedule[date] = [];
         }
 
-        let attractions: Attraction[] = [...tripCity!.attractions];
+        let attractions: Attraction[] = [];
+
+        let currentExpenses = 0;
+
+        for (const attraction of tripCity!.attractions) {
+          if (attraction.perPersonCost === 0) {
+            attractions.push(attraction);
+            continue;
+          }
+          if (
+            currentExpenses +
+              attraction.perPersonCost * (data.adults + data.kids) <=
+            tripToAdd.budget
+          ) {
+            attractions.push(attraction);
+            currentExpenses +=
+              attraction.perPersonCost * (data.adults + data.kids);
+          }
+        }
 
         for (const date in schedule) {
           const nAttractions = Math.floor(Math.random() * 4) + 3;
@@ -96,7 +114,11 @@ function Main() {
 
           for (let i = 0; i < nAttractions; i++) {
             if (attractions.length === 0) {
-              attractions = [...tripCity!.attractions];
+              for (const attraction of tripCity!.attractions) {
+                if (attraction.perPersonCost === 0) {
+                  attractions.push(attraction);
+                }
+              }
             }
 
             // if the schedule date is empty, add the first attraction in a random way starting from 8:00
