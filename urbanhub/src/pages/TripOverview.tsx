@@ -34,6 +34,7 @@ function TripOverview() {
     lng: defaultCenter.lng,
   });
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [travelModel, setTravelModel] = useState('WALKING');
   
   //used for path between attractions
   var origin : any = null;
@@ -70,6 +71,12 @@ function TripOverview() {
                 lat: trip.location.latitude,
                 lng: trip.location.longitude,
               });
+
+              const index = tripData.questions.findIndex(question => question.includes("transportation"));
+              if(index != -1){
+                tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
+              }
+
             }
           } else {
             console.log(`Trip with ID ${tripId} not found.`);
@@ -113,7 +120,7 @@ function TripOverview() {
               origin: origin,
               destination: destination,
               waypoints: waypt,
-              travelMode: google.maps.TravelMode.DRIVING,         //volendo possiamo cercare di capire dalle risposte se l'utente vuole andare a piedi o in macchina, analizzando la risposta alla domanda dei trasporti nelle preferences
+              travelMode: travelModel === "WALKING" ? google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING,         
               unitSystem: google.maps.UnitSystem.METRIC,
             },
             (result, status) => {
