@@ -92,13 +92,19 @@ function Main() {
 
         let currentExpenses = 0;
 
-        while(currentExpenses < tripToAdd.budget) {
-          const index = Math.floor(Math.random() * tripCity!.attractions.length);
-          const attractionCost = tripCity!.attractions[index].perPersonCost * (tripToAdd.nAdults + tripToAdd.nKids);
-
-          if (currentExpenses + attractionCost <= tripToAdd.budget) {
-            currentExpenses += attractionCost;
-            attractions.push(tripCity!.attractions[index]);
+        for (const attraction of tripCity!.attractions) {
+          if (attraction.perPersonCost === 0) {
+            attractions.push(attraction);
+            continue;
+          }
+          if (
+            currentExpenses +
+              attraction.perPersonCost * (data.adults + data.kids) <=
+            tripToAdd.budget
+          ) {
+            attractions.push(attraction);
+            currentExpenses +=
+              attraction.perPersonCost * (data.adults + data.kids);
           }
         }
 
@@ -108,13 +114,9 @@ function Main() {
 
           for (let i = 0; i < nAttractions; i++) {
             if (attractions.length === 0) {
-              while(currentExpenses < tripToAdd.budget) {
-                const index = Math.floor(Math.random() * tripCity!.attractions.length);
-                const attractionCost = tripCity!.attractions[index].perPersonCost * (tripToAdd.nAdults + tripToAdd.nKids);
-      
-                if (currentExpenses + attractionCost <= tripToAdd.budget) {
-                  currentExpenses += attractionCost;
-                  attractions.push(tripCity!.attractions[index]);
+              for (const attraction of tripCity!.attractions) {
+                if (attraction.perPersonCost === 0) {
+                  attractions.push(attraction);
                 }
               }
             }
