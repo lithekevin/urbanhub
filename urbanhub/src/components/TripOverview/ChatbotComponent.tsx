@@ -60,14 +60,14 @@ interface ChatbotProps {
       setScrollRatio(currentScrollRatio);
     };
   
-    useEffect(() => {
+    /*useEffect(() => {
       window.addEventListener('scroll', handleScroll);
   
       // Clean up the event listener when the component is unmounted
       return () => {
         window.removeEventListener('scroll', handleScroll);
       };
-    }, []);
+    }, []);*/
   
       const { TextArea } = Input;
   
@@ -580,7 +580,7 @@ interface ChatbotProps {
       };
   
       return (
-        <div className="chatbot-style" style={{ transform: `translateY(calc(-${scrollRatio * 100}% - 10px))` }}>
+        <div className="chatbot-style" /*style={{ transform: `translateY(calc(-${scrollRatio * 100}% - 10px))` }}*/>
         <Row justify="space-between">
           <Col xs={24} sm={24} md={11}>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start' }}>

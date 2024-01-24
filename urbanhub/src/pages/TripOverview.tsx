@@ -1,5 +1,5 @@
 import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete} from 'antd';
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { useState, useEffect } from 'react';
 import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
 import { useParams } from 'react-router-dom';
@@ -7,7 +7,7 @@ import cities from "../firebase/cities";
 import dayjs from 'dayjs';
 import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
-import { EditTwoTone, DeleteTwoTone, ClockCircleOutlined } from '@ant-design/icons';
+import { EditTwoTone, DeleteTwoTone, UserOutlined } from '@ant-design/icons';
 import colors from "../style/colors";
 import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
 import Chatbot from '../components/TripOverview/ChatbotComponent';
@@ -400,7 +400,7 @@ const renderAttractionsForDay = (day: dayjs.Dayjs) => {
       <h1 className="text-center">TRIP OVERVIEW</h1>
       <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative' }}>
         <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
-          <div style={{ flex: '0 0 33.3%', height: '100%', width: '100%' }}>
+          <div style={{ flex: '0 0 40%', height: '100%', width: '100%' }}>
           <Sidebar
               loadingState={{ value: loading, setter: setLoading }}
               errorState={{ value: error, setter: setError }}
@@ -410,7 +410,7 @@ const renderAttractionsForDay = (day: dayjs.Dayjs) => {
               activeAttractionDistances={attractionDistances}
             />
           </div>
-          <div style={{ flex: '0 0 66.6%', height: '100%' }}>
+          <div style={{ flex: '0 0 60%', height: '100%' }}>
             <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
               <div style={{ width: '100%', height: '100%' }}>
                 <GoogleMapsComponent 
@@ -425,9 +425,9 @@ const renderAttractionsForDay = (day: dayjs.Dayjs) => {
           </div>
         </Container>
       </div>
-      <footer style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#f8f9fa', padding: '10px', textAlign: 'center'}}>
+      <div style={{ position: 'fixed', bottom: 0, width: '100%', background: 'lightblue', padding: '10px', textAlign: 'center' }}>
         <Chatbot tripState={{ value: trip, setter: setTrip }} dirtyState={{ value: dirty, setter: setDirty }} undoState={{ value: undoVisibility, setter: setUndoVisibility }} messageAIState={{ value: messageAI, setter: setMessageAI }} tripId={tripId} messageApi={messageApi}/>
-      </footer>
+      </div>
     </>
   );
 };
@@ -464,8 +464,18 @@ function Sidebar(props: SidebarProps) {
       {!loadingState.value && !errorState.value && tripState.value && (
         <>
           <div style={{ marginBottom: '30px' }}>
-            <Container fluid className="position-relative d-flex flex-column align-items-left">
-              <h3>{tripState.value.city}</h3>
+            <Container fluid className="position-relative">
+              <Row className="align-items-center">
+                <Col>
+                  <h3 className="text-left">{tripState.value.city}</h3>
+                </Col>
+                <Col className="text-right">
+                  <div className="d-flex align-items-center justify-content-end">
+                    <UserOutlined style={{ fontSize: '24px', marginRight: '5px' }} />
+                    <p className="mb-0" style={{ fontSize: '24px' }}>{tripState.value.nAdults + tripState.value.nKids}</p>
+                  </div>
+                </Col>
+              </Row>
             </Container>
           </div>
           <div>
