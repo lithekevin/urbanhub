@@ -1215,7 +1215,7 @@ const cities: City[] = [
         id: "A143",
         name: "Top of the Rock Observation Deck",
         city: "New York",
-        location: { latitude: 40.7587, longitude: -73.9787 },
+        location: { latitude: 40.7593, longitude: -73.9794 },
         estimatedTime: 100,
         perPersonCost: 20,
       },

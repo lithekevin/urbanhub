@@ -207,7 +207,7 @@ function Main() {
                     )
                 );
 
-                if (distance < minDistance) {
+                if (distance < minDistance && previousAttractionID !== attraction.id) {
                   minDistance = distance;
                   attractionIndex = i;
                 }

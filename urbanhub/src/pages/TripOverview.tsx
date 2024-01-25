@@ -1,4 +1,4 @@
-import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete} from 'antd';
+import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete, Card, Space, Divider, Tag, Tooltip} from 'antd';
 import { Col, Container, Row } from "react-bootstrap";
 import { useState, useEffect } from 'react';
 import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
@@ -7,10 +7,12 @@ import cities from "../firebase/cities";
 import dayjs from 'dayjs';
 import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
-import { EditTwoTone, DeleteTwoTone, UserOutlined } from '@ant-design/icons';
+import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled   } from '@ant-design/icons';
 import colors from "../style/colors";
 import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
 import Chatbot from '../components/TripOverview/ChatbotComponent';
+import { TbCoinEuro, TbMoodKid, TbUser  } from "react-icons/tb";
+import moment from 'moment';
 
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
@@ -55,6 +57,9 @@ function TripOverview() {
   //Used for undo button and message in chatbot 
   const [undoVisibility, setUndoVisibility] = useState(false);
   const [messageAI, setMessageAI] = useState('Is there anything I can do for you?');  
+  const [totalCost, setTotalCost] = useState(0);
+  const [validSelection, setValidSelection] = useState(false);
+
 
   //Chatbot - Footer interaction
   const [footerVisible, setFooterVisible] = useState(false);
@@ -124,6 +129,13 @@ function TripOverview() {
               }
 
             }
+            let sum = 0;
+            tripData.schedule.forEach((dayAttractions) => {
+            dayAttractions.forEach((attraction) => {
+              sum += attraction.perPersonCost;
+              });
+            });
+            setTotalCost(sum);
           } else {
             console.log(`Trip with ID ${tripId} not found.`);
           }
@@ -307,35 +319,51 @@ function TripOverview() {
   
     return (
       <>
-        <Modal title={editingAttraction ? "Edit Attraction" : "Add Attraction"} open={isFormVisible} onCancel={closeForm} footer={null}>
+        <Modal title={editingAttraction ? "Edit Attraction" : "Add Attraction"} open={isFormVisible} onCancel={closeForm} footer={null} centered>
           <Form form={form} name={"formName"} onFinish={(values) => onFinish(values)}>
-          <Form.Item name="attraction" label="Attraction">
+          <Form.Item name="attraction" label="Attraction" style={{paddingTop: '10px'}} rules={[{ required: true, message: 'Please input the attraction!' }]}>
             <AutoComplete
               options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ value: attraction.name}))}
               placeholder="Type an attraction"
+              style={{width: '100%'}}
+              allowClear={{ clearIcon: <CloseSquareFilled /> }}
               filterOption={(inputValue, option) =>
                 option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
               }
               onSelect={(value) => {
                 const selectedAttraction = cities.find(city => city.name === trip?.city)?.attractions.find(attraction => attraction.name === value);
-                if(selectedAttraction)
+                if(selectedAttraction) {
                   setSelectedAttractionId(selectedAttraction.id);
+                  setValidSelection(true);
+                }
               }}
+              onBlur={() => {
+                if (!validSelection) {
+                  form.setFieldsValue({ attraction: '' });
+                }
+                setValidSelection(false);
+              }}
+              
             />
           </Form.Item>
-            <Form.Item name="date" label="Date">
-              <DatePicker format="DD/MM/YYYY" />
+            <Form.Item name="date" label="Date" rules={[{ required: true, message: 'Please choose the date!' }]}>
+              <DatePicker format="DD/MM/YYYY" disabledDate={(current) => current && current < moment().startOf('day')} style={{width: '100%'}}/>
             </Form.Item>
-            <Form.Item name="startTime" label="Start Time">
-              <TimePicker format="HH:mm" />
+            <Form.Item style={{ marginBottom: 0 }}>
+              <Form.Item label = "Start Time " name="startTime" style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginRight: '16px' }} rules={[{ required: true, message: 'Please choose the start time!' }]}>
+                <TimePicker format="HH:mm" />
+              </Form.Item>
+              <Form.Item label= "End Time " name="endTime" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
+                <TimePicker format="HH:mm" />
+              </Form.Item>
             </Form.Item>
-            <Form.Item name="endTime" label="End Time">
-              <TimePicker format="HH:mm" />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
+            <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button onClick={closeForm} style={{ marginRight: '10px' }}>
+                  Cancel
+                </Button>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
             </Form.Item>
           </Form>
         </Modal>
@@ -365,76 +393,79 @@ function TripOverview() {
     return attractionsForDay;
   }
   
-const renderAttractionsForDay = (day: dayjs.Dayjs) => {
-  let attractionsForDay: TripAttraction[] = [];
+  const renderAttractionsForDay = (day: dayjs.Dayjs) => {
+    let attractionsForDay: TripAttraction[] = [];
 
-  // Find the closest matching key
-  let closestKey: dayjs.Dayjs | null = null;
-  let minDifference: number | null = null;
+    // Find the closest matching key
+    let closestKey: dayjs.Dayjs | null = null;
+    let minDifference: number | null = null;
 
-  trip?.schedule.forEach((attractions, key) => {
-    const difference = Math.abs(day.diff(key, 'days'));
+    trip?.schedule.forEach((attractions, key) => {
+      const difference = Math.abs(day.diff(key, 'days'));
 
-    if (minDifference === null || difference < minDifference) {
-      minDifference = difference;
-      closestKey = key;
+      if (minDifference === null || difference < minDifference) {
+        minDifference = difference;
+        closestKey = key;
+      }
+    });
+
+    if (closestKey !== null) {
+      attractionsForDay = trip?.schedule.get(closestKey) || [];
     }
-  });
 
-  if (closestKey !== null) {
-    attractionsForDay = trip?.schedule.get(closestKey) || [];
-  }
+    const timelineItems = attractionsForDay.flatMap((attraction, index) => {
+      const items: any[] = [
+        {
+          label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
+          children: (
+            <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gridTemplateRows: 'auto auto', alignItems: 'start', width: '100%' }}>
+              <span style={{ gridColumn: '1', gridRow: '1', paddingBottom: '5px'}}>{attraction.name}</span>
+              <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '55px' }}> {attraction.perPersonCost}</Tag>
+              {editing && (
+                <Button style={{border: 'none', marginTop: '-8px', gridColumn: '2', gridRow: '1 / span 2'}} onClick={() => handleEditClick(attraction)}>
+                  <EditTwoTone/>
+                </Button>
+              )}
+              {editing && (
+                <Button style={{border: 'none', marginTop: '-8px', gridColumn: '3', gridRow: '1 / span 2'}} onClick={() => handleDeleteClick(attraction)}>
+                  <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
+                </Button>
+              )}
+            </div>
+          ),
+        },
+      ];
 
-  const timelineItems = attractionsForDay.flatMap((attraction, index) => {
-    const items: any[] = [
-      {
-        label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")} | ${attraction.perPersonCost}€`,
-        children: (
-          <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto',  alignItems: 'baseline' }}>
-            <span>{attraction.name}</span>
-            {editing && (
-              <Button style={{border: 'none', marginTop: '-8px'}} onClick={() => handleEditClick(attraction)}>
-                <EditTwoTone/>
-              </Button>
-            )}
-            {editing && (
-              <Button style={{border: 'none', marginTop: '-8px'}} onClick={() => handleDeleteClick(attraction)}>
-                <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
-              </Button>
-            )}
-          </div>
-        ),
-      },
-    ];
+      // Add distance text between attractions
+      if (index < attractionsForDay.length - 1) {
+        const distance = attractionDistances[index];
+        items.push({
+          color: 'trasparent',
+          children: (
+            <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
+              <span style={{ fontSize: '13px' }}>{distance}</span>
+            </div>
+          ),
+        });
+      }
+      
 
-    // Add distance text between attractions
-    if (index < attractionsForDay.length - 1) {
-      const distance = attractionDistances[index];
-      items.push({
-        color: 'white',
-        children: (
-          <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '13px' }}>{distance}</span>
-          </div>
-        ),
-      });
-    }
-    
+      return items;
+    });
 
-    return items;
-  });
-
-  return (
-    <>
-      <Timeline mode="left" items={timelineItems} style={{ marginLeft: '-150px' }} />
-      <center>
-        <Button type="primary" onClick={() => openForm(day)}>
-          Add Attraction
-        </Button>
-      </center>
-    </>
-  );
-};
+    return (
+      <>
+        <div style={{  }}>
+          <Timeline mode="left" items={timelineItems}  />
+        </div>
+        <center>
+          <Button type="primary" onClick={() => openForm(day)}>
+            Add Attraction
+          </Button>
+        </center>
+      </>
+    );
+  };
 
   const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
@@ -450,10 +481,21 @@ const renderAttractionsForDay = (day: dayjs.Dayjs) => {
 
   return (
     <>
-      <h1 className="text-center">TRIP OVERVIEW</h1>
-      <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginTop: '10px', width: '40%', margin: '0 auto' }}>
+        <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}><TbUser style={{ marginRight: '5px' }} /> Adults : {trip?.nAdults}</span>
+        <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}><TbMoodKid style={{ marginRight: '5px' }} /> Kids : {trip?.nKids}</span>
+        <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center', color: (trip && totalCost > trip.budget) ? 'red' : 'inherit' }}>
+          <TbCoinEuro style={{ marginRight: '5px' }} />  
+          Total Cost : {(trip && totalCost > trip.budget) ? <Tooltip title="You have surpassed your budget">{totalCost}</Tooltip> : totalCost}
+        </span>
+      </div>
+      <div>
+        <Divider/>
+      </div>
+      <h1 className="text-center">Trip Overview</h1>
+      <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative', marginTop: '20px' }}>
         <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
-          <div style={{ flex: '0 0 40%', height: '100%', width: '100%' }}>
+          <div style={{ flex: '0 0 50%', height: '100%', width: '100%' , overflow: 'auto'}}>
           <Sidebar
               loadingState={{ value: loading, setter: setLoading }}
               errorState={{ value: error, setter: setError }}
@@ -463,7 +505,7 @@ const renderAttractionsForDay = (day: dayjs.Dayjs) => {
               activeAttractionDistances={attractionDistances}
             />
           </div>
-          <div style={{ flex: '0 0 60%', height: '100%' }}>
+          <div style={{ flex: '0 0 50%', height: '100%', paddingTop: '70px' }}>
             <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
               <div style={{ width: '100%', height: '100%' }}>
                 <GoogleMapsComponent 
@@ -473,9 +515,9 @@ const renderAttractionsForDay = (day: dayjs.Dayjs) => {
                   defaultCenter={defaultCenter}
                 />
               </div>
-            {renderAttractionForm()}
             </Container>
           </div>
+          {renderAttractionForm()}
         </Container>
       </div>
       <div style={{ width: '100%', textAlign: 'center', position: 'fixed', bottom: footerVisible ? footerHeight + 'px' : 0 }}>
@@ -508,7 +550,7 @@ interface SidebarProps {
 }
 
 function Sidebar(props: SidebarProps) {
-  const { loadingState, errorState, tripState, activeKeyState, dailyActivities, activeAttractionDistances } = props; 
+  const { loadingState, errorState, tripState, activeKeyState, dailyActivities} = props; 
 
   return (
     <>
@@ -522,16 +564,11 @@ function Sidebar(props: SidebarProps) {
                 <Col>
                   <h3 className="text-left">{tripState.value.city}</h3>
                 </Col>
-                <Col className="text-right">
-                  <div className="d-flex align-items-center justify-content-end">
-                    <UserOutlined style={{ fontSize: '24px', marginRight: '5px' }} />
-                    <p className="mb-0" style={{ fontSize: '24px' }}>{tripState.value.nAdults + tripState.value.nKids}</p>
-                  </div>
-                </Col>
+                
               </Row>
             </Container>
           </div>
-          <div>
+          <div style={{ overflow: 'auto', maxHeight: '50vh' }}>
             <Collapse size="large" items={dailyActivities}  accordion={true} activeKey={activeKeyState.value} onChange={(keys) => activeKeyState.setter(keys)}/>
           </div>
         </>
