@@ -11,7 +11,7 @@ import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled   } fr
 import colors from "../style/colors";
 import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
 import Chatbot from '../components/TripOverview/ChatbotComponent';
-import { TbCoinEuro, TbMoodKid, TbUser  } from "react-icons/tb";
+import { TbCar, TbCoinEuro, TbMoodKid, TbUser, TbWalk,  } from "react-icons/tb";
 import moment from 'moment';
 
 
@@ -394,6 +394,7 @@ function TripOverview() {
   }
   
   const renderAttractionsForDay = (day: dayjs.Dayjs) => {
+
     let attractionsForDay: TripAttraction[] = [];
 
     // Find the closest matching key
@@ -439,11 +440,25 @@ function TripOverview() {
       // Add distance text between attractions
       if (index < attractionsForDay.length - 1) {
         const distance = attractionDistances[index];
+
+        let distanceInMeter = 0;
+
+        if(distance){
+          if(distance.includes("km")){
+            distanceInMeter = parseFloat(distance.split(" ")[0]) * 1000;
+          }
+          else{
+            distanceInMeter = parseFloat(distance.split(" ")[0]);
+          }
+        }
+
+        
+
         items.push({
           color: 'trasparent',
           children: (
             <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
-              <span style={{ fontSize: '13px' }}>{distance}</span>
+              <span style={{ fontSize: '13px' }}>{travelModel === "DRIVING" ? <TbCar className='fs-5 me-2' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5 me-2'/> : <TbWalk className='fs-5 me-2' /> )}{distance}</span>
             </div>
           ),
         });
