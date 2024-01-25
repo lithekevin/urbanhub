@@ -135,7 +135,7 @@ function TripOverview() {
               sum += attraction.perPersonCost;
               });
             });
-            setTotalCost(sum);
+            setTotalCost(sum * (tripData.nAdults + tripData.nKids));
           } else {
             console.log(`Trip with ID ${tripId} not found.`);
           }
@@ -420,7 +420,7 @@ function TripOverview() {
           children: (
             <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gridTemplateRows: 'auto auto', alignItems: 'start', width: '100%' }}>
               <span style={{ gridColumn: '1', gridRow: '1', paddingBottom: '5px'}}>{attraction.name}</span>
-              <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '55px' }}> {attraction.perPersonCost}</Tag>
+              <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '55px' }}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
               {editing && (
                 <Button style={{border: 'none', marginTop: '-8px', gridColumn: '2', gridRow: '1 / span 2'}} onClick={() => handleEditClick(attraction)}>
                   <EditTwoTone/>
