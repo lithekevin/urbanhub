@@ -56,6 +56,52 @@ function TripOverview() {
   const [undoVisibility, setUndoVisibility] = useState(false);
   const [messageAI, setMessageAI] = useState('Is there anything I can do for you?');  
 
+  //Chatbot - Footer interaction
+  const [footerVisible, setFooterVisible] = useState(false);
+  const [footerHeight, setFooterHeight] = useState(0);
+
+  // Add an effect to detect when the footer becomes visible
+  useEffect(() => {
+    // Function to calculate the visible height of the footer
+    const getVisibleFooterHeight = () => {
+      const footer = document.querySelector('.footer-style');
+      if (footer) {
+        const footerRect = footer.getBoundingClientRect();
+        if (footerRect.top >= 0 && footerRect.bottom <= window.innerHeight) {
+          return footerRect.height;
+        } else {
+          return window.innerHeight - footerRect.top; // Footer is partially visible
+        }
+      }
+      return 0; // Footer not found
+    };
+  
+    // Update the state when the footer visibility changes
+    const handleScroll = () => {
+      const footer = document.querySelector('.footer-style');
+      if (footer) {
+        const footerBounds = footer.getBoundingClientRect();
+        // Check if any part of the footer is visible in the viewport
+        const isVisible = footerBounds.top < window.innerHeight && footerBounds.bottom >= 0;
+        if (isVisible) {
+          const footerHeight = getVisibleFooterHeight();
+          setFooterHeight(footerHeight);
+          setFooterVisible(true);
+        }else{
+          setFooterVisible(false);
+        }
+      }
+    };
+  
+    // Listen for scroll events to detect footer visibility changes
+    window.addEventListener('scroll', handleScroll);
+    
+    // Clean up event listener
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);  
+
   useEffect(() => {
     // load trip details from firebase based on tripId
     async function loadTripDetails() {
@@ -432,7 +478,7 @@ const renderAttractionsForDay = (day: dayjs.Dayjs) => {
           </div>
         </Container>
       </div>
-      <div style={{ position: 'fixed', bottom: 0, width: '100%', background: 'lightblue', padding: '10px', textAlign: 'center' }}>
+      <div style={{ width: '100%', textAlign: 'center', position: 'fixed', bottom: footerVisible ? footerHeight + 'px' : 0 }}>
         <Chatbot tripState={{ value: trip, setter: setTrip }} dirtyState={{ value: dirty, setter: setDirty }} undoState={{ value: undoVisibility, setter: setUndoVisibility }} messageAIState={{ value: messageAI, setter: setMessageAI }} tripId={tripId} messageApi={messageApi}/>
       </div>
     </>
