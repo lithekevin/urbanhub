@@ -495,7 +495,7 @@ function TripOverview() {
       <h1 className="text-center">Trip Overview</h1>
       <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative', marginTop: '20px' }}>
         <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
-          <div style={{ flex: '0 0 50%', height: '100%', width: '100%' , overflow: 'auto'}}>
+          <div style={{ flex: '0 0 50%', height: '100%', width: '100%'}}>
           <Sidebar
               loadingState={{ value: loading, setter: setLoading }}
               errorState={{ value: error, setter: setError }}
