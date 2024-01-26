@@ -2,10 +2,6 @@
  * COMMON STYLES
  ************/
 
- .content-padding-top {
-    padding-top: 30px;
-}
-
 .wrapper {
     min-height: 100vh;
     display: flex;

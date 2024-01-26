@@ -1,22 +1,7 @@
 import { FC, useEffect, useState } from "react";
-import { Alert, Card, Container, Spinner, Row, Col } from "react-bootstrap";
-import {
-  Typography,
-  Dropdown,
-  Menu,
-  Button,
-  Modal,
-  message,
-  Skeleton,
-  Image,
-  Empty
-} from "antd";
-import {
-  MoreOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
+import { Card, Row, Col  } from "react-bootstrap";
+import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton, Image, Empty, Divider, Spin, Alert } from "antd";
+import { MoreOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
 import { Link } from "react-router-dom";
@@ -25,9 +10,8 @@ import colors from "../style/colors";
 import dayjs from "dayjs";
 import cities from "../firebase/cities";
 
-const { Title } = Typography;
-const defaultImageURL =
-  "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+const { Title, Paragraph } = Typography;
+const defaultImageURL = "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 function MyTrips() {
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -42,7 +26,6 @@ function MyTrips() {
 
   useEffect(() => {
     // load trips from firebase
-
     async function loadTrips() {
       setLoading(true);
       getAllTrips()
@@ -172,49 +155,52 @@ function MyTrips() {
   );
 
   return (
-    <Container className="d-flex flex-column align-items-center content-padding-top">
-      {contextHolder}
-
-      <Container
-        fluid
-        className="position-relative d-flex flex-column align-items-center"
-      >
-        <Title className="text-center" level={1}>
-          MY TRIPS
-        </Title>
-      </Container>
-
+    <>
       {loading && (
-        <div className="d-flex flex-column justify-content-center align-items-center">
-          <Spinner animation="border" role="status" className="mb-4" />
-          <Title level={2}>Loading...</Title>
-        </div>
+        <Spin tip="Loading" size="large" fullscreen>
+        <div> Loading </div>
+        </Spin>
       )}
 
       {error && (
-        <Col xs={11} md={9} lg={5}>
-          <Alert variant="danger">
-            <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-            <p>You got an error while loading your trips.</p>
-            <span>Please refresh the page.</span>
-          </Alert>
-        </Col>
+      <Col>
+        <Alert
+          message={
+            <Title level={3}>
+              Oh snap! You got an error!
+            </Title>
+          }
+          showIcon
+          description={
+            <>
+              <Paragraph> Error while loading trips. </Paragraph>
+              <Paragraph> Please refresh the page. </Paragraph>
+            </>
+          }
+          type="error"
+          style={{width: 'fit-content', margin: 'auto', marginTop: '20px'}}
+        />
+      </Col>
       )}
 
+      {contextHolder}
+
+      <Divider>
+        <Title level={1} style={{ marginBottom: '5px' }}>
+          MY TRIPS
+        </Title>
+        <AddTripButton/>
+      </Divider>
+      
       {!loading && !error && (
         <>
-          <AddTripButton />
-
-          <Container
-            fluid
-            className="position-relative d-flex flex-column align-items-start"
-          >
-            <Title className="text-center ps-5" level={1}>
+          <Divider orientation="left">
+            <Title level={3}>
               Ongoing trips
             </Title>
-          </Container>
-
-          <Row className="d-flex flex-row justify-content-center w-100 mt-2 mb-5 px-5">
+          </Divider>
+    
+          <Row className="d-flex flex-row justify-content-center">
             {trips.filter(
               (t) =>
                 t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())
@@ -242,16 +228,13 @@ function MyTrips() {
                   })}
           </Row>
 
-          <Container
-            fluid
-            className="position-relative d-flex flex-column align-items-start"
-          >
-            <Title className="text-center ps-5" level={1}>
+          <Divider orientation="left">
+            <Title level={3}>
               Future trips
             </Title>
-          </Container>
+          </Divider>
 
-          <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
+          <Row className="d-flex flex-row justify-content-center">
             {trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0
               ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any trip planned for the future"/>
               : trips
@@ -272,16 +255,13 @@ function MyTrips() {
                   })}
           </Row>
 
-          <Container
-            fluid
-            className="position-relative d-flex flex-column align-items-start"
-          >
-            <Title className="text-center ps-5" level={1}>
+          <Divider orientation="left">
+            <Title level={3}>
               Past trips
             </Title>
-          </Container>
+          </Divider>
 
-          <Row className="d-flex flex-row justify-content-center w-100 mt-2 px-5">
+          <Row className="d-flex flex-row justify-content-center">
             {trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0
               ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any past trip"/>
               : trips
@@ -303,7 +283,7 @@ function MyTrips() {
           </Row>
         </>
       )}
-    </Container>
+    </>
   );
 }
 
@@ -392,6 +372,7 @@ function TripCard(props: Readonly<{
   );
 }
 
+
 function AddTripButton() {
   return (
     <Button
@@ -401,7 +382,7 @@ function AddTripButton() {
       style={{
         backgroundColor: colors.hardBackgroundColor,
         color: colors.whiteBackgroundColor,
-        marginTop: "30px",
+        marginTop: "10px",
         paddingBottom: "38px",
         textAlign: "center",
         fontSize: "20px",
