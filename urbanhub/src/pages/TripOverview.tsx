@@ -568,7 +568,7 @@ function Sidebar(props: SidebarProps) {
               </Row>
             </Container>
           </div>
-          <div style={{ overflow: 'auto', maxHeight: '50vh' }}>
+          <div style={{ overflow: 'auto', maxHeight: '65vh' }}>
             <Collapse size="large" items={dailyActivities}  accordion={true} activeKey={activeKeyState.value} onChange={(keys) => activeKeyState.setter(keys)}/>
           </div>
         </>
