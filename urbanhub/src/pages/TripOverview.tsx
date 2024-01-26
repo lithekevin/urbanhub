@@ -11,7 +11,7 @@ import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled   } fr
 import colors from "../style/colors";
 import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
 import Chatbot from '../components/TripOverview/ChatbotComponent';
-import { TbCoinEuro, TbMoodKid, TbUser  } from "react-icons/tb";
+import { TbCar, TbCoinEuro, TbMoodKid, TbUser, TbWalk,  } from "react-icons/tb";
 import moment from 'moment';
 
 
@@ -135,7 +135,7 @@ function TripOverview() {
               sum += attraction.perPersonCost;
               });
             });
-            setTotalCost(sum);
+            setTotalCost(sum * (tripData.nAdults + tripData.nKids));
           } else {
             console.log(`Trip with ID ${tripId} not found.`);
           }
@@ -394,6 +394,7 @@ function TripOverview() {
   }
   
   const renderAttractionsForDay = (day: dayjs.Dayjs) => {
+
     let attractionsForDay: TripAttraction[] = [];
 
     // Find the closest matching key
@@ -420,7 +421,7 @@ function TripOverview() {
           children: (
             <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gridTemplateRows: 'auto auto', alignItems: 'start', width: '100%' }}>
               <span style={{ gridColumn: '1', gridRow: '1', paddingBottom: '5px'}}>{attraction.name}</span>
-              <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '55px' }}> {attraction.perPersonCost}</Tag>
+              <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '60px' }}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
               {editing && (
                 <Button style={{border: 'none', marginTop: '-8px', gridColumn: '2', gridRow: '1 / span 2'}} onClick={() => handleEditClick(attraction)}>
                   <EditTwoTone/>
@@ -439,11 +440,25 @@ function TripOverview() {
       // Add distance text between attractions
       if (index < attractionsForDay.length - 1) {
         const distance = attractionDistances[index];
+
+        let distanceInMeter = 0;
+
+        if(distance){
+          if(distance.includes("km")){
+            distanceInMeter = parseFloat(distance.split(" ")[0]) * 1000;
+          }
+          else{
+            distanceInMeter = parseFloat(distance.split(" ")[0]);
+          }
+        }
+
+        
+
         items.push({
           color: 'trasparent',
           children: (
             <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
-              <span style={{ fontSize: '13px' }}>{distance}</span>
+              <span style={{ fontSize: '13px' }}>{travelModel === "DRIVING" ? <TbCar className='fs-5 me-2' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5 me-2'/> : <TbWalk className='fs-5 me-2' /> )}{distance}</span>
             </div>
           ),
         });
@@ -495,7 +510,7 @@ function TripOverview() {
       <h1 className="text-center">Trip Overview</h1>
       <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative', marginTop: '20px' }}>
         <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
-          <div style={{ flex: '0 0 50%', height: '100%', width: '100%' , overflow: 'auto'}}>
+          <div style={{ flex: '0 0 50%', height: '100%', width: '100%'}}>
           <Sidebar
               loadingState={{ value: loading, setter: setLoading }}
               errorState={{ value: error, setter: setError }}
