@@ -197,7 +197,7 @@ function MyTrips() {
          
           <Container
             fluid
-            className="position-relative d-flex flex-column align-items-center w-100 mt-2 mb-5 px-5"
+            className="position-relative d-flex flex-column align-items-center w-100 mt-2 px-5"
           >
             <Divider orientation="left">
               <Title level={3}>
@@ -235,7 +235,7 @@ function MyTrips() {
 
           <Container
             fluid
-            className="position-relative d-flex flex-column align-items-center w-100 mt-2 mb-5 px-5"
+            className="position-relative d-flex flex-column align-items-center w-100 mt-2 px-5"
           >
             <Divider orientation="left">
               <Title level={3}>
@@ -266,7 +266,7 @@ function MyTrips() {
 
           <Container
             fluid
-            className="position-relative d-flex flex-column align-items-center w-100 mt-2 mb-5 px-5"
+            className="position-relative d-flex flex-column align-items-center w-100 mt-2 px-5"
           >          
             <Divider orientation="left">
               <Title level={3}>
