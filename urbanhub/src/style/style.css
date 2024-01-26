@@ -75,6 +75,36 @@
     transition: transform 0.3s ease;
 }
 
+.assistant-container {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .assistant-content {
+    position: relative;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .assistant-message {
+    position: relative;
+  }
+  
+  .assistant-image {
+    width: auto;
+    height: 70px;
+    margin-right: 10px;
+  }
+  
+  .user-input-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-input-space {
+    width: 100%;
+  }
 /************
  * NAVBAR
  ************/

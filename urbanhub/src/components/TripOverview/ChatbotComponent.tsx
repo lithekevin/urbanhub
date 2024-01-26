@@ -1,11 +1,10 @@
-import { CollapseProps, Timeline, Collapse, Row, Col, Button, Space, Input, Modal, message, DatePicker, TimePicker, Form, Select, AutoComplete} from 'antd';
-import { useState, useEffect } from 'react';
-import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip, editTrip } from "../../firebase/daos/dao-trips";
+import { Row, Col, Button, Space, Input } from 'antd';
+import { useState } from 'react';
+import { editAttraction, deleteAttraction, addAttractionToTrip, editTrip } from "../../firebase/daos/dao-trips";
 import cities from "../../firebase/cities";
 import dayjs from 'dayjs';
 import { Trip } from "../../models/trip";
 import { TripAttraction } from '../../models/tripAttraction';
-import GoogleMapsComponent from "./GoogleMapsComponent";
 
 /*
    USAGE:
@@ -40,34 +39,9 @@ interface ChatbotProps {
   
   function Chatbot(props: ChatbotProps) {
     const { tripState, dirtyState, undoState, messageAIState, tripId, messageApi } = props;
-    const [scrollRatio, setScrollRatio] = useState(0);
+  
     //Used for undo operation
     const [tripUpdates, setTripUpdates] = useState<Trip | null>(null);
-  
-    const handleScroll = () => {
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-      const windowHeight = window.innerHeight;
-      const documentHeight = Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight
-      );
-  
-      const maxScroll = documentHeight - windowHeight;
-      const currentScrollRatio = scrollTop / maxScroll;
-      setScrollRatio(currentScrollRatio);
-    };
-  
-    /*useEffect(() => {
-      window.addEventListener('scroll', handleScroll);
-  
-      // Clean up the event listener when the component is unmounted
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-      };
-    }, []);*/
   
       const { TextArea } = Input;
   
@@ -99,7 +73,7 @@ interface ChatbotProps {
     
   
         if(matchDelete){
-          const [, action, inputAttraction, date] = matchDelete;
+          const [, , inputAttraction, date] = matchDelete;
   
           //Check if date is valid and if it is in the range of the trip
           const attractionDate = dayjs(date, 'DD/MM/YYYY', true);
@@ -186,7 +160,7 @@ interface ChatbotProps {
             }
           })();
         } else if (matchAdd){
-          const [, action, attractionName, date, startTime, endTime] = matchAdd;
+          const [, , attractionName, date, startTime, endTime] = matchAdd;
           
           //Check if date is valid and if it is in the range of the trip
           const attractionDate = dayjs(date, 'DD/MM/YYYY', true);
@@ -300,7 +274,7 @@ interface ChatbotProps {
             setTripUpdates(tempTrip);
           }      
         } else if (matchEdit){
-          const [, action, attractionName, date, startTime, endTime] = matchEdit;
+          const [, , attractionName, date, startTime, endTime] = matchEdit;
           
           //Check if date is valid and if it is in the range of the trip
           const attractionDate = dayjs(date, 'DD/MM/YYYY', true);
@@ -413,7 +387,7 @@ interface ChatbotProps {
             setTripUpdates(tempTrip);
           }      
         } else if(matchEditDay){
-          const [, action, attractionName, oldDate, newDate, startTime, endTime] = matchEditDay;
+          const [, , attractionName, oldDate, newDate, startTime, endTime] = matchEditDay;
 
           //Check if oldDate is valid and if it is in the range of the trip
           const attractionDateOld = dayjs(oldDate, 'DD/MM/YYYY', true);
@@ -580,19 +554,19 @@ interface ChatbotProps {
       };
   
       return (
-        <div className="chatbot-style" /*style={{ transform: `translateY(calc(-${scrollRatio * 100}% - 10px))` }}*/>
+        <div className="chatbot-style">
         <Row justify="space-between">
           <Col xs={24} sm={24} md={11}>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start' }}>
-              <img src={"/robotassistant.png"} alt="UrbanHub assistant" style={{ width: 'auto', height: '70px', marginRight: '10px' }} />
-              <div style={{ flex: '1', position: 'relative', backgroundColor: '#fff', padding: '10px', borderRadius: '10px' }}>
-                <div style={{ position: 'absolute', top: '50%', left: '-10px', transform: 'translateY(-50%)', width: 0, height: 0, borderTop: '10px solid transparent', borderBottom: '10px solid transparent', borderRight: '10px solid #fff', backgroundColor: 'white' }} />
+            <div className="assistant-container">
+              <img src={"/robotassistant.png"} alt="UrbanHub assistant" className="assistant-image" />
+              <div className="assistant-message">
+                <div className="assistant-triangle" />
                 <p>{messageAIState.value}</p>
               </div>
             </div>
           </Col>
           <Col xs={24} sm={24} md={11}>
-            <Space.Compact style={{ width: '100%' }}>
+            <Space.Compact className='user-input-space'>
             <TextArea placeholder="Ask something to UrbanHub..." value={inputValue} onChange={handleInputChange} autoSize={{ minRows: 1, maxRows: 3 }} />
               <Button type="primary" onClick={handleSendClick}>Send</Button>
               {undoState.value && (<Button type="primary" onClick={handleUndoClick}>Undo</Button>)}
