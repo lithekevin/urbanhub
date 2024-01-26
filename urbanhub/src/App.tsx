@@ -207,7 +207,10 @@ function Main() {
                     )
                 );
 
-                if (distance < minDistance && previousAttractionID !== attraction.id) {
+                if (
+                  distance < minDistance &&
+                  previousAttractionID !== attraction.id
+                ) {
                   minDistance = distance;
                   attractionIndex = i;
                 }
@@ -237,9 +240,9 @@ function Main() {
 
               tripAttraction.endDate = endHourString + ":00";
 
-              schedule[date].push(tripAttraction);
-
               entireDuration += attractions[attractionIndex].estimatedTime;
+
+              schedule[date].push(tripAttraction);
 
               attractions.splice(attractionIndex, 1);
             }
