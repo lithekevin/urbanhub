@@ -1,4 +1,4 @@
-import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete, Card, Space, Divider, Tag, Tooltip} from 'antd';
+import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete, Divider, Tag, Tooltip} from 'antd';
 import { Col, Container, Row } from "react-bootstrap";
 import { useState, useEffect } from 'react';
 import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
@@ -124,7 +124,7 @@ function TripOverview() {
               });
 
               const index = tripData.questions.findIndex(question => question.includes("transportation"));
-              if(index != -1){
+              if(index !== -1){
                 tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
               }
 
