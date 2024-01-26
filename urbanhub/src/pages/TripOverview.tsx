@@ -1,4 +1,5 @@
-import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete, Divider, Tag, Tooltip} from 'antd';
+import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, 
+         AutoComplete, Divider, Tag, Tooltip, Flex } from 'antd';
 import { Col, Container, Row } from "react-bootstrap";
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -15,7 +16,7 @@ import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent"
 import Chatbot from '../components/TripOverview/ChatbotComponent';
 import { TbCar, TbCoinEuro, TbMoodKid, TbUser, TbWalk,  } from "react-icons/tb";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
 
@@ -498,17 +499,27 @@ function TripOverview() {
 
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginTop: '10px', width: '40%', margin: '0 auto' }}>
-        <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}><TbUser style={{ marginRight: '5px' }} /> Adults : {trip?.nAdults}</span>
-        <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}><TbMoodKid style={{ marginRight: '5px' }} /> Kids : {trip?.nKids}</span>
-        <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center', color: (trip && totalCost > trip.budget) ? 'red' : 'inherit' }}>
-          <TbCoinEuro style={{ marginRight: '5px' }} />  
-          Total Cost :  {(trip && totalCost > trip.budget) ? <Tooltip title="You have surpassed your budget">{totalCost}</Tooltip> : totalCost}
+      <Flex justify='space-evenly' align='center' style={{ fontSize: '25px'}}>
+        <span><TbUser/> <Text> Adults : {trip?.nAdults} </Text> </span>
+        <span><TbMoodKid/> <Text> Kids : {trip?.nKids} </Text> </span>
+        <span>
+        {(trip && totalCost > trip.budget) ? 
+        <>
+        <Tooltip title="You have surpassed your budget" placement='bottom'>
+          <TbCoinEuro style={{color: 'red'}}/>  
+          <Text style={{color: 'red'}}> Total Cost : {totalCost} </Text> 
+        </Tooltip> 
+        </> :
+        <>
+        <TbCoinEuro/>
+          <Text> Total Cost : {totalCost} </Text>
+        </>
+        }
         </span>
-      </div>
-      <div>
-        <Divider/>
-      </div>
+      </Flex>
+        
+      <Divider style={{ marginTop: '10px'}}/>
+      
       <Title level={1} style={{ textAlign: 'center' }}>Trip Overview</Title>
       <div className='main-div'>
         <Container className="d-flex align-items-stretch height-full" >
