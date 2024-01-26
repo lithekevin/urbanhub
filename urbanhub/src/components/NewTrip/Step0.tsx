@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, AutoComplete, Row, Col, Button, Typography } from "antd";
-import { GoogleMap, Marker } from "@react-google-maps/api";
+import { GoogleMap, Marker, OverlayView } from "@react-google-maps/api";
 import cities from "../../firebase/cities";
 import { DEFAULT_LOCATION } from "../../pages/NewTrip";
 
@@ -136,7 +136,7 @@ const Step0: React.FC<Step0Props> = ({
               key={step}
               mapContainerStyle={{
                 width: "100%",
-                height: "300px",
+                height: "375px",
                 borderRadius: "10px",
                 boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)",
               }}
@@ -152,7 +152,6 @@ const Step0: React.FC<Step0Props> = ({
               }}
             >
               {
-                // Non-selected markers
                 showMarker &&
                   cities
                     .filter(
@@ -162,31 +161,46 @@ const Step0: React.FC<Step0Props> = ({
                           formData.destination.toLowerCase()
                     )
                     .map((city) => (
-                      <Marker
-                        key={city.name}
-                        position={{
-                          lat: city.location.latitude,
-                          lng: city.location.longitude,
-                        }}
-                        title={city.name}
-                        opacity={city.name === hoveredMarker ? 0.8 : 0.5}
-                        onMouseOver={(e) => {
-                          setHoveredMarker(city.name);
-                        }}
-                        onMouseOut={() => {
-                          setHoveredMarker(null);
-                        }}
-                        onClick={() => {
-                          handleDestinationChange(
-                            cities.find(
-                              (c) =>
-                                c.location.latitude ===
-                                  city.location.latitude &&
-                                c.location.longitude === city.location.longitude
-                            )!!.name
-                          );
-                        }}
-                      />
+                      <React.Fragment key={city.name}>
+                        <Marker
+                          position={{
+                            lat: city.location.latitude,
+                            lng: city.location.longitude,
+                          }}
+                          title={city.name}
+                          opacity={city.name === hoveredMarker ? 0.8 : 0.5}
+                          onMouseOver={() => {
+                            setHoveredMarker(city.name);
+                          }}
+                          onMouseOut={() => {
+                            setHoveredMarker(null);
+                          }}
+                          onClick={() => {
+                            handleDestinationChange(
+                              cities.find(
+                                (c) =>
+                                  c.location.latitude ===
+                                    city.location.latitude &&
+                                  c.location.longitude === city.location.longitude
+                              )!!.name
+                            );
+                          }}
+                        />
+                        {city.name === hoveredMarker && (
+                          <OverlayView
+                            position={{
+                              lat: city.location.latitude,
+                              lng: city.location.longitude,
+                            }}
+                            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                          >
+                            <div className={`citiesMapMarkerHoveredContainer`}>
+                              <img src={city.image} alt={city.name} className="citiesMapMarkerHoveredImage"/>
+                              <h3 className="d-flex w-100 justify-content-center mt-1">{city.name}</h3>
+                            </div>
+                          </OverlayView>
+                        )}
+                      </React.Fragment>
                     ))
               }
 
