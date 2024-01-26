@@ -508,9 +508,9 @@ function TripOverview() {
         <Divider/>
       </div>
       <h1 className="text-center">Trip Overview</h1>
-      <div style={{ minHeight: 'calc(100vh - 30px)', position: 'relative', marginTop: '20px' }}>
-        <Container className="d-flex align-items-stretch" style={{ height: '100%' }}>
-          <div style={{ flex: '0 0 50%', height: '100%', width: '100%'}}>
+      <div className='main-div'>
+        <Container className="d-flex align-items-stretch height-full" >
+          <div className='sidebar-space'>
           <Sidebar
               loadingState={{ value: loading, setter: setLoading }}
               errorState={{ value: error, setter: setError }}
@@ -520,9 +520,9 @@ function TripOverview() {
               activeAttractionDistances={attractionDistances}
             />
           </div>
-          <div style={{ flex: '0 0 50%', height: '100%', paddingTop: '70px' }}>
+          <div className='body-space'>
             <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
-              <div style={{ width: '100%', height: '100%' }}>
+              <div className='map-space'>
                 <GoogleMapsComponent 
                   activeKeyState={{value: activeKey, setter: setActiveKey}}
                   cityPositionState={{value: cityPosition, setter: setCityPosition}}
@@ -583,7 +583,7 @@ function Sidebar(props: SidebarProps) {
               </Row>
             </Container>
           </div>
-          <div style={{ overflow: 'auto', maxHeight: '65vh' }}>
+          <div className='sidebar-div'>
             <Collapse size="large" items={dailyActivities}  accordion={true} activeKey={activeKeyState.value} onChange={(keys) => activeKeyState.setter(keys)}/>
           </div>
         </>
