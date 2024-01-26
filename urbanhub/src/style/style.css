@@ -105,6 +105,43 @@
   .user-input-space {
     width: 100%;
   }
+
+  /************
+ * TRIP OVERVIEW
+ ************/
+
+  .sidebar-div {
+    overflow: auto;
+    max-height: 65vh;
+  }
+
+  .map-space {
+    width: 100%;
+    height: 100%;
+  }
+
+  .sidebar-space {
+    flex: 0 0 50%;
+    height: 100%;
+    width: 100%;
+  }
+
+  .body-space {
+    flex: 0 0 50%;
+    height: 100%;
+    padding-top: 70px;
+  }
+
+  .height-full {
+    height: 100%;
+  }
+
+  .main-div {
+    min-height: calc(78vh - 30px);
+    position: relative;
+    margin-top: 20px;
+  }
+
 /************
  * NAVBAR
  ************/
