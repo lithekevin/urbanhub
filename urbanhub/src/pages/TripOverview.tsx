@@ -1,19 +1,21 @@
-import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete, Card, Space, Divider, Tag, Tooltip} from 'antd';
+import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete, Divider, Tag, Tooltip} from 'antd';
 import { Col, Container, Row } from "react-bootstrap";
-import { useState, useEffect } from 'react';
-import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
 import { useParams } from 'react-router-dom';
-import cities from "../firebase/cities";
+import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
+import moment from 'moment';
+import { Typography } from 'antd';
+import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled   } from '@ant-design/icons';
+import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
+import cities from "../firebase/cities";
 import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
-import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled   } from '@ant-design/icons';
 import colors from "../style/colors";
 import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
 import Chatbot from '../components/TripOverview/ChatbotComponent';
 import { TbCar, TbCoinEuro, TbMoodKid, TbUser, TbWalk,  } from "react-icons/tb";
-import moment from 'moment';
 
+const { Title } = Typography;
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
 
@@ -124,7 +126,7 @@ function TripOverview() {
               });
 
               const index = tripData.questions.findIndex(question => question.includes("transportation"));
-              if(index != -1){
+              if(index !== -1){
                 tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
               }
 
@@ -501,13 +503,13 @@ function TripOverview() {
         <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}><TbMoodKid style={{ marginRight: '5px' }} /> Kids : {trip?.nKids}</span>
         <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center', color: (trip && totalCost > trip.budget) ? 'red' : 'inherit' }}>
           <TbCoinEuro style={{ marginRight: '5px' }} />  
-          Total Cost : {(trip && totalCost > trip.budget) ? <Tooltip title="You have surpassed your budget">{totalCost}</Tooltip> : totalCost}
+          Total Cost :  {(trip && totalCost > trip.budget) ? <Tooltip title="You have surpassed your budget">{totalCost}</Tooltip> : totalCost}
         </span>
       </div>
       <div>
         <Divider/>
       </div>
-      <h1 className="text-center">Trip Overview</h1>
+      <Title level={1} style={{ textAlign: 'center' }}>Trip Overview</Title>
       <div className='main-div'>
         <Container className="d-flex align-items-stretch height-full" >
           <div className='sidebar-space'>
@@ -573,11 +575,11 @@ function Sidebar(props: SidebarProps) {
       {errorState.value && <p>Error loading trip details</p>}
       {!loadingState.value && !errorState.value && tripState.value && (
         <>
-          <div style={{ marginBottom: '30px' }}>
+          <div>
             <Container fluid className="position-relative">
               <Row className="align-items-center">
                 <Col>
-                  <h3 className="text-left">{tripState.value.city}</h3>
+                  <Title level={2} className="text-left">{tripState.value.city}</Title>
                 </Col>
                 
               </Row>
