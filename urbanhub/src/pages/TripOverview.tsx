@@ -528,6 +528,7 @@ function TripOverview() {
                   cityPositionState={{value: cityPosition, setter: setCityPosition}}
                   directionsState={{value: directions, setter: setDirections}}
                   defaultCenter={defaultCenter}
+                  tripState={{ value: trip, setter: setTrip }}
                 />
               </div>
             </Container>
