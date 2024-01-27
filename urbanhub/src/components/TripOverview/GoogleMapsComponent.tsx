@@ -97,7 +97,7 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
                   )}
                   {selectedMarker && (
       <InfoWindow
-        position={{ lat: selectedMarker.location.latitude + 0.0012, lng: selectedMarker.location.longitude }}
+        position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
         onCloseClick={() => setSelectedMarker(null)}
       >
         <div>
