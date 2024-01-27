@@ -555,7 +555,6 @@ function Chatbot(props: ChatbotProps) {
   };
 
   return (
-    <div className="chatbot-style">
     <Flex align='center' justify='space-between'>
       <Flex style={{ alignItems: 'center', display: 'flex'}}>
         <Image src={"https://imgur.com/ijeaJNU.png"} alt="UrbanHub assistant" preview={false} width={60}/>
@@ -567,13 +566,12 @@ function Chatbot(props: ChatbotProps) {
           value={inputValue}
           onChange={handleInputChange}
           autoSize={{ minRows: 1, maxRows: 3 }}
-          style={{ marginRight: '10px', width: 'calc(100% - 20px)' }} // Adjust width as needed
+          style={{ marginRight: '10px', width: 'calc(100% - 20px)' }} 
         />
         <Button type="primary" onClick={handleSendClick} style={{ width: '100px' }}>Send</Button>
         {undoState.value && (<Button type="primary" onClick={handleUndoClick} style={{ width: '100px' }}>Undo</Button>)}
       </Flex>
     </Flex>
-  </div>
   );
 };
 
