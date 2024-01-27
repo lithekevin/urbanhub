@@ -1,9 +1,13 @@
 import { GoogleMap, Marker, DirectionsRenderer,InfoWindow } from '@react-google-maps/api';
 import dayjs from 'dayjs';
-import React, { SetStateAction, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import { TripAttraction } from '../../models/tripAttraction';
 import { Trip } from '../../models/trip';
 import { Attraction } from '../../models/attraction';
+import axios from 'axios';
+import { set } from 'lodash';
+
+const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 
 
 interface CityPosition {
@@ -49,7 +53,46 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
         tripState,
       } = props;
 
+      const [imageUrl, setImageUrl] = useState(null);
+      const [imageLoading, setImageLoading] = useState(false);
       const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
+
+      const fetchImage = async (query: string) => {
+        setImageLoading(true);
+        try {
+          const response = await axios.get('https://api.unsplash.com/search/photos', {
+            params: {
+              query,
+              per_page: 1,
+            },
+            headers: {
+              Authorization: `Client-ID 4rjvZvwzFuPY3uX3WAnf2Qb8eWkwvDys-sdsyvDdai0`,
+            },
+          });
+      
+          if (response.data.results.length > 0) {
+            setImageLoading(false);
+            return response.data.results[0].urls.regular;
+          } else {
+            setImageLoading(false);
+            return null;
+          }
+        } catch (error) {
+          console.error(error);
+          setImageLoading(false);
+          return null;
+        }
+      };
+      
+      useEffect(() => {
+        if (selectedMarker) {
+          fetchImage(selectedMarker.name).then(setImageUrl);
+        }
+      }, [selectedMarker]);
+
+      
+
+      
 
       const renderMarkerForDay = (day: dayjs.Dayjs) => {
         let attractionsForDay: TripAttraction[] = [];
@@ -95,15 +138,16 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
                     })}
                   </>
                   )}
-                  {selectedMarker && (
-      <InfoWindow
-        position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
-        onCloseClick={() => setSelectedMarker(null)}
-      >
-        <div>
-          <p>{selectedMarker.name}</p>
-        </div>
-      </InfoWindow>
+                  {selectedMarker && !imageLoading && (
+                  <InfoWindow
+                    position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
+                    onCloseClick={() => {setSelectedMarker(null); setImageUrl(null)}}
+                  >
+                    <div className="attractionContainer">
+                      <img className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} />
+                      <h6 className="attractionName">{selectedMarker.name}</h6>
+                    </div>
+                  </InfoWindow>
     )}
       </GoogleMap>
     </>);

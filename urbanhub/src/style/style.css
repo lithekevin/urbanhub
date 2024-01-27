@@ -142,6 +142,26 @@
     margin-top: 20px;
   }
 
+  .attractionContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+  }
+  
+  .attractionImage {
+    width: 100%;
+    max-height: 80%;
+    object-fit:cover;
+    border-radius: 10px;
+  }
+  
+  .attractionName {
+    margin-top: 20px;
+  }
+
 /************
  * NAVBAR
  ************/
