@@ -53,6 +53,8 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
         tripState,
       } = props;
 
+      console.log(props)
+
       const [imageUrl, setImageUrl] = useState(null);
       const [imageLoading, setImageLoading] = useState(false);
       const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
@@ -121,27 +123,23 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
     const zoomLevel = activeKeyState.value.length === 1 ? 15 : 10;
 
     return(<>
-      <GoogleMap mapContainerStyle={{ width: '100%', height: '65vh', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={
-    activeKeyState.value.length === 0
-      ? cityPositionState.value
-      : directionsState.value?.routes[0]?.legs[0]?.start_location
-  } zoom={zoomLevel} onLoad={(map) => {}}>
+      <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '65vh', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={activeKeyState.value.length === 0 ? cityPositionState.value : directionsState.value?.routes[0]?.legs[0]?.start_location } zoom={zoomLevel} onLoad={(map) => {}}>
         {(cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length === 0 && <Marker position={cityPositionState.value} />)}             
         {activeKeyState.value.length === 1 && <DirectionsRenderer directions={directionsState.value} options={{ suppressMarkers: true }}/>}
         {cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length > 0 && (
                     <>
                     {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], 'DD/MM/YYYY')).map((attraction: Attraction, index: number) => {
                       return (
-                        (cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng&& <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} label={(index + 1).toString()} onClick={() => setSelectedMarker(attraction)}/>)
-                        
+                        (cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng&& <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} label={{text:`${(index + 1).toString()}`,color:'white', fontWeight: 'bold'}}  onClick={() => setSelectedMarker(attraction)}/>)
                       );
                     })}
                   </>
                   )}
-                  {selectedMarker && !imageLoading && (
+                  {activeKeyState.value.length > 0 && selectedMarker && !imageLoading && (
                   <InfoWindow
+                    options={{ pixelOffset: new google.maps.Size(0, -35) }}
                     position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
-                    onCloseClick={() => {setSelectedMarker(null); setImageUrl(null)}}
+                    onCloseClick={() => {setSelectedMarker(null)}}
                   >
                     <div className="attractionContainer">
                       <img className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} />
