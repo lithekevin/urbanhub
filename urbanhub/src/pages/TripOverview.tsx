@@ -296,7 +296,7 @@ function TripOverview() {
 
       if(tripId&&selectedDay){
         editAttraction(tripId, editingAttraction.id ,selectedDay, values.date.format('DD/MM/YYYY'), attraction);
-        setMessageAI("Attraction edited succesully! Is there anything else I can do for you?");
+        setMessageAI("Attraction edited successfully! Is there anything else I can do for you?");
         setUndoVisibility(false);
       }
       else{
@@ -307,7 +307,7 @@ function TripOverview() {
     else{
       if(tripId){
         addAttractionToTrip(tripId, values.date.format('DD/MM/YYYY'), attraction);
-        setMessageAI("Attraction deleted succesully! Is there anything else I can do for you?");
+        setMessageAI("Attraction added successfully! Is there anything else I can do for you?");
         setUndoVisibility(false);
       }
     }
@@ -555,6 +555,7 @@ function TripOverview() {
                   cityPositionState={{value: cityPosition, setter: setCityPosition}}
                   directionsState={{value: directions, setter: setDirections}}
                   defaultCenter={defaultCenter}
+                  tripState={{ value: trip, setter: setTrip }}
                 />
               </div>
             </Container>
