@@ -1,5 +1,9 @@
-import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
-import React, { SetStateAction } from 'react';
+import { GoogleMap, Marker, DirectionsRenderer,InfoWindow } from '@react-google-maps/api';
+import dayjs from 'dayjs';
+import React, { SetStateAction, useState } from 'react';
+import { TripAttraction } from '../../models/tripAttraction';
+import { Trip } from '../../models/trip';
+import { Attraction } from '../../models/attraction';
 
 
 interface CityPosition {
@@ -30,6 +34,10 @@ interface CityPosition {
         lat: number;
         lng: number;
       };
+    tripState: {
+      value: Trip | null;
+      setter: React.Dispatch<React.SetStateAction<Trip | null>>;
+    };
   }
 
 function GoogleMapsComponent(props : GoogleMapsComponentProps) {
@@ -38,7 +46,34 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
         cityPositionState,
         directionsState,
         defaultCenter,
+        tripState,
       } = props;
+
+      const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
+
+      const renderMarkerForDay = (day: dayjs.Dayjs) => {
+        let attractionsForDay: TripAttraction[] = [];
+      
+        // Find the closest matching key
+        let closestKey: dayjs.Dayjs | null = null;
+        let minDifference: number | null = null;
+      
+        tripState.value?.schedule.forEach((attractions, key) => {
+          const difference = Math.abs(day.diff(key, 'days'));
+      
+          if (minDifference === null || difference < minDifference) {
+            minDifference = difference;
+            closestKey = key;
+          }
+        });
+      
+        if (closestKey !== null) {
+          attractionsForDay = tripState.value?.schedule.get(closestKey) || [];
+        }
+        return attractionsForDay;
+      };
+      
+      const dayLabels = Array.from(tripState.value?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
     const zoomLevel = activeKeyState.value.length === 1 ? 15 : 10;
 
@@ -49,7 +84,27 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
       : directionsState.value?.routes[0]?.legs[0]?.start_location
   } zoom={zoomLevel} onLoad={(map) => {}}>
         {(cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length === 0 && <Marker position={cityPositionState.value} />)}             
-        {activeKeyState.value.length === 1 && <DirectionsRenderer directions={directionsState.value}/>}
+        {activeKeyState.value.length === 1 && <DirectionsRenderer directions={directionsState.value} options={{ suppressMarkers: true }}/>}
+        {cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length > 0 && (
+                    <>
+                    {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], 'DD/MM/YYYY')).map((attraction: Attraction, index: number) => {
+                      return (
+                        (cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng&& <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} label={(index + 1).toString()} onClick={() => setSelectedMarker(attraction)}/>)
+                        
+                      );
+                    })}
+                  </>
+                  )}
+                  {selectedMarker && (
+      <InfoWindow
+        position={{ lat: selectedMarker.location.latitude + 0.0012, lng: selectedMarker.location.longitude }}
+        onCloseClick={() => setSelectedMarker(null)}
+      >
+        <div>
+          <p>{selectedMarker.name}</p>
+        </div>
+      </InfoWindow>
+    )}
       </GoogleMap>
     </>);
 }
