@@ -558,7 +558,7 @@ interface ChatbotProps {
         <Row justify="space-between">
           <Col xs={24} sm={24} md={11}>
             <div className="assistant-container">
-              <img src={"/robotassistant.png"} alt="UrbanHub assistant" className="assistant-image" />
+              <img src={"/robotassistant.jpeg"} alt="UrbanHub assistant" className="assistant-image" />
               <div className="assistant-message">
                 <div className="assistant-triangle" />
                 <p>{messageAIState.value}</p>
