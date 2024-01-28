@@ -420,7 +420,7 @@ function TripOverview(props: any) {
               
             />
           </Form.Item>
-          {selectedAttractionId &&
+          {selectedAttractionId && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && 
           
             <p style={{color: "var(--hard-background-color)"}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</p>
 
