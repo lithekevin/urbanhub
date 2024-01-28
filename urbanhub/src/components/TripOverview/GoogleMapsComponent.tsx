@@ -4,8 +4,10 @@ import React, { SetStateAction, useEffect, useState } from 'react';
 import { TripAttraction } from '../../models/tripAttraction';
 import { Trip } from '../../models/trip';
 import { Attraction } from '../../models/attraction';
+import { EuroCircleOutlined } from "@ant-design/icons"
 import axios from 'axios';
 import { set } from 'lodash';
+import { Tag } from 'antd';
 
 const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 
@@ -151,6 +153,7 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
                     <div className="attractionContainer">
                       <img className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} />
                       <h6 className="attractionName">{selectedMarker.name}</h6>
+                      <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '60px' }}> {selectedMarker.perPersonCost ? selectedMarker.perPersonCost * (tripState!.value!.nAdults + tripState!.value!.nKids) : "free"}</Tag>
                     </div>
                   </InfoWindow>
     )}

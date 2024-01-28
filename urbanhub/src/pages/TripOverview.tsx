@@ -420,6 +420,11 @@ function TripOverview(props: any) {
               
             />
           </Form.Item>
+          {selectedAttractionId &&
+          
+            <p style={{color: "var(--hard-background-color)"}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</p>
+
+          }
           <Paragraph className='label'> Date: </Paragraph>
             <Form.Item name="date" rules={[{ required: true, message: 'Please choose the date!' }]}>
               <DatePicker format="DD/MM/YYYY" disabledDate={(current) => current && current < moment().startOf('day')} style={{width: '100%'}}/>
@@ -435,7 +440,7 @@ function TripOverview(props: any) {
             <Form.Item>
               <Row>
                 <Col>
-                <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '80%', height: '40vh', margin: 'auto', display: 'block', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={selectedAttractionId === null ? cityPosition : cityPosition } zoom={zoomLevel} onLoad={(map) => {setMap(map)}}>             
+                <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '40vh', margin: 'auto', display: 'block', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={selectedAttractionId === null ? cityPosition : cityPosition } zoom={zoomLevel} onLoad={(map) => {setMap(map)}}>             
                   { !selectedAttractionId && (
                     <>
                     {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
