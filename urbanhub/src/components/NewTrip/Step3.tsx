@@ -100,7 +100,7 @@ const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers,
           Previous
         </Button>
         <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button" onClick={() => { setLoading(true); onSubmit(formData) }}>
-          Submit
+          Create Trip
         </Button>
       </div>
     </div>

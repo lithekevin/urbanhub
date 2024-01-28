@@ -2,10 +2,6 @@
  * COMMON STYLES
  ************/
 
- .content-padding-top {
-    padding-top: 30px;
-}
-
 .wrapper {
     min-height: 100vh;
     display: flex;
@@ -26,9 +22,6 @@
 ::-webkit-scrollbar-track {
     border-radius: 10px;
 }
-
-
-
 
 
 /************
@@ -68,79 +61,48 @@
     border-top-right-radius: 10px;
     font-size: 10px;
     font-style: italic;
-    padding-left: 0;
-    padding-right: 0;
+    padding-right: 2%;
+    padding-left: 1%;
     padding-top: 1%;
     padding-bottom: 0;
     transition: transform 0.3s ease;
 }
 
-.assistant-container {
-    display: flex;
-    align-items: flex-start;
-  }
-  
-  .assistant-content {
-    position: relative;
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  
-  .assistant-message {
-    position: relative;
-  }
-  
-  .assistant-image {
-    width: auto;
-    height: 70px;
-    margin-right: 10px;
-  }
-  
-  .user-input-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .user-input-space {
-    width: 100%;
-  }
+/************
+* TRIP OVERVIEW
+************/
 
-  /************
- * TRIP OVERVIEW
- ************/
+.sidebar-div {
+  overflow: auto;
+  max-height: 65vh;
+}
 
-  .sidebar-div {
-    overflow: auto;
-    max-height: 65vh;
-  }
+.map-space {
+  width: 100%;
+  height: 100%;
+}
 
-  .map-space {
-    width: 100%;
-    height: 100%;
-  }
+.sidebar-space {
+  flex: 0 0 50%;
+  height: 100%;
+  width: 100%;
+}
 
-  .sidebar-space {
-    flex: 0 0 50%;
-    height: 100%;
-    width: 100%;
-  }
+.body-space {
+  flex: 0 0 50%;
+  height: 100%;
+  padding-top: 53px;
+}
 
-  .body-space {
-    flex: 0 0 50%;
-    height: 100%;
-    padding-top: 70px;
-  }
+.height-full {
+  height: 100%;
+}
 
-  .height-full {
-    height: 100%;
-  }
-
-  .main-div {
-    min-height: calc(78vh - 30px);
-    position: relative;
-    margin-top: 20px;
-  }
+.main-div {
+  min-height: calc(78vh - 30px);
+  position: relative;
+  margin-top: 20px;
+}
 
   .attractionContainer {
     display: flex;
@@ -309,21 +271,13 @@
     text-align: center;
 }
 
-.custom-stepper {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding-top: 15px;
-}
-
 .form-container {
-    border: 1px solid #d9d9d9;
+    border: 1px solid #d9d9d9; 
     border-radius: 10px;
     margin-top: 20px;
     margin-bottom: 40px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
     padding-bottom: 20px;
     width: auto;
 }

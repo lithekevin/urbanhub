@@ -1,26 +1,26 @@
-import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, AutoComplete, Divider, Tag, Tooltip, Typography} from 'antd';
+import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, 
+         AutoComplete, Divider, Tag, Tooltip, Flex, Image, Popover , Typography} from 'antd';
 import { Col, Container, Row } from "react-bootstrap";
-import { useState, useEffect } from 'react';
-import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
 import { useParams } from 'react-router-dom';
-import cities from "../firebase/cities";
+import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
+import moment from 'moment';
+import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled   } from '@ant-design/icons';
+import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
+import cities from "../firebase/cities";
 import { Trip } from "../models/trip";
 import { TripAttraction } from '../models/tripAttraction';
-import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled   } from '@ant-design/icons';
 import colors from "../style/colors";
 import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
 import Chatbot from '../components/TripOverview/ChatbotComponent';
 import { TbCar, TbCoinEuro, TbMoodKid, TbUser, TbWalk,  } from "react-icons/tb";
-import moment from 'moment';
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { Attraction } from '../models/attraction';
 import axios from 'axios';
 
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
-const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-
+const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
 
@@ -536,8 +536,8 @@ function TripOverview() {
         {
           label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
           children: (
-            <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gridTemplateRows: 'auto auto', alignItems: 'start', width: '100%' }}>
-              <span style={{ gridColumn: '1', gridRow: '1', paddingBottom: '5px'}}>{attraction.name}</span>
+            <Flex key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gridTemplateRows: 'auto auto', alignItems: 'start', width: '100%' }}>
+              <Flex style={{ gridColumn: '1', gridRow: '1', paddingBottom: '5px'}}>{attraction.name}</Flex>
               <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '60px' }}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
               {editing && (
                 <Button style={{border: 'none', marginTop: '-8px', gridColumn: '2', gridRow: '1 / span 2'}} onClick={() => handleEditClick(attraction)}>
@@ -549,7 +549,7 @@ function TripOverview() {
                   <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
                 </Button>
               )}
-            </div>
+            </Flex>
           ),
         },
       ];
@@ -574,9 +574,9 @@ function TripOverview() {
         items.push({
           color: 'trasparent',
           children: (
-            <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
-              <span style={{ fontSize: '13px' }}>{travelModel === "DRIVING" ? <TbCar className='fs-5 me-2' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5 me-2'/> : <TbWalk className='fs-5 me-2' /> )}{distance}</span>
-            </div>
+            <Flex key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
+              <Flex style={{ fontSize: '13px' }}>{travelModel === "DRIVING" ? <TbCar className='fs-5 me-2' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5 me-2'/> : <TbWalk className='fs-5 me-2' /> )}{distance}</Flex>
+            </Flex>
           ),
         });
       }
@@ -587,7 +587,7 @@ function TripOverview() {
 
     return (
       <>
-        <div style={{  }}>
+        <div>
           <Timeline mode="left" items={timelineItems}  />
         </div>
         <center>
@@ -611,20 +611,44 @@ function TripOverview() {
       </div>,
   }));
 
+  const [isHovered, setIsHovered] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(false); // State variable to control the visibility of the chatbot
+
+  const handlePopoverVisibleChange = (visible: boolean) => {
+    setShowChatbot(visible); // Set the visibility of the chatbot based on popover visibility
+
+    // Prevent scrolling when the popover is open
+    if (visible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  };
+
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginTop: '10px', width: '40%', margin: '0 auto' }}>
-        <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}><TbUser style={{ marginRight: '5px' }} /> Adults : {trip?.nAdults}</span>
-        <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center' }}><TbMoodKid style={{ marginRight: '5px' }} /> Kids : {trip?.nKids}</span>
-        <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center', color: (trip && totalCost > trip.budget) ? 'red' : 'inherit' }}>
-          <TbCoinEuro style={{ marginRight: '5px' }} />  
-          Total Cost : {(trip && totalCost > trip.budget) ? <Tooltip title="You have surpassed your budget">{totalCost}</Tooltip> : totalCost}
+      <Flex justify='space-evenly' align='center' style={{ fontSize: '25px'}}>
+        <span><TbUser/> <Text> Adults : {trip?.nAdults} </Text> </span>
+        <span><TbMoodKid/> <Text> Kids : {trip?.nKids} </Text> </span>
+        <span>
+        {(trip && totalCost > trip.budget) ? 
+        <>
+        <Tooltip title="You have surpassed your budget" placement='bottom'>
+          <TbCoinEuro style={{color: 'red'}}/>  
+          <Text style={{color: 'red'}}> Total Cost : {totalCost} </Text> 
+        </Tooltip> 
+        </> :
+        <>
+        <TbCoinEuro/>
+          <Text> Total Cost : {totalCost} </Text>
+        </>
+        }
         </span>
-      </div>
-      <div>
-        <Divider/>
-      </div>
-      <h1 className="text-center">Trip Overview</h1>
+      </Flex>
+        
+      <Divider style={{ marginTop: '10px'}}/>
+      
+      <Title level={1} style={{ textAlign: 'center' }}>Trip Overview</Title>
       <div className='main-div'>
         <Container className="d-flex align-items-stretch height-full" >
           <div className='sidebar-space'>
@@ -653,9 +677,52 @@ function TripOverview() {
           {renderAttractionForm()}
         </Container>
       </div>
-      <div style={{ width: '100%', textAlign: 'center', position: 'fixed', bottom: footerVisible ? footerHeight + 'px' : 0 }}>
-        <Chatbot tripState={{ value: trip, setter: setTrip }} dirtyState={{ value: dirty, setter: setDirty }} undoState={{ value: undoVisibility, setter: setUndoVisibility }} messageAIState={{ value: messageAI, setter: setMessageAI }} tripId={tripId} messageApi={messageApi}/>
-      </div>
+      <Popover
+        content={
+            <Chatbot
+                tripState={{ value: trip, setter: setTrip }}
+                dirtyState={{ value: dirty, setter: setDirty }}
+                undoState={{ value: undoVisibility, setter: setUndoVisibility }}
+                messageAIState={{ value: messageAI, setter: setMessageAI }}
+                tripId={tripId}
+                messageApi={messageApi}
+            />
+        }
+        trigger="click"
+        open={showChatbot}
+        onOpenChange={handlePopoverVisibleChange}
+        placement='right'
+        arrow={{ pointAtCenter: true }}
+        overlayStyle={{ width: '100%', maxWidth: '1120px' }}
+        >
+          <Button
+              style={{
+                  width: '55px',
+                  height: '55px',
+                  borderRadius: '50%',
+                  position: 'fixed',
+                  right: '20px', 
+                  marginLeft: '2%',
+                  bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
+                  boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+                  transform: `scale(${isHovered ? 1.1 : 1})`,
+                  transition: 'box-shadow transform 0.3s ease',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+          >
+            <Image
+                src="https://imgur.com/ijeaJNU.png"
+                alt="UrbanHub assistant"
+                preview={false}
+                height={'auto'}
+                style={{ maxWidth: '100%', maxHeight: '100%' }}
+            />
+          </Button>
+      </Popover>
     </>
   );
 };
@@ -691,11 +758,11 @@ function Sidebar(props: SidebarProps) {
       {errorState.value && <p>Error loading trip details</p>}
       {!loadingState.value && !errorState.value && tripState.value && (
         <>
-          <div style={{ marginBottom: '30px' }}>
+          <div>
             <Container fluid className="position-relative">
               <Row className="align-items-center">
                 <Col>
-                  <h3 className="text-left">{tripState.value.city}</h3>
+                  <Title level={2} className="text-left">{tripState.value.city}</Title>
                 </Col>
                 
               </Row>

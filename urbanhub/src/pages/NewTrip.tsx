@@ -1,6 +1,8 @@
 import React from "react";
 import { Form, Steps, Row, Col, ConfigProvider } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 import questions from "../firebase/questions";
 import shuffle from "lodash/shuffle";
 import colors from "../style/colors";
@@ -61,8 +63,7 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
 
   // Add a state variable to track the input validity
   const [isDestinationValid, setIsDestinationValid] = React.useState(true);
-  const [isDestinationSelected, setIsDestinationSelected] =
-    React.useState(false);
+  const [isDestinationSelected, setIsDestinationSelected] = React.useState(false);
   const [cityPosition, setCityPosition] = React.useState({
     lat: DEFAULT_LOCATION.lat,
     lng: DEFAULT_LOCATION.lng,
@@ -75,14 +76,10 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
   const [questionsPageNumber, setQuestionsPageNumber] = React.useState(0);
 
   // State to track the displayed questions
-  const [displayedQuestions, setDisplayedQuestions] = React.useState<string[]>(
-    []
-  );
+  const [displayedQuestions, setDisplayedQuestions] = React.useState<string[]>([]);
 
   // State to store all displayed questions (including previous ones)
-  const [allDisplayedQuestions, setAllDisplayedQuestions] = React.useState<
-    string[]
-  >([]);
+  const [allDisplayedQuestions, setAllDisplayedQuestions] = React.useState<string[]>([]);
 
   // New state to store user answers to questions
   const [userAnswers, setUserAnswers] = React.useState<string[]>(
@@ -168,16 +165,24 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
     }
   };
 
+  const navigate = useNavigate();
+
   const nextStep = () => {
     if (isStepValid()) {
       setStep((prevStep) => prevStep + 1);
     }
   };
-  const prevStep = () => setStep((prevStep) => prevStep - 1);
+
+  const prevStep = () => {
+    if (step === 0) {
+      navigate(-1);
+    } else{
+      setStep((prevStep) => prevStep - 1);
+    }
+  };
 
   return (
     <>
-      <div className="custom-stepper">
         <ConfigProvider
           theme={{
             components: {
@@ -187,28 +192,27 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
             },
           }}
         >
-          <Row className="w-100 d-flex flex-row justify-content-center">
-            <Col
-              xs={{ span: 24 }}
-              sm={{ span: 24 }}
-              md={{ span: 20 }}
-              lg={{ span: 18 }}
-              xl={{ span: 12 }}
-            >
-              <Steps
-                current={step}
-                size="small"
-                className="mb-3 center"
-                style={{ paddingLeft: "0%", paddingRight: "0%" }}
-              >
-                {steps.map((s, index) => (
-                  <Step key={index} title={s.title} />
-                ))}
-              </Steps>
+          <Row className="w-100 d-flex flex-row align-items-center">
+            {/* Arrow on the left */}
+            <Col xs={{ span: 2 }} sm={{ span: 2 }} md={{ span: 2 }} lg={{ span: 3 }} xl={{ span: 4 }}>
+              <ArrowLeftOutlined
+                className="float-left"
+                style={{ fontSize: "26px", marginLeft: "10px" }}
+                onClick={() => prevStep()}
+              />
+            </Col>
+            {/* Stepper centered */}
+            <Col xs={{ span: 24 }} sm={{ span: 20 }} md={{ span: 20 }} lg={{ span: 18 }} xl={{ span: 16 }}>
+              <div className="mb-3 center text-center">
+                <Steps current={step} size="small" style={{ paddingTop: '15px' }}>
+                  {steps.map((s, index) => (
+                    <Step key={s.title} title={s.title} />
+                  ))}
+                </Steps>
+              </div>
             </Col>
           </Row>
         </ConfigProvider>
-      </div>
       <Row justify={"center"} align={"top"} style={{ minHeight: "66vh" }}>
         <Col
           sm={{ span: 24 }}
