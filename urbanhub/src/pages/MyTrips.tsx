@@ -4,7 +4,7 @@ import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton, Image, Em
 import { MoreOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MenuInfo } from "rc-menu/lib/interface";
 import colors from "../style/colors";
 import dayjs from "dayjs";
@@ -14,6 +14,9 @@ const { Title, Paragraph } = Typography;
 const defaultImageURL = "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 function MyTrips() {
+
+  const navigate = useNavigate();
+
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -147,7 +150,8 @@ function MyTrips() {
           onClick: (info: MenuInfo) => {
             info.domEvent.preventDefault();
             info.domEvent.stopPropagation();
-            console.log("Edit trip with id: " + trip.id);
+            navigate(`/trips/${trip.id}`, { state: { mode: "edit" } });
+            
           },
         },
       ]}

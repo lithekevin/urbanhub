@@ -1,11 +1,10 @@
 import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, 
          AutoComplete, Divider, Tag, Tooltip, Flex, Image, Popover , Typography} from 'antd';
 import { Col, Container, Row } from "react-bootstrap";
-import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled   } from '@ant-design/icons';
+import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled, EditOutlined   } from '@ant-design/icons';
 import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
 import cities from "../firebase/cities";
 import { Trip } from "../models/trip";
@@ -17,18 +16,19 @@ import { TbCar, TbCoinEuro, TbMoodKid, TbUser, TbWalk,  } from "react-icons/tb";
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { Attraction } from '../models/attraction';
 import axios from 'axios';
+import { useLocation, useParams } from 'react-router-dom';
 
 const { Title, Paragraph, Text } = Typography;
 
 const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
-//TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
-
-function TripOverview() {
+function TripOverview(props: any) {
   const defaultCenter = {
     lat: 48.7758, 
     lng: 9.1829
   };
+
+  const location = useLocation();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -37,7 +37,7 @@ function TripOverview() {
   const [messageApi] = message.useMessage();
   const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
-  const [editing] = useState<boolean>(true); 
+  const [editing, setEdit] = useState<boolean>(location.state && location.state.mode === "edit"); 
   const [cityPosition, setCityPosition] = useState({
     lat: defaultCenter.lat,
     lng: defaultCenter.lng,
@@ -591,9 +591,15 @@ function TripOverview() {
           <Timeline mode="left" items={timelineItems}  />
         </div>
         <center>
-          <Button type="primary" onClick={() => openForm(day)}>
-            Add Attraction
-          </Button>
+          {editing && (
+          
+            <Button type="primary" onClick={() => openForm(day)}>
+              Add Attraction
+            </Button>
+          )
+          
+          }
+      
         </center>
       </>
     );
@@ -633,14 +639,14 @@ function TripOverview() {
         <span>
         {(trip && totalCost > trip.budget) ? 
         <>
-        <Tooltip title="You have surpassed your budget" placement='bottom'>
+        <Tooltip title={"You have surpassed your budget which you set to " + trip.budget + " €"} placement='bottom'>
           <TbCoinEuro style={{color: 'red'}}/>  
-          <Text style={{color: 'red'}}> Total Cost : {totalCost} </Text> 
+          <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
         </Tooltip> 
         </> :
         <>
         <TbCoinEuro/>
-          <Text> Total Cost : {totalCost} </Text>
+          <Text> Total Cost : {totalCost}{" €"} </Text>
         </>
         }
         </span>
@@ -648,7 +654,29 @@ function TripOverview() {
         
       <Divider style={{ marginTop: '10px'}}/>
       
-      <Title level={1} style={{ textAlign: 'center' }}>Trip Overview</Title>
+      <Title level={1} style={{ textAlign: 'center' }}>{editing ? "Trip Edit" : "Trip Overview"}</Title>
+      
+      { !editing &&
+        <div className='w-100 d-flex justify-content-end'>
+        <Button
+        size="middle"
+        type="primary"
+        className="button-new-trip me-5"
+        style={{
+          backgroundColor: colors.hardBackgroundColor,
+          color: colors.whiteBackgroundColor,
+          marginTop: "10px",
+          paddingBottom: "38px",
+          textAlign: "center",
+          fontSize: "20px",
+        }}
+        onClick={() => {setEdit(true)}}
+      >
+        <span>
+          <EditOutlined style={{ marginRight: "8px" }} /> Edit Trip
+        </span>
+      </Button>
+      </div>}
       <div className='main-div'>
         <Container className="d-flex align-items-stretch height-full" >
           <div className='sidebar-space'>
@@ -677,7 +705,9 @@ function TripOverview() {
           {renderAttractionForm()}
         </Container>
       </div>
-      <Popover
+
+      {editing && 
+        <Popover
         content={
             <Chatbot
                 tripState={{ value: trip, setter: setTrip }}
@@ -722,7 +752,7 @@ function TripOverview() {
                 style={{ maxWidth: '100%', maxHeight: '100%' }}
             />
           </Button>
-      </Popover>
+      </Popover>}
     </>
   );
 };
