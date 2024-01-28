@@ -53,8 +53,6 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
         tripState,
       } = props;
 
-      console.log(props)
-
       const [imageUrl, setImageUrl] = useState(null);
       const [imageLoading, setImageLoading] = useState(false);
       const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
@@ -77,6 +75,7 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
             return response.data.results[0].urls.regular;
           } else {
             setImageLoading(false);
+            console.log('No results from unsplash')
             return null;
           }
         } catch (error) {
@@ -90,9 +89,17 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
         if (selectedMarker) {
           fetchImage(selectedMarker.name).then(setImageUrl);
         }
-      }, [selectedMarker]);
-
+      }, [selectedMarker]);  
       
+
+      useEffect(() => {
+        if(activeKeyState.value.length === 0){
+          setSelectedMarker(null);
+          return
+        }
+
+        setSelectedMarker(null);
+      }, [activeKeyState.value.length, activeKeyState.value[0]])
 
       
 
@@ -122,6 +129,8 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
 
     const zoomLevel = activeKeyState.value.length === 1 ? 15 : 10;
 
+    console.log(activeKeyState.value, selectedMarker, imageLoading);
+
     return(<>
       <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '65vh', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={activeKeyState.value.length === 0 ? cityPositionState.value : directionsState.value?.routes[0]?.legs[0]?.start_location } zoom={zoomLevel} onLoad={(map) => {}}>
         {(cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length === 0 && <Marker position={cityPositionState.value} />)}             
@@ -130,7 +139,7 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
                     <>
                     {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], 'DD/MM/YYYY')).map((attraction: Attraction, index: number) => {
                       return (
-                        (cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng&& <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} label={{text:`${(index + 1).toString()}`,color:'white', fontWeight: 'bold'}}  onClick={() => setSelectedMarker(attraction)}/>)
+                        <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} label={{text:`${(index + 1).toString()}`,color:'white', fontWeight: 'bold'}} onClick={() => {selectedMarker === null ? setSelectedMarker(attraction) : setSelectedMarker(null)}}/>
                       );
                     })}
                   </>

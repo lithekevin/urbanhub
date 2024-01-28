@@ -1,11 +1,10 @@
 import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, 
-         AutoComplete, Divider, Tag, Tooltip, Flex, Image, Popover } from 'antd';
+         AutoComplete, Divider, Tag, Tooltip, Flex, Image, Popover , Typography} from 'antd';
 import { Col, Container, Row } from "react-bootstrap";
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { Typography } from 'antd';
 import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled   } from '@ant-design/icons';
 import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
 import cities from "../firebase/cities";
@@ -15,8 +14,13 @@ import colors from "../style/colors";
 import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
 import Chatbot from '../components/TripOverview/ChatbotComponent';
 import { TbCar, TbCoinEuro, TbMoodKid, TbUser, TbWalk,  } from "react-icons/tb";
+import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
+import { Attraction } from '../models/attraction';
+import axios from 'axios';
 
-const { Title, Text } = Typography;
+const { Title, Paragraph, Text } = Typography;
+
+const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 //TODO: RICORDARSI DI METTERE DUE MODALITA' UNA READONLY E UNA EDITABLE
 
@@ -56,12 +60,19 @@ function TripOverview() {
   const [editingAttraction, setEditingAttraction] = useState<TripAttraction | null>(null);
   const [selectedAttractionId, setSelectedAttractionId] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs | null>(null); 
+  const zoomLevel = selectedAttractionId !== null ? 15 : 12;
+  const selAttraction : Attraction | null | undefined = selectedAttractionId !== null ? cities.find(city => city.name === trip?.city)?.attractions.find( attraction => attraction.id === selectedAttractionId) : null;
+  const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
 
   //Used for undo button and message in chatbot 
   const [undoVisibility, setUndoVisibility] = useState(false);
   const [messageAI, setMessageAI] = useState('Is there anything I can do for you?');  
   const [totalCost, setTotalCost] = useState(0);
   const [validSelection, setValidSelection] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(null);
 
 
   //Chatbot - Footer interaction
@@ -209,6 +220,61 @@ function TripOverview() {
     }
   }, [trip, activeKey]);
 
+  const fetchImage = async (query: string) => {
+    setImageLoading(true);
+    try {
+      const response = await axios.get('https://api.unsplash.com/search/photos', {
+        params: {
+          query,
+          per_page: 1,
+        },
+        headers: {
+          Authorization: `Client-ID 4rjvZvwzFuPY3uX3WAnf2Qb8eWkwvDys-sdsyvDdai0`,
+        },
+      });
+  
+      if (response.data.results.length > 0) {
+        setImageLoading(false);
+        return response.data.results[0].urls.regular;
+      } else {
+        setImageLoading(false);
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+      setImageLoading(false);
+      return null;
+    }
+  };
+  
+  useEffect(() => {
+    if (selectedMarker) {
+      fetchImage(selectedMarker.name).then(setImageUrl);
+    }
+  }, [selectedMarker]);
+
+  // Update map bounds whenever markers change
+  useEffect(() => {
+    if (map) {
+      const bounds = new window.google.maps.LatLngBounds();
+      if(selectedAttractionId !== null && selAttraction){
+        bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude});
+      }else{
+        cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
+          bounds.extend({lat: attraction.location.latitude, lng: attraction.location.longitude});
+        });
+      }
+      setMapBounds(bounds);
+    }
+  }, [selectedAttractionId, map]);
+
+  // Fit map bounds when bounds change
+  useEffect(() => {
+    if (mapBounds && map) {
+      map.fitBounds(mapBounds);
+    }
+  }, [mapBounds, map]);
+
   const handleDeleteClick = async (attraction: TripAttraction) => {
     // Display a custom confirmation dialog
     Modal.confirm({
@@ -283,6 +349,7 @@ function TripOverview() {
   const closeForm = () => {
     setIsFormVisible(false);
     setEditingAttraction(null);
+    setSelectedAttractionId(null);
   };
 
   const onFinish = (values: any) => {
@@ -315,16 +382,18 @@ function TripOverview() {
     setDirty(true);
     setEditingAttraction(null);
     setIsFormVisible(false);
-
+    setSelectedAttractionId(null);
   };
 
   const renderAttractionForm = () => {
   
     return (
       <>
-        <Modal title={editingAttraction ? "Edit Attraction" : "Add Attraction"} open={isFormVisible} onCancel={closeForm} footer={null} centered>
+        <Modal open={isFormVisible} onCancel={closeForm} footer={null} centered>
           <Form form={form} name={"formName"} onFinish={(values) => onFinish(values)}>
-          <Form.Item name="attraction" label="Attraction" style={{paddingTop: '10px'}} rules={[{ required: true, message: 'Please input the attraction!' }]}>
+          <Title level={2} className='step-title'> {editingAttraction ? "Edit Attraction" : "Add Attraction"} </Title>
+          <Paragraph className='label'> Attraction: </Paragraph>
+          <Form.Item name="attraction" style={{paddingTop: '10px'}} rules={[{ required: true, message: 'Please input the attraction!' }]}>
             <AutoComplete
               options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ value: attraction.name}))}
               placeholder="Type an attraction"
@@ -343,13 +412,16 @@ function TripOverview() {
               onBlur={() => {
                 if (!validSelection) {
                   form.setFieldsValue({ attraction: '' });
-                }
-                setValidSelection(false);
+                  setValidSelection(false);
+                  setSelectedAttractionId(null);
+                  console.log("Cleared")
+                }                
               }}
               
             />
           </Form.Item>
-            <Form.Item name="date" label="Date" rules={[{ required: true, message: 'Please choose the date!' }]}>
+          <Paragraph className='label'> Date: </Paragraph>
+            <Form.Item name="date" rules={[{ required: true, message: 'Please choose the date!' }]}>
               <DatePicker format="DD/MM/YYYY" disabledDate={(current) => current && current < moment().startOf('day')} style={{width: '100%'}}/>
             </Form.Item>
             <Form.Item style={{ marginBottom: 0 }}>
@@ -359,6 +431,48 @@ function TripOverview() {
               <Form.Item label= "End Time " name="endTime" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
                 <TimePicker format="HH:mm" />
               </Form.Item>
+            </Form.Item>
+            <Form.Item>
+              <Row>
+                <Col>
+                <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '80%', height: '40vh', margin: 'auto', display: 'block', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={selectedAttractionId === null ? cityPosition : cityPosition } zoom={zoomLevel} onLoad={(map) => {setMap(map)}}>             
+                  { !selectedAttractionId && (
+                    <>
+                    {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
+                      return (
+                        <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} onMouseOver={() => setSelectedMarker(attraction)} onMouseOut={() => setSelectedMarker(null)}  onClick={() => {
+                          setSelectedAttractionId(attraction.id);
+                          form.setFieldsValue({ attraction: attraction.name }); // Update the AutoComplete value
+                        }}/>
+                      );
+                    })}
+                  </>
+                  )}
+                  { selectedAttractionId && (<>
+                    {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction) => {
+                      if (attraction.id === selectedAttractionId) {
+                        return (
+                          <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} onMouseOver={() => setSelectedMarker(attraction)} onMouseOut={() => setSelectedMarker(null)}/>
+                        );
+                      }
+                        return null; // Render nothing if the attraction is not the selected one
+                      })}
+                  </>)}
+                  {selectedMarker && (
+                    <InfoWindow
+                    options={{ pixelOffset: new google.maps.Size(0, -35), disableAutoPan: true }}
+                    position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
+                    onCloseClick={() => {setSelectedMarker(null)}}
+                  >
+                    <div className="attractionContainer">
+                      <img className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} />
+                      <h6 className="attractionName">{selectedMarker.name}</h6>
+                    </div>
+                  </InfoWindow>
+                  )}
+                </GoogleMap>
+                </Col>
+              </Row>
             </Form.Item>
             <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button onClick={closeForm} style={{ marginRight: '10px' }}>
@@ -485,7 +599,7 @@ function TripOverview() {
     );
   };
 
-  const dayLabels = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
+  const dayLabels : Array<string> = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
 
   const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
