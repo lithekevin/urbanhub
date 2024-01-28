@@ -1322,7 +1322,7 @@ const cities: City[] = [
         id: "A155",
         name: "Vatican City",
         city: "Rome",
-        location: { latitude: 41.9022, longitude: 12.4538 },
+        location: { latitude: 41.9022, longitude: 12.4572 },
         estimatedTime: 120,
         perPersonCost: 20,
       },
