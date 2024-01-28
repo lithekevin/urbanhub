@@ -259,6 +259,10 @@ function TripOverview(props: any) {
       const bounds = new window.google.maps.LatLngBounds();
       if(selectedAttractionId !== null && selAttraction){
         bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude});
+        bounds.extend({lat: selAttraction.location.latitude + 0.001, lng: selAttraction.location.longitude});
+        bounds.extend({lat: selAttraction.location.latitude - 0.001, lng: selAttraction.location.longitude});
+        bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude + 0.001});
+        bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude - 0.001});
       }else{
         cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
           bounds.extend({lat: attraction.location.latitude, lng: attraction.location.longitude});
@@ -393,12 +397,17 @@ function TripOverview(props: any) {
           <Form form={form} name={"formName"} onFinish={(values) => onFinish(values)}>
           <Title level={2} className='step-title'> {editingAttraction ? "Edit Attraction" : "Add Attraction"} </Title>
           <Paragraph className='label'> Attraction: </Paragraph>
-          <Form.Item name="attraction" style={{paddingTop: '10px'}} rules={[{ required: true, message: 'Please input the attraction!' }]}>
+          <Form.Item name="attraction" style={{paddingTop: '10px'}} rules={[{ required: true, message: 'Please select one of the attractions in the map, or type the name!' }]}>
             <AutoComplete
               options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ value: attraction.name}))}
               placeholder="Type an attraction"
               style={{width: '100%'}}
               allowClear={{ clearIcon: <CloseSquareFilled /> }}
+              onClear={() => {
+                form.setFieldsValue({ attraction: '' });
+                setValidSelection(false);
+                setSelectedAttractionId(null);
+              }}
               filterOption={(inputValue, option) =>
                 option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
               }
@@ -410,17 +419,17 @@ function TripOverview(props: any) {
                 }
               }}
               onBlur={() => {
-                if (!validSelection) {
+                if (form.getFieldValue('attraction') !== selAttraction?.name) {
                   form.setFieldsValue({ attraction: '' });
                   setValidSelection(false);
                   setSelectedAttractionId(null);
-                  console.log("Cleared")
+                  form.validateFields(['attraction']);
                 }                
               }}
               
             />
           </Form.Item>
-          {selectedAttractionId && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && 
+          {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && 
           
             <p style={{color: "var(--hard-background-color)"}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</p>
 
