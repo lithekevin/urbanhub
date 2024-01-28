@@ -109,7 +109,7 @@ function Main() {
         }
 
         for (const date in schedule) {
-          const nAttractions = Math.floor(Math.random() * 4) + 3;
+          const nAttractions = Math.floor(Math.random() * 3) + 5;
           let entireDuration = 0;
 
           for (let i = 0; i < nAttractions; i++) {
