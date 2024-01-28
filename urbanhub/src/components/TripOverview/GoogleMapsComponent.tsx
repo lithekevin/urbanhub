@@ -90,9 +90,7 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
         if (selectedMarker) {
           fetchImage(selectedMarker.name).then(setImageUrl);
         }
-      }, [selectedMarker]);
-
-      
+      }, [selectedMarker]);     
 
       
 
