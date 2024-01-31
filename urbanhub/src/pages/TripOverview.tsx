@@ -4,7 +4,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled, EditOutlined   } from '@ant-design/icons';
+import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled, EditOutlined } from '@ant-design/icons';
 import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
 import cities from "../firebase/cities";
 import { Trip } from "../models/trip";
@@ -544,33 +544,13 @@ function TripOverview(props: any) {
     }
 
     const timelineItems = attractionsForDay.flatMap((attraction, index) => {
-      const items: any[] = [
-        {
-          label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
-          children: (
-            <Flex key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gridTemplateRows: 'auto auto', alignItems: 'start', width: '100%' }}>
-              <Flex style={{ gridColumn: '1', gridRow: '1', paddingBottom: '5px'}}>{attraction.name}</Flex>
-              <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '60px' }}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
-              {editing && (
-                <Button style={{border: 'none', marginTop: '-8px', gridColumn: '2', gridRow: '1 / span 2'}} onClick={() => handleEditClick(attraction)}>
-                  <EditTwoTone/>
-                </Button>
-              )}
-              {editing && (
-                <Button style={{border: 'none', marginTop: '-8px', gridColumn: '3', gridRow: '1 / span 2'}} onClick={() => handleDeleteClick(attraction)}>
-                  <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
-                </Button>
-              )}
-            </Flex>
-          ),
-        },
-      ];
+
+      let distanceInMeter = 0;
+      let distance;
 
       // Add distance text between attractions
       if (index < attractionsForDay.length - 1) {
-        const distance = attractionDistances[index];
-
-        let distanceInMeter = 0;
+        distance = attractionDistances[index];
 
         if(distance){
           if(distance.includes("km")){
@@ -580,38 +560,54 @@ function TripOverview(props: any) {
             distanceInMeter = parseFloat(distance.split(" ")[0]);
           }
         }
-
-        
-
-        items.push({
-          color: 'trasparent',
-          children: (
-            <Flex key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
-              <Flex style={{ fontSize: '13px' }}>{travelModel === "DRIVING" ? <TbCar className='fs-5 me-2' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5 me-2'/> : <TbWalk className='fs-5 me-2' /> )}{distance}</Flex>
-            </Flex>
-          ),
-        });
       }
       
+      const items: any[] = [
+        {
+          label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
+          children: (
+            <div className="static-popover">            
+              <div className="content">
+                <Flex justify='space-between' align='center'>
+                  <Title style={{ textAlign: 'left', fontSize: '15px'}}>{attraction.name}</Title>
+                    <div className='button-container'>
+                    {editing && (
+                      <Button onClick={() => handleEditClick(attraction)} icon={<EditTwoTone/>} style={{ marginRight: '1%' }}/>
+                    )}
+                    {editing && (
+                      <Button onClick={() => handleDeleteClick(attraction)} icon={<DeleteTwoTone twoToneColor={colors.deleteButtonColor}/>} />
+                    )}
+                    </div>
+                </Flex>
+                <Tag icon={<EuroCircleOutlined />} color="green" style={{textAlign: 'left', display: 'table'}}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
+              </div>
+            </div>
+          ),
+          position: index % 2 === 0 ? 'left' : 'right',
+        }
+      ];
+
+      // Push item conditionally
+      if (index < attractionsForDay.length - 1) {
+        items.push({
+          dot: travelModel==="DRIVING" ? <TbCar className='fs-5' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5'/> : <TbWalk className='fs-5' /> ),
+          children: distance,
+          color: 'black'
+        });
+      }
 
       return items;
     });
 
     return (
       <>
-        <div>
-          <Timeline mode="left" items={timelineItems}  />
-        </div>
+        <Timeline mode='alternate' items={timelineItems}  />
         <center>
           {editing && (
-          
             <Button type="primary" onClick={() => openForm(day)}>
               Add Attraction
             </Button>
-          )
-          
-          }
-      
+          )}
         </center>
       </>
     );
