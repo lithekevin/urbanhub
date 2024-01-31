@@ -141,12 +141,11 @@ function TripOverview(props: any) {
               if(index !== -1){
                 tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
               }
-
             }
             let sum = 0;
             tripData.schedule.forEach((dayAttractions) => {
-            dayAttractions.forEach((attraction) => {
-              sum += attraction.perPersonCost;
+              dayAttractions.forEach((attraction) => {
+                sum += attraction.perPersonCost;
               });
             });
             setTotalCost(sum * (tripData.nAdults + tripData.nKids));
@@ -390,7 +389,6 @@ function TripOverview(props: any) {
   };
 
   const renderAttractionForm = () => {
-  
     return (
       <>
         <Modal open={isFormVisible} onCancel={closeForm} footer={null} centered width={1000}>
@@ -398,7 +396,7 @@ function TripOverview(props: any) {
             <Title level={2} className='step-title'> {editingAttraction ? "Edit Attraction" : "Add Attraction"} </Title>
             <Row>
               <Col>
-                <Form.Item name="attraction" label="Attraction" style={{paddingTop: '10px'}} rules={[{ required: true, message: 'Please select one of the attractions in the map, or type the name!' }]}>
+                <Form.Item name="attraction" label="Attraction" rules={[{ required: true, message: 'Please select one of the attractions in the map, or type the name!' }]}>
                   <div>
                   <AutoComplete
                     options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ value: attraction.name}))}
@@ -504,14 +502,12 @@ function TripOverview(props: any) {
 
   const renderMarkerForDay = (day: dayjs.Dayjs) => {
     let attractionsForDay: TripAttraction[] = [];
-  
     // Find the closest matching key
     let closestKey: dayjs.Dayjs | null = null;
     let minDifference: number | null = null;
   
     trip?.schedule.forEach((attractions, key) => {
       const difference = Math.abs(day.diff(key, 'days'));
-  
       if (minDifference === null || difference < minDifference) {
         minDifference = difference;
         closestKey = key;
@@ -527,14 +523,12 @@ function TripOverview(props: any) {
   const renderAttractionsForDay = (day: dayjs.Dayjs) => {
 
     let attractionsForDay: TripAttraction[] = [];
-
     // Find the closest matching key
     let closestKey: dayjs.Dayjs | null = null;
     let minDifference: number | null = null;
 
     trip?.schedule.forEach((attractions, key) => {
       const difference = Math.abs(day.diff(key, 'days'));
-
       if (minDifference === null || difference < minDifference) {
         minDifference = difference;
         closestKey = key;
@@ -617,7 +611,6 @@ function TripOverview(props: any) {
 
   const dayLabels : Array<string> = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
-
   const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
     key: `${index}`,
     label: dayLabel,
@@ -690,13 +683,13 @@ function TripOverview(props: any) {
       <div className='main-div'>
         <Container className="d-flex align-items-stretch height-full" >
           <div className='sidebar-space'>
-          <Sidebar
-              loadingState={{ value: loading, setter: setLoading }}
-              errorState={{ value: error, setter: setError }}
-              tripState={{ value: trip, setter: setTrip }}
-              activeKeyState={{value: activeKey, setter: setActiveKey}}
-              dailyActivities={dailyActivities}
-              activeAttractionDistances={attractionDistances}
+            <Sidebar
+                loadingState={{ value: loading, setter: setLoading }}
+                errorState={{ value: error, setter: setError }}
+                tripState={{ value: trip, setter: setTrip }}
+                activeKeyState={{value: activeKey, setter: setActiveKey}}
+                dailyActivities={dailyActivities}
+                activeAttractionDistances={attractionDistances}
             />
           </div>
           <div className='body-space'>
@@ -718,7 +711,7 @@ function TripOverview(props: any) {
 
       {editing && 
         <Popover
-        content={
+          content={
             <Chatbot
                 tripState={{ value: trip, setter: setTrip }}
                 dirtyState={{ value: dirty, setter: setDirty }}
@@ -727,42 +720,42 @@ function TripOverview(props: any) {
                 tripId={tripId}
                 messageApi={messageApi}
             />
-        }
-        trigger="click"
-        open={showChatbot}
-        onOpenChange={handlePopoverVisibleChange}
-        placement='right'
-        arrow={{ pointAtCenter: true }}
-        overlayStyle={{ width: '100%', maxWidth: '1120px' }}
+          }
+          trigger="click"
+          open={showChatbot}
+          onOpenChange={handlePopoverVisibleChange}
+          placement='right'
+          arrow={{ pointAtCenter: true }}
+          overlayStyle={{ width: '100%', maxWidth: '1120px' }}
         >
           <Button
-              style={{
-                  width: '55px',
-                  height: '55px',
-                  borderRadius: '50%',
-                  position: 'fixed',
-                  right: '20px', 
-                  marginLeft: '2%',
-                  bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
-                  boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-                  transform: `scale(${isHovered ? 1.1 : 1})`,
-                  transition: 'box-shadow transform 0.3s ease',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-              }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+            style={{
+                width: '55px',
+                height: '55px',
+                borderRadius: '50%',
+                position: 'fixed',
+                right: '20px', 
+                marginLeft: '2%',
+                bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
+                boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+                transform: `scale(${isHovered ? 1.1 : 1})`,
+                transition: 'box-shadow transform 0.3s ease',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
             <Image
-                src="https://imgur.com/ijeaJNU.png"
-                alt="UrbanHub assistant"
-                preview={false}
-                height={'auto'}
-                style={{ maxWidth: '100%', maxHeight: '100%' }}
+              src="https://imgur.com/ijeaJNU.png"
+              alt="UrbanHub assistant"
+              preview={false}
+              height={'auto'}
+              style={{ maxWidth: '100%', maxHeight: '100%' }}
             />
           </Button>
-      </Popover>}
+        </Popover>}
     </>
   );
 };
@@ -803,8 +796,7 @@ function Sidebar(props: SidebarProps) {
               <Row className="align-items-center">
                 <Col>
                   <Title level={2} className="text-left">{tripState.value.city}</Title>
-                </Col>
-                
+                </Col> 
               </Row>
             </Container>
           </div>
