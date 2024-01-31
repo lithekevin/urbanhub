@@ -426,26 +426,23 @@ function TripOverview(props: any) {
                       setSelectedAttractionId(null);
                       form.validateFields(['attraction']);
                     }                
-                  }}
-                  
+                  }} 
                 />
+                {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && 
+                <Paragraph style={{color: "var(--hard-background-color)", marginBottom: '0', marginTop: '0.4%'}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</Paragraph>
+                }
               </Form.Item>
-              {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && 
-              
-                <p style={{color: "var(--hard-background-color)"}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</p>
-
-              }
-                <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]}>
-                  <DatePicker format="DD/MM/YYYY" disabledDate={(current) => current && current < moment().startOf('day')} style={{width: '100%'}}/>
+              <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]}>
+                <DatePicker format="DD/MM/YYYY" disabledDate={(current) => current && current < moment().startOf('day')} style={{width: '100%'}}/>
+              </Form.Item>
+              <Form.Item style={{ marginBottom: 0 }}>
+                <Form.Item label = "Start Time " name="startTime" style={{ display: 'inline-block', marginRight: "2vw"}} rules={[{ required: true, message: 'Please choose the start time!' }]}>
+                  <TimePicker format="HH:mm" />
                 </Form.Item>
-                <Form.Item style={{ marginBottom: 0 }}>
-                  <Form.Item label = "Start Time " name="startTime" style={{ display: 'inline-block', marginRight: "2vw"}} rules={[{ required: true, message: 'Please choose the start time!' }]}>
-                    <TimePicker format="HH:mm" />
-                  </Form.Item>
-                  <Form.Item label= "End Time" name="endTime" style={{ display: 'inline-block' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
-                    <TimePicker format="HH:mm" />
-                  </Form.Item>
+                <Form.Item label= "End Time" name="endTime" style={{ display: 'inline-block' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
+                  <TimePicker format="HH:mm" />
                 </Form.Item>
+              </Form.Item>
             </Col>
             <Col>
                 <Form.Item>
