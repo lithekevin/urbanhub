@@ -1,392 +1,395 @@
-import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, 
-         AutoComplete, Divider, Tag, Tooltip, Flex, Image, Popover , Typography} from 'antd';
-import { Col, Container, Row } from "react-bootstrap";
-import { useState, useEffect } from 'react';
-import dayjs from 'dayjs';
-import moment from 'moment';
-import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled, EditOutlined } from '@ant-design/icons';
-import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip } from "../firebase/daos/dao-trips";
-import cities from "../firebase/cities";
-import { Trip } from "../models/trip";
-import { TripAttraction } from '../models/tripAttraction';
-import colors from "../style/colors";
-import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
-import Chatbot from '../components/TripOverview/ChatbotComponent';
-import { TbCar, TbCoinEuro, TbMoodKid, TbUser, TbWalk,  } from "react-icons/tb";
-import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
-import { Attraction } from '../models/attraction';
-import axios from 'axios';
-import { useLocation, useParams } from 'react-router-dom';
+  import { CollapseProps, Timeline, Collapse, Button, Modal, message, DatePicker, TimePicker, Form, 
+          AutoComplete, Divider, Tag, Tooltip, Flex, Image, Popover , Typography, InputNumber} from 'antd';
+  import { Col, Container, Row } from "react-bootstrap";
+  import { useState, useEffect } from 'react';
+  import dayjs from 'dayjs';
+  import moment from 'moment';
+  import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled, EditOutlined, EyeOutlined, SettingOutlined} from '@ant-design/icons';
+  import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip, editSettings } from "../firebase/daos/dao-trips";
+  import cities from "../firebase/cities";
+  import { Trip } from "../models/trip";
+  import { TripAttraction } from '../models/tripAttraction';
+  import colors from "../style/colors";
+  import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
+  import Chatbot from '../components/TripOverview/ChatbotComponent';
+  import { TbCar, TbCoinEuro, TbMoodKid, TbUser, TbWalk,  } from "react-icons/tb";
+  import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
+  import { Attraction } from '../models/attraction';
+  import axios from 'axios';
+  import { useLocation, useParams } from 'react-router-dom';
 
-const { Title, Paragraph, Text } = Typography;
+  const { Title, Text, Paragraph } = Typography;
 
-const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+  const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
-function TripOverview(props: any) {
-  const defaultCenter = {
-    lat: 48.7758, 
-    lng: 9.1829
-  };
-
-  const location = useLocation();
-
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [trip, setTrip] = useState<Trip | null>(null);
-  const [dirty, setDirty] = useState<boolean>(true);
-  const [messageApi] = message.useMessage();
-  const [activeKey, setActiveKey] = useState<string | string[]>([]);
-  const { tripId } = useParams();
-  const [editing, setEdit] = useState<boolean>(location.state && location.state.mode === "edit"); 
-  const [cityPosition, setCityPosition] = useState({
-    lat: defaultCenter.lat,
-    lng: defaultCenter.lng,
-  });
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [travelModel, setTravelModel] = useState('WALKING');
-  
-  //used for path between attractions
-  var origin : any = null;
-  var destination : any = null;
-  var waypt : any[] = [];
-  const [directions, setDirections] = useState<any>({
-    geocoded_waypoints: [],
-    routes: [],
-    status: "ZERO_RESULTS",
-  });  
-  const [attractionDistances, setAttractionDistances] = useState<any>([]);
-  
-  const [form] = Form.useForm();
-  const [editingAttraction, setEditingAttraction] = useState<TripAttraction | null>(null);
-  const [selectedAttractionId, setSelectedAttractionId] = useState<string | null>(null);
-  const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs | null>(null); 
-  const zoomLevel = selectedAttractionId !== null ? 15 : 12;
-  const selAttraction : Attraction | null | undefined = selectedAttractionId !== null ? cities.find(city => city.name === trip?.city)?.attractions.find( attraction => attraction.id === selectedAttractionId) : null;
-  const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
-
-  //Used for undo button and message in chatbot 
-  const [undoVisibility, setUndoVisibility] = useState(false);
-  const [messageAI, setMessageAI] = useState('Is there anything I can do for you?');  
-  const [totalCost, setTotalCost] = useState(0);
-  const [validSelection, setValidSelection] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [imageLoading, setImageLoading] = useState(false);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(null);
-
-
-  //Chatbot - Footer interaction
-  const [footerVisible, setFooterVisible] = useState(false);
-  const [footerHeight, setFooterHeight] = useState(0);
-
-  // Add an effect to detect when the footer becomes visible
-  useEffect(() => {
-    // Function to calculate the visible height of the footer
-    const getVisibleFooterHeight = () => {
-      const footer = document.querySelector('.footer-style');
-      if (footer) {
-        const footerRect = footer.getBoundingClientRect();
-        if (footerRect.top >= 0 && footerRect.bottom <= window.innerHeight) {
-          return footerRect.height;
-        } else {
-          return window.innerHeight - footerRect.top; // Footer is partially visible
-        }
-      }
-      return 0; // Footer not found
+  function TripOverview(props: any) {
+    const defaultCenter = {
+      lat: 48.7758, 
+      lng: 9.1829
     };
-  
-    // Update the state when the footer visibility changes
-    const handleScroll = () => {
-      const footer = document.querySelector('.footer-style');
-      if (footer) {
-        const footerBounds = footer.getBoundingClientRect();
-        // Check if any part of the footer is visible in the viewport
-        const isVisible = footerBounds.top < window.innerHeight && footerBounds.bottom >= 0;
-        if (isVisible) {
-          const footerHeight = getVisibleFooterHeight();
-          setFooterHeight(footerHeight);
-          setFooterVisible(true);
-        }else{
-          setFooterVisible(false);
-        }
-      }
-    };
-  
-    // Listen for scroll events to detect footer visibility changes
-    window.addEventListener('scroll', handleScroll);
+
+    const location = useLocation();
+
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<boolean>(false);
+    const [trip, setTrip] = useState<Trip | null>(null);
+    const [dirty, setDirty] = useState<boolean>(true);
+    const [messageApi] = message.useMessage();
+    const [activeKey, setActiveKey] = useState<string | string[]>([]);
+    const { tripId } = useParams();
+    const [editing, setEdit] = useState<boolean>(location.state && location.state.mode === "edit"); 
+    const [cityPosition, setCityPosition] = useState({
+      lat: defaultCenter.lat,
+      lng: defaultCenter.lng,
+    });
+    const [isFormVisible, setIsFormVisible] = useState(false);
+    const [travelModel, setTravelModel] = useState('WALKING');
     
-    // Clean up event listener
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);  
+    //used for path between attractions
+    var origin : any = null;
+    var destination : any = null;
+    var waypt : any[] = [];
+    const [directions, setDirections] = useState<any>({
+      geocoded_waypoints: [],
+      routes: [],
+      status: "ZERO_RESULTS",
+    });  
+    const [attractionDistances, setAttractionDistances] = useState<any>([]);
+    
+    const [form] = Form.useForm();
+    const [form1] = Form.useForm();
+    const [visible, setVisible] = useState(false);
+    const [editingAttraction, setEditingAttraction] = useState<TripAttraction | null>(null);
+    const [selectedAttractionId, setSelectedAttractionId] = useState<string | null>(null);
+    const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs | null>(null); 
+    const zoomLevel = selectedAttractionId !== null ? 15 : 12;
+    const selAttraction : Attraction | null | undefined = selectedAttractionId !== null ? cities.find(city => city.name === trip?.city)?.attractions.find( attraction => attraction.id === selectedAttractionId) : null;
+    const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
 
-  useEffect(() => {
-    // load trip details from firebase based on tripId
-    async function loadTripDetails() {
-      setLoading(true);
-      try {
-        if (tripId) {
-          const tripData = await getTripById(tripId);
-          if (tripData) {
-            setDirty(false);
-            setTrip(tripData);
-            if (trip?.location?.latitude && trip?.location?.longitude) {
-              setCityPosition({
-                lat: trip.location.latitude,
-                lng: trip.location.longitude,
-              });
+    //Used for undo button and message in chatbot 
+    const [undoVisibility, setUndoVisibility] = useState(false);
+    const [messageAI, setMessageAI] = useState('Is there anything I can do for you?');  
+    const [totalCost, setTotalCost] = useState(0);
+    const [validSelection, setValidSelection] = useState(false);
+    const [imageUrl, setImageUrl] = useState(null);
+    const [imageLoading, setImageLoading] = useState(false);
+    const [map, setMap] = useState<google.maps.Map | null>(null);
+    const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(null);
 
-              const index = tripData.questions.findIndex(question => question.includes("transportation"));
-              if(index !== -1){
-                tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
-              }
-            }
-            let sum = 0;
-            tripData.schedule.forEach((dayAttractions) => {
-              dayAttractions.forEach((attraction) => {
-                sum += attraction.perPersonCost;
-              });
-            });
-            setTotalCost(sum * (tripData.nAdults + tripData.nKids));
+
+    //Chatbot - Footer interaction
+    const [footerVisible, setFooterVisible] = useState(false);
+    const [footerHeight, setFooterHeight] = useState(0);
+
+    // Add an effect to detect when the footer becomes visible
+    useEffect(() => {
+      // Function to calculate the visible height of the footer
+      const getVisibleFooterHeight = () => {
+        const footer = document.querySelector('.footer-style');
+        if (footer) {
+          const footerRect = footer.getBoundingClientRect();
+          if (footerRect.top >= 0 && footerRect.bottom <= window.innerHeight) {
+            return footerRect.height;
           } else {
-            console.log(`Trip with ID ${tripId} not found.`);
+            return window.innerHeight - footerRect.top; // Footer is partially visible
           }
         }
-      } catch (error) {
-        console.error('Error loading trip details:', error);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadTripDetails();
-  }, [dirty]);
-
-  useEffect(() => {
-    const directionsService = new google.maps.DirectionsService();
-
-    if(activeKey.length === 0){
-      setDirections({
-        geocoded_waypoints: [],
-        routes: [],
-        status: "ZERO_RESULTS",
-      });
-      setAttractionDistances([]);
-      }
-      else{
-      //iterate throught all attractions of a day
-      renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction, index) => {
-        if(index === 0){
-          //update first element
-          origin = { lat: attraction.location.latitude, lng: attraction.location.longitude };
-          destination = null;
-          waypt = [];
-        }else if(index === (renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).length - 1)){
-          //update last element and caluclate route for the day
-          destination = { lat: attraction.location.latitude, lng: attraction.location.longitude };
-
-          directionsService.route(
-            {
-              origin: origin,
-              destination: destination,
-              waypoints: waypt,
-              travelMode: travelModel === "WALKING" ? google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING,         
-              unitSystem: google.maps.UnitSystem.METRIC,
-            },
-            (result, status) => {
-              if (status === google.maps.DirectionsStatus.OK) {
-                setDirections(result);
-                 // Extract distances between waypoints
-                if (result?.routes && result?.routes.length > 0 && result?.routes[0].legs) {
-                  const distances = result?.routes[0].legs.map(leg => leg?.distance?.text);
-                  setAttractionDistances(distances);
-                }
-              } else {
-                console.error(`error fetching directions ${result}`);
-                setAttractionDistances([]);
-              }
-            }
-          );
-        }else{
-          //update middle elements
-          waypt.push({
-            location: { lat: attraction.location.latitude, lng: attraction.location.longitude },
-            stopover: true,
-          });
+        return 0; // Footer not found
+      };
+    
+      // Update the state when the footer visibility changes
+      const handleScroll = () => {
+        const footer = document.querySelector('.footer-style');
+        if (footer) {
+          const footerBounds = footer.getBoundingClientRect();
+          // Check if any part of the footer is visible in the viewport
+          const isVisible = footerBounds.top < window.innerHeight && footerBounds.bottom >= 0;
+          if (isVisible) {
+            const footerHeight = getVisibleFooterHeight();
+            setFooterHeight(footerHeight);
+            setFooterVisible(true);
+          }else{
+            setFooterVisible(false);
+          }
         }
-      });
-    }
-  }, [trip, activeKey]);
+      };
+    
+      // Listen for scroll events to detect footer visibility changes
+      window.addEventListener('scroll', handleScroll);
+      
+      // Clean up event listener
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }, []);  
 
-  const fetchImage = async (query: string) => {
-    setImageLoading(true);
-    try {
-      const response = await axios.get('https://api.unsplash.com/search/photos', {
-        params: {
-          query,
-          per_page: 1,
-        },
-        headers: {
-          Authorization: `Client-ID 4rjvZvwzFuPY3uX3WAnf2Qb8eWkwvDys-sdsyvDdai0`,
-        },
-      });
-  
-      if (response.data.results.length > 0) {
-        setImageLoading(false);
-        return response.data.results[0].urls.regular;
-      } else {
+    useEffect(() => {
+      // load trip details from firebase based on tripId
+      async function loadTripDetails() {
+        setLoading(true);
+        try {
+          if (tripId) {
+            const tripData = await getTripById(tripId);
+            if (tripData) {
+              setDirty(false);
+              setTrip(tripData);
+              if (trip?.location?.latitude && trip?.location?.longitude) {
+                setCityPosition({
+                  lat: trip.location.latitude,
+                  lng: trip.location.longitude,
+                });
+
+                const index = tripData.questions.findIndex(question => question.includes("transportation"));
+                if(index !== -1){
+                  tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
+                }
+
+              }
+              let sum = 0;
+              tripData.schedule.forEach((dayAttractions) => {
+              dayAttractions.forEach((attraction) => {
+                sum += attraction.perPersonCost;
+                });
+              });
+              setTotalCost(sum * (tripData.nAdults + tripData.nKids));
+            } else {
+              console.log(`Trip with ID ${tripId} not found.`);
+            }
+          }
+        } catch (error) {
+          console.error('Error loading trip details:', error);
+          setError(true);
+        } finally {
+          setLoading(false);
+        }
+      }
+      loadTripDetails();
+    }, [dirty]);
+
+    useEffect(() => {
+      const directionsService = new google.maps.DirectionsService();
+
+      if(activeKey.length === 0){
+        setDirections({
+          geocoded_waypoints: [],
+          routes: [],
+          status: "ZERO_RESULTS",
+        });
+        setAttractionDistances([]);
+        }
+        else{
+        //iterate throught all attractions of a day
+        renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction, index) => {
+          if(index === 0){
+            //update first element
+            origin = { lat: attraction.location.latitude, lng: attraction.location.longitude };
+            destination = null;
+            waypt = [];
+          }else if(index === (renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).length - 1)){
+            //update last element and caluclate route for the day
+            destination = { lat: attraction.location.latitude, lng: attraction.location.longitude };
+
+            directionsService.route(
+              {
+                origin: origin,
+                destination: destination,
+                waypoints: waypt,
+                travelMode: travelModel === "WALKING" ? google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING,         
+                unitSystem: google.maps.UnitSystem.METRIC,
+              },
+              (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                  setDirections(result);
+                  // Extract distances between waypoints
+                  if (result?.routes && result?.routes.length > 0 && result?.routes[0].legs) {
+                    const distances = result?.routes[0].legs.map(leg => leg?.distance?.text);
+                    setAttractionDistances(distances);
+                  }
+                } else {
+                  console.error(`error fetching directions ${result}`);
+                  setAttractionDistances([]);
+                }
+              }
+            );
+          }else{
+            //update middle elements
+            waypt.push({
+              location: { lat: attraction.location.latitude, lng: attraction.location.longitude },
+              stopover: true,
+            });
+          }
+        });
+      }
+    }, [trip, activeKey]);
+
+    const fetchImage = async (query: string) => {
+      setImageLoading(true);
+      try {
+        const response = await axios.get('https://api.unsplash.com/search/photos', {
+          params: {
+            query,
+            per_page: 1,
+          },
+          headers: {
+            Authorization: `Client-ID 4rjvZvwzFuPY3uX3WAnf2Qb8eWkwvDys-sdsyvDdai0`,
+          },
+        });
+    
+        if (response.data.results.length > 0) {
+          setImageLoading(false);
+          return response.data.results[0].urls.regular;
+        } else {
+          setImageLoading(false);
+          return null;
+        }
+      } catch (error) {
+        console.error(error);
         setImageLoading(false);
         return null;
       }
-    } catch (error) {
-      console.error(error);
-      setImageLoading(false);
-      return null;
-    }
-  };
-  
-  useEffect(() => {
-    if (selectedMarker) {
-      fetchImage(selectedMarker.name).then(setImageUrl);
-    }
-  }, [selectedMarker]);
-
-  // Update map bounds whenever markers change
-  useEffect(() => {
-    if (map) {
-      const bounds = new window.google.maps.LatLngBounds();
-      if(selectedAttractionId !== null && selAttraction){
-        bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude});
-        bounds.extend({lat: selAttraction.location.latitude + 0.001, lng: selAttraction.location.longitude});
-        bounds.extend({lat: selAttraction.location.latitude - 0.001, lng: selAttraction.location.longitude});
-        bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude + 0.001});
-        bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude - 0.001});
-      }else{
-        cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
-          bounds.extend({lat: attraction.location.latitude, lng: attraction.location.longitude});
-        });
+    };
+    
+    useEffect(() => {
+      if (selectedMarker) {
+        fetchImage(selectedMarker.name).then(setImageUrl);
       }
-      setMapBounds(bounds);
-    }
-  }, [selectedAttractionId, map]);
+    }, [selectedMarker]);
 
-  // Fit map bounds when bounds change
-  useEffect(() => {
-    if (mapBounds && map) {
-      map.fitBounds(mapBounds);
-    }
-  }, [mapBounds, map]);
+    // Update map bounds whenever markers change
+    useEffect(() => {
+      if (map) {
+        const bounds = new window.google.maps.LatLngBounds();
+        if(selectedAttractionId !== null && selAttraction){
+          bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude});
+          bounds.extend({lat: selAttraction.location.latitude + 0.001, lng: selAttraction.location.longitude});
+          bounds.extend({lat: selAttraction.location.latitude - 0.001, lng: selAttraction.location.longitude});
+          bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude + 0.001});
+          bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude - 0.001});
+        }else{
+          cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
+            bounds.extend({lat: attraction.location.latitude, lng: attraction.location.longitude});
+          });
+        }
+        setMapBounds(bounds);
+      }
+    }, [selectedAttractionId, map]);
 
-  const handleDeleteClick = async (attraction: TripAttraction) => {
-    // Display a custom confirmation dialog
-    Modal.confirm({
-      title: 'Delete Attraction',
-      content: (
-        <div>
-          <p>Are you sure you want to delete this attraction?</p>
-          <p>
-            <strong>Name:</strong> {attraction.name}<br />
-            <strong>Date:</strong> {attraction.startDate.format('DD/MM/YYYY')}<br />
-          </p>
-        </div>
-      ),
-      centered: true,
-      onOk: async () => {
-        try {
-          if (tripId) {
-            await deleteAttraction(tripId, attraction.startDate, attraction.id);
-            setDirty(true);
-            setMessageAI("Attraction deleted succesully! Is there anything else I can do for you?");
-            setUndoVisibility(false);
+    // Fit map bounds when bounds change
+    useEffect(() => {
+      if (mapBounds && map) {
+        map.fitBounds(mapBounds);
+      }
+    }, [mapBounds, map]);
 
-            // Show success message
+    const handleDeleteClick = async (attraction: TripAttraction) => {
+      // Display a custom confirmation dialog
+      Modal.confirm({
+        title: 'Delete Attraction',
+        content: (
+          <div>
+            <p>Are you sure you want to delete this attraction?</p>
+            <p>
+              <strong>Name:</strong> {attraction.name}<br />
+              <strong>Date:</strong> {attraction.startDate.format('DD/MM/YYYY')}<br />
+            </p>
+          </div>
+        ),
+        centered: true,
+        onOk: async () => {
+          try {
+            if (tripId) {
+              await deleteAttraction(tripId, attraction.startDate, attraction.id);
+              setDirty(true);
+              setMessageAI("Attraction deleted succesully! Is there anything else I can do for you?");
+              setUndoVisibility(false);
+
+              // Show success message
+              messageApi.open({
+                type: 'success',
+                content: 'Attraction deleted successfully!',
+                duration: 3,
+                style: {
+                  marginTop: '70px',
+                },
+              });
+            }
+          } catch (error) {
+            console.error('Error deleting attraction:', error);
+
+            // Show error message
             messageApi.open({
-              type: 'success',
-              content: 'Attraction deleted successfully!',
+              type: 'error',
+              content: 'Error while deleting attraction!',
               duration: 3,
               style: {
                 marginTop: '70px',
               },
             });
           }
-        } catch (error) {
-          console.error('Error deleting attraction:', error);
+        },
 
-          // Show error message
-          messageApi.open({
-            type: 'error',
-            content: 'Error while deleting attraction!',
-            duration: 3,
-            style: {
-              marginTop: '70px',
-            },
-          });
-        }
-      },
-
-    });
-  };
-
-  const handleEditClick = (attraction : TripAttraction) => {
-    form.setFieldsValue({
-      attraction: attraction.name,
-      date: dayjs(attraction.startDate, 'DD/MM/YYYY'),
-      startTime: dayjs(attraction.startDate, 'HH:mm'),
-      endTime: dayjs(attraction.endDate, 'HH:mm')
-    });
-    setSelectedAttractionId(attraction.id);
-    setSelectedDay(dayjs(attraction.startDate, 'DD/MM/YYYY'))
-    setEditingAttraction(attraction);
-    setIsFormVisible(true);
-  };
-
-  const openForm = (selectedDay: dayjs.Dayjs) => {
-    form.resetFields();
-    form.setFieldsValue({ date: selectedDay });
-    setEditingAttraction(null);
-    setIsFormVisible(true);
-
-  };
-
-  const closeForm = () => {
-    setIsFormVisible(false);
-    setEditingAttraction(null);
-    setSelectedAttractionId(null);
-  };
-
-  const onFinish = (values: any) => {
-    const attraction = {
-      id: selectedAttractionId,
-      startDate: values.startTime.format('HH:mm'),
-      endDate: values.endTime.format('HH:mm'),
+      });
     };
 
-    if(editingAttraction){
+    const handleEditClick = (attraction : TripAttraction) => {
+      form.setFieldsValue({
+        attraction: attraction.name,
+        date: dayjs(attraction.startDate, 'DD/MM/YYYY'),
+        startTime: dayjs(attraction.startDate, 'HH:mm'),
+        endTime: dayjs(attraction.endDate, 'HH:mm')
+      });
+      setSelectedAttractionId(attraction.id);
+      setSelectedDay(dayjs(attraction.startDate, 'DD/MM/YYYY'))
+      setEditingAttraction(attraction);
+      setIsFormVisible(true);
+    };
 
-      if(tripId&&selectedDay){
-        editAttraction(tripId, editingAttraction.id ,selectedDay, values.date.format('DD/MM/YYYY'), attraction);
-        setMessageAI("Attraction edited successfully! Is there anything else I can do for you?");
-        setUndoVisibility(false);
+    const openForm = (selectedDay: dayjs.Dayjs) => {
+      form.resetFields();
+      form.setFieldsValue({ date: selectedDay });
+      setEditingAttraction(null);
+      setIsFormVisible(true);
+
+    };
+
+    const closeForm = () => {
+      setIsFormVisible(false);
+      setEditingAttraction(null);
+      setSelectedAttractionId(null);
+    };
+
+    const onFinish = (values: any) => {
+      const attraction = {
+        id: selectedAttractionId,
+        startDate: values.startTime.format('HH:mm'),
+        endDate: values.endTime.format('HH:mm'),
+      };
+
+      if(editingAttraction){
+
+        if(tripId&&selectedDay){
+          editAttraction(tripId, editingAttraction.id ,selectedDay, values.date.format('DD/MM/YYYY'), attraction);
+          setMessageAI("Attraction edited successfully! Is there anything else I can do for you?");
+          setUndoVisibility(false);
+        }
+        else{
+          console.log("error");
+        }
       }
+
       else{
-        console.log("error");
+        if(tripId){
+          addAttractionToTrip(tripId, values.date.format('DD/MM/YYYY'), attraction);
+          setMessageAI("Attraction added successfully! Is there anything else I can do for you?");
+          setUndoVisibility(false);
+        }
       }
-    }
 
-    else{
-      if(tripId){
-        addAttractionToTrip(tripId, values.date.format('DD/MM/YYYY'), attraction);
-        setMessageAI("Attraction added successfully! Is there anything else I can do for you?");
-        setUndoVisibility(false);
-      }
-    }
-
-    setDirty(true);
-    setEditingAttraction(null);
-    setIsFormVisible(false);
-    setSelectedAttractionId(null);
-  };
+      setDirty(true);
+      setEditingAttraction(null);
+      setIsFormVisible(false);
+      setSelectedAttractionId(null);
+    };
 
   const renderAttractionForm = () => {
     return (
@@ -535,9 +538,9 @@ function TripOverview(props: any) {
       }
     });
 
-    if (closestKey !== null) {
-      attractionsForDay = trip?.schedule.get(closestKey) || [];
-    }
+      if (closestKey !== null) {
+        attractionsForDay = trip?.schedule.get(closestKey) || [];
+      }
 
     const timelineItems = attractionsForDay.flatMap((attraction, index) => {
 
@@ -592,8 +595,8 @@ function TripOverview(props: any) {
         });
       }
 
-      return items;
-    });
+        return items;
+      });
 
     return (
       <>
@@ -611,78 +614,154 @@ function TripOverview(props: any) {
 
   const dayLabels : Array<string> = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
-  const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
-    key: `${index}`,
-    label: dayLabel,
-    children: 
-      <div>
-        {renderAttractionsForDay(dayjs(dayLabel, 'DD/MM/YYYY'))}
-      </div>,
-  }));
+    const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
+      key: `${index}`,
+      label: dayLabel,
+      children: 
+        <div>
+          {renderAttractionsForDay(dayjs(dayLabel, 'DD/MM/YYYY'))}
+        </div>,
+    }));
 
-  const [isHovered, setIsHovered] = useState(false);
-  const [showChatbot, setShowChatbot] = useState(false); // State variable to control the visibility of the chatbot
+    const [isHovered, setIsHovered] = useState(false);
+    const [showChatbot, setShowChatbot] = useState(false); // State variable to control the visibility of the chatbot
 
-  const handlePopoverVisibleChange = (visible: boolean) => {
-    setShowChatbot(visible); // Set the visibility of the chatbot based on popover visibility
+    const handlePopoverVisibleChange = (visible: boolean) => {
+      setShowChatbot(visible); // Set the visibility of the chatbot based on popover visibility
 
-    // Prevent scrolling when the popover is open
-    if (visible) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  };
+      // Prevent scrolling when the popover is open
+      if (visible) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    };
 
-  return (
-    <>
-      <Flex justify='space-evenly' align='center' style={{ fontSize: '25px'}}>
-        <span><TbUser/> <Text> Adults : {trip?.nAdults} </Text> </span>
-        <span><TbMoodKid/> <Text> Kids : {trip?.nKids} </Text> </span>
-        <span>
-        {(trip && totalCost > trip.budget) ? 
-        <>
-        <Tooltip title={"You have surpassed your budget which you set to " + trip.budget + " €"} placement='bottom'>
-          <TbCoinEuro style={{color: 'red'}}/>  
-          <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
-        </Tooltip> 
-        </> :
-        <>
-        <TbCoinEuro/>
-          <Text> Total Cost : {totalCost}{" €"} </Text>
-        </>
+    const handleOpenModal = () => {
+      form1.setFieldsValue({
+        nAdults: trip?.nAdults,
+        nKids: trip?.nKids,
+        budget: trip?.budget,
+        dateRange: [trip?.startDate, trip?.endDate],
+      });
+      setVisible(true);
+    };
+
+    const RenderSettingModal = (trip: Trip | null) => {
+      const handleCancel = () => {
+        setVisible(false);
+      };
+    
+      const handleUpdateTrip = async () => {
+        try {
+          const values = await form1.validateFields();
+    
+          if (trip) {
+            trip.nAdults = values.nAdults;
+            trip.nKids = values.nKids;
+            trip.startDate = values.dateRange[0].format('DD-MM-YYYY');
+            trip.endDate = values.dateRange[1].format('DD-MM-YYYY');
+            trip.budget = values.budget; // Extract budget from form values
+          }
+    
+          try {
+            // Call editSettings and wait for it to complete
+            const success = await editSettings(trip?.id, trip);
+            if (success) setDirty(true);
+          } catch (error) {
+            console.error('Error while saving: ', error);
+            // Handle the error as needed
+          }
+    
+          setVisible(false);
+        } catch (error) {
+          console.error('Error updating trip details:', error);
         }
-        </span>
-      </Flex>
+      };
+    
+      return (
+        <>
+          <Modal
+            title="Edit Trip Details"
+            open={visible}
+            onOk={handleUpdateTrip}
+            onCancel={handleCancel}
+            destroyOnClose
+          >
+            <Form form={form1} layout="vertical">
+              <Form.Item
+                label="Number of Adults"
+                name="nAdults"
+                rules={[{ required: true, message: 'Please enter the number of adults' }]}
+              >
+                <InputNumber style = {{width: "100%"}} min={1} />
+              </Form.Item>
+              <Form.Item
+                label="Number of Kids"
+                name="nKids"
+                rules={[{ required: true, message: 'Please enter the number of kids' }]}
+              >
+                <InputNumber style = {{width: "100%"}} min={0} />
+              </Form.Item>
+              <Form.Item
+                label="Budget"
+                name="budget"
+                rules={[{ required: true, message: 'Please enter the budget' }]}
+              >
+                <InputNumber style = {{width: "100%"}} min={0} />
+              </Form.Item>
+              <Form.Item
+                label="Date Range"
+                name="dateRange"
+                rules={[{ required: true, message: 'Please select the date range' }]}
+              >
+                <DatePicker.RangePicker style = {{width: "100%"}} format="DD-MM-YYYY" disabledDate={(current) => current && current < moment().startOf('day')} />
+              </Form.Item>
+            </Form>
+          </Modal>
+        </>
+      );
+    };
+    
+    
+
+    return (
+      <>
+        <Flex justify='space-evenly' align='center' style={{ fontSize: '25px', position: 'relative'}}>
+          <span><TbUser/> <Text> Adults : {trip?.nAdults} </Text> </span>
+          <span><TbMoodKid/> <Text> Kids : {trip?.nKids} </Text> </span>
+          <span>
+          {(trip && totalCost > trip.budget) ? 
+          <>
+            <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
+              <TbCoinEuro style={{color: 'red'}}/>  
+              <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
+            </Tooltip> 
+          </> :
+          <>
+            <TbCoinEuro/>
+              <Text> Total Cost : {totalCost}{" €"} </Text>
+          </>
+          }
+          </span>
+          {editing &&(<Button size="large" type="primary" className="button-new-trip" style={{ 
+            backgroundColor: colors.whiteBackgroundColor, color: 'black', textAlign: "center", position: 'absolute', right: 30 }}
+            onClick={() => handleOpenModal()}>
+              <span>
+                {<SettingOutlined />}
+              </span> 
+              
+          </Button>)}
+        </Flex>
+          
+        <Divider style={{ marginTop: '10px'}}/>
         
-      <Divider style={{ marginTop: '10px'}}/>
-      
-      <Title level={1} style={{ textAlign: 'center' }}>{editing ? "Trip Edit" : "Trip Overview"}</Title>
-      
-      { !editing &&
-        <div className='w-100 d-flex justify-content-end'>
-        <Button
-        size="middle"
-        type="primary"
-        className="button-new-trip me-5"
-        style={{
-          backgroundColor: colors.hardBackgroundColor,
-          color: colors.whiteBackgroundColor,
-          marginTop: "10px",
-          paddingBottom: "38px",
-          textAlign: "center",
-          fontSize: "20px",
-        }}
-        onClick={() => {setEdit(true)}}
-      >
-        <span>
-          <EditOutlined style={{ marginRight: "8px" }} /> Edit Trip
-        </span>
-      </Button>
-      </div>}
-      <div className='main-div'>
-        <Container className="d-flex align-items-stretch height-full" >
-          <div className='sidebar-space'>
+        <Title level={1} style={{ textAlign: 'center' }}>{"Trip Overview"}</Title>
+        
+
+        <div className='main-div'>
+          <Container className="d-flex align-items-stretch height-full" >
+            <div className='sidebar-space'>
             <Sidebar
                 loadingState={{ value: loading, setter: setLoading }}
                 errorState={{ value: error, setter: setError }}
@@ -690,24 +769,27 @@ function TripOverview(props: any) {
                 activeKeyState={{value: activeKey, setter: setActiveKey}}
                 dailyActivities={dailyActivities}
                 activeAttractionDistances={attractionDistances}
-            />
-          </div>
-          <div className='body-space'>
-            <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
-              <div className='map-space'>
-                <GoogleMapsComponent 
-                  activeKeyState={{value: activeKey, setter: setActiveKey}}
-                  cityPositionState={{value: cityPosition, setter: setCityPosition}}
-                  directionsState={{value: directions, setter: setDirections}}
-                  defaultCenter={defaultCenter}
-                  tripState={{ value: trip, setter: setTrip }}
-                />
-              </div>
-            </Container>
-          </div>
-          {renderAttractionForm()}
-        </Container>
-      </div>
+                editing={{value: editing, setter: setEdit}}
+
+              />
+            </div>
+            <div className='body-space'>
+              <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
+                <div className='map-space'>
+                  <GoogleMapsComponent 
+                    activeKeyState={{value: activeKey, setter: setActiveKey}}
+                    cityPositionState={{value: cityPosition, setter: setCityPosition}}
+                    directionsState={{value: directions, setter: setDirections}}
+                    defaultCenter={defaultCenter}
+                    tripState={{ value: trip, setter: setTrip }}
+                  />
+                </div>
+              </Container>
+            </div>
+            {renderAttractionForm()}
+            {RenderSettingModal(trip)}
+          </Container>
+        </div>
 
       {editing && 
         <Popover
@@ -762,51 +844,71 @@ function TripOverview(props: any) {
   
 interface SidebarProps {
 
-  loadingState: {
-    value: boolean;
-    setter: React.Dispatch<React.SetStateAction<boolean>>;
-  };
-  errorState: {
-    value: boolean;
-    setter: React.Dispatch<React.SetStateAction<boolean>>;
-  };
-  tripState: {
-    value: Trip | null;
-    setter: React.Dispatch<React.SetStateAction<Trip | null>>;
-  };
-  activeKeyState: {
-    value: string | string[];
-    setter: React.Dispatch<React.SetStateAction<string | string[]>>;
-  };
-  dailyActivities: CollapseProps['items'];
-  activeAttractionDistances: any[];
-}
+    loadingState: {
+      value: boolean;
+      setter: React.Dispatch<React.SetStateAction<boolean>>;
+    };
+    errorState: {
+      value: boolean;
+      setter: React.Dispatch<React.SetStateAction<boolean>>;
+    };
+    tripState: {
+      value: Trip | null;
+      setter: React.Dispatch<React.SetStateAction<Trip | null>>;
+    };
+    activeKeyState: {
+      value: string | string[];
+      setter: React.Dispatch<React.SetStateAction<string | string[]>>;
+    };
+    dailyActivities: CollapseProps['items'];
+    editing: {
+      value: boolean
+      setter: React.Dispatch<React.SetStateAction<boolean>>;
+    };
+    activeAttractionDistances: any[];
+  }
 
-function Sidebar(props: SidebarProps) {
-  const { loadingState, errorState, tripState, activeKeyState, dailyActivities} = props; 
+  function Sidebar(props: SidebarProps) {
+    const { loadingState, errorState, tripState, activeKeyState, dailyActivities, editing} = props; 
 
-  return (
-    <>
-      {loadingState.value && <p>Loading...</p>}
-      {errorState.value && <p>Error loading trip details</p>}
-      {!loadingState.value && !errorState.value && tripState.value && (
-        <>
-          <div>
-            <Container fluid className="position-relative">
-              <Row className="align-items-center">
-                <Col>
-                  <Title level={2} className="text-left">{tripState.value.city}</Title>
-                </Col> 
-              </Row>
-            </Container>
-          </div>
-          <div className='sidebar-div'>
-            <Collapse size="large" items={dailyActivities}  accordion={true} activeKey={activeKeyState.value} onChange={(keys) => activeKeyState.setter(keys)}/>
-          </div>
-        </>
-      )}
-    </>
-  );
-}
+    
 
-export default TripOverview;
+    return (
+      <>
+        {loadingState.value && <p>Loading...</p>}
+        {errorState.value && <p>Error loading trip details</p>}
+        {!loadingState.value && !errorState.value && tripState.value && (
+          <>
+            <div>
+              <Flex style={{ display: 'flex', alignItems: 'center' }}>
+                <Title level={2} className="text-left" style={{ marginRight: '1vw' }}>{tripState.value.city}</Title>
+                <Button
+                    size="middle"
+                    type="primary"
+                    className="button-new-trip"
+                    style={{
+                      backgroundColor: colors.whiteBackgroundColor,
+                      color: 'black',
+                      textAlign: "center",
+                      fontSize: "15px",
+                      marginBottom: "10px",
+                      marginRight: "1vw"
+                    }}
+                    onClick={() => { !editing.value ?editing.setter(true) : editing.setter(false)}}
+                  >
+                    <span>
+                      {!editing.value ? (<EditOutlined />) : (<EyeOutlined />)}
+                    </span>
+                  </Button>
+              </Flex>     
+            </div>
+            <div className='sidebar-div'>
+              <Collapse size="large" items={dailyActivities}  accordion={true} activeKey={activeKeyState.value} onChange={(keys) => activeKeyState.setter(keys)}/>
+            </div>
+          </>
+        )}
+      </>
+    );
+  }
+
+  export default TripOverview;
