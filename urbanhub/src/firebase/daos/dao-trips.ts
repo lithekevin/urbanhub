@@ -14,6 +14,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Trip } from "../../models/trip";
 import { TripAttraction } from "../../models/tripAttraction";
 import cities from "../cities";
+import { Attraction } from "../../models/attraction";
 
 dayjs.extend(customParseFormat);
 
@@ -223,6 +224,8 @@ export const getTripById = async (id: string) => {
         image: docData.image,
       };
 
+      console.log(docData);
+
       // iterate through the schedule keys and convert them to dayjs objects
 
       const scheduleKeys = Object.keys(docData.schedule);
@@ -242,7 +245,6 @@ export const getTripById = async (id: string) => {
 
       scheduleKeys.forEach((key) => {
         const attractions: TripAttraction[] = [];
-
         docData.schedule[key].sort((a: any, b: any) => {
           const dateA = dayjs(key + " " + a.startDate, "DD/MM/YYYY HH:mm");
           const dateB = dayjs(key + " " + b.startDate, "DD/MM/YYYY HH:mm");
@@ -256,9 +258,11 @@ export const getTripById = async (id: string) => {
           }
         });
 
+
         const attractionsInfo = cities.find(
           (city) => city.name === docData.city
         )?.attractions;
+
 
         docData.schedule[key].forEach((attraction: any) => {
           const attractionInfo = attractionsInfo!.find(
@@ -383,6 +387,128 @@ export const editAttraction = async (tripId: string, originalAttractionId : stri
     throw error;
   }
 };
+
+export const editSettings = async (tripId: string | undefined, updatedFields: Partial<Trip> | null): Promise<boolean> => {
+  try {
+    if (!tripId || !updatedFields) {
+      throw new Error("Invalid tripId or updatedFields object");
+    }
+
+    const docRef = doc(tripsCollection, tripId);
+
+    // Retrieve the existing document to get the current state
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("No such document!");
+      return false;
+    }
+
+    const existingData = docSnap.data();
+
+    const tripCity = cities.find((city) => city.name === existingData.city);
+
+    // Extract the schedule from the existing document
+    const existingSchedule = existingData?.schedule || {};
+
+    // Merge the existing schedule with the updated schedule
+    const mergedFields = { ...existingData, ...updatedFields };
+
+    // Convert the trip.schedule Map to a plain object for Firestore
+    const updatedSchedule = Array.from(mergedFields.schedule?.entries() || []).reduce(
+      (acc, [date, attractions]) => {
+        const formattedDate = date.format("DD/MM/YYYY");
+        acc[formattedDate] = attractions.map((attraction) => ({
+          id: attraction.id,
+          startDate: attraction.startDate.format("HH:mm"),
+          endDate: attraction.endDate.format("HH:mm"),
+        }));
+        return acc;
+      },
+      {} as Record<string, any>
+    );
+
+    // Merge the existing schedule with the updated schedule
+    const mergedSchedule = { ...existingSchedule, ...updatedSchedule };
+
+    // Remove days from the schedule that are not in the new date range
+    const newStartDate = dayjs(mergedFields.startDate, "DD/MM/YYYY");
+    const newEndDate = dayjs(mergedFields.endDate, "DD/MM/YYYY");
+
+    for (const date in mergedSchedule) {
+      const currentDate = dayjs(date, "DD/MM/YYYY");
+      if (currentDate.isBefore(newStartDate) || currentDate.isAfter(newEndDate)) {
+        delete mergedSchedule[date];
+      }
+    }
+
+    // Add missing days to the schedule and assign random trips
+    for (let d = newStartDate; !d.isAfter(newEndDate); d = d.add(1, "day")) {
+      const date = d.format("DD/MM/YYYY");
+      if (!mergedSchedule[date]) {
+        const randomTripsForDay = handleRandomTripsForDay(tripCity!.attractions, mergedFields.budget || 0);
+        mergedSchedule[date] = randomTripsForDay;
+      }
+    }
+
+    // Update the document with the new fields and schedule
+    await updateDoc(docRef, { ...mergedFields, schedule: mergedSchedule });
+
+    console.log("Settings successfully updated!");
+
+    return true;
+  } catch (error) {
+    console.error("Error editing settings: ", error);
+    throw error;
+  }
+};
+
+
+const handleRandomTripsForDay = (attractions: Attraction[], budget: number): { id: string; startDate: string; endDate: string }[] => {  
+  const nAttractions = Math.floor(Math.random() * 3) + 5;
+  const scheduleForDay: { id: string; startDate: string; endDate: string }[] = [];
+  const attractionsCopy = [...attractions]; // Create a copy
+  let currentExpenses = 0;
+
+  for (let i = 0; i < nAttractions; i++) {
+    if (attractionsCopy.length === 0) {
+      // Reset attractions if empty (consider attractions with perPersonCost === 0)
+      attractionsCopy.push(...attractions.filter(attraction => attraction.perPersonCost === 0));
+    }
+
+    const index = Math.floor(Math.random() * attractionsCopy.length);
+    const selectedAttraction = attractionsCopy[index];
+
+    // Calculate start and end hours for the selected attraction
+    const startHour: number = i === 0 ? 8 : parseInt(scheduleForDay[i - 1].endDate.split(":")[0]); // Start at 8 AM for the first attraction, else endHour of the previous attraction
+    const endHour: number = startHour + Math.floor(selectedAttraction.estimatedTime / 60);
+
+    // Check if the trip exceeds the budget
+    const tripCost = selectedAttraction.perPersonCost * (1 + 0.5); // Assuming 1 adult
+    if (currentExpenses + tripCost > budget) {
+      // Reuse old attractions
+      attractionsCopy.push(...scheduleForDay.map(attraction => attractions.find(a => a.id === attraction.id)!));
+      continue; // Retry with the same index
+    }
+
+    const tripAttraction = {
+      id: selectedAttraction.id,
+      startDate: startHour.toString().padStart(2, "0") + ":00",
+      endDate: endHour.toString().padStart(2, "0") + ":00",
+    };
+
+    scheduleForDay.push(tripAttraction);
+
+    // Update current expenses
+    currentExpenses += tripCost;
+
+    attractionsCopy.splice(index, 1);
+  }
+
+  return scheduleForDay;
+};
+
+
 
 export const editTrip = async (tripId: string | undefined, trip: Trip | null) => {
   try {
