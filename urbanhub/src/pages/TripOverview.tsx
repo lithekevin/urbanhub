@@ -733,10 +733,10 @@
           <span>
           {(trip && totalCost > trip.budget) ? 
           <>
-            <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
               <TbCoinEuro style={{color: 'red'}}/>  
-              <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
-            </Tooltip> 
+              <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
+                <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
+              </Tooltip> 
           </> :
           <>
             <TbCoinEuro/>
