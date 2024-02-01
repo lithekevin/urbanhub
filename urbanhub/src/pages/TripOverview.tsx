@@ -4,8 +4,8 @@
   import { useState, useEffect } from 'react';
   import dayjs from 'dayjs';
   import moment from 'moment';
-  import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseCircleFilled, EditOutlined, EyeOutlined, SettingOutlined} from '@ant-design/icons';
-  import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip, editTrip, editSettings } from "../firebase/daos/dao-trips";
+  import { EditTwoTone, DeleteTwoTone, EuroCircleOutlined,CloseSquareFilled, EditOutlined, EyeOutlined, SettingOutlined} from '@ant-design/icons';
+  import { getTripById, editAttraction, deleteAttraction, addAttractionToTrip, editSettings } from "../firebase/daos/dao-trips";
   import cities from "../firebase/cities";
   import { Trip } from "../models/trip";
   import { TripAttraction } from '../models/tripAttraction';
@@ -18,7 +18,7 @@
   import axios from 'axios';
   import { useLocation, useParams } from 'react-router-dom';
 
-  const { Title, Text } = Typography;
+  const { Title, Text, Paragraph } = Typography;
 
   const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
@@ -391,21 +391,21 @@
       setSelectedAttractionId(null);
     };
 
-    const renderAttractionForm = () => {
-    
-      return (
-        <>
-          <Modal open={isFormVisible} onCancel={closeForm} footer={null} centered width={1000}>
-            <Form form={form} name={"formName"} layout= "vertical" onFinish={(values) => onFinish(values)}>
+  const renderAttractionForm = () => {
+    return (
+      <>
+        <Modal open={isFormVisible} onCancel={closeForm} footer={null} centered width={1000}>
+          <Form form={form} name={"formName"} layout= "vertical" onFinish={(values) => onFinish(values)}>
             <Title level={2} className='step-title'> {editingAttraction ? "Edit Attraction" : "Add Attraction"} </Title>
             <Row>
               <Col>
-                <Form.Item name="attraction" label="Attraction" style={{paddingTop: '10px'}} rules={[{ required: true, message: 'Please select one of the attractions in the map, or type the name!' }]}>
+                <Form.Item name="attraction" label="Attraction" rules={[{ required: true, message: 'Please select one of the attractions in the map, or type the name!' }]}>
+                  <div>
                   <AutoComplete
                     options={cities.find(city => city.name === trip?.city)?.attractions.map(attraction => ({ value: attraction.name}))}
                     placeholder="Type an attraction"
                     style={{width: '100%'}}
-                    allowClear={{ clearIcon: <CloseCircleFilled /> }}
+                    allowClear={{ clearIcon: <CloseSquareFilled /> }}
                     onClear={() => {
                       form.setFieldsValue({ attraction: '' });
                       setValidSelection(false);
@@ -419,6 +419,7 @@
                       if(selectedAttraction) {
                         setSelectedAttractionId(selectedAttraction.id);
                         setValidSelection(true);
+                        form.setFieldsValue({ attraction: selectedAttraction.name });
                       }
                     }}
                     onBlur={() => {
@@ -428,202 +429,190 @@
                         setSelectedAttractionId(null);
                         form.validateFields(['attraction']);
                       }                
-                    }}
-                    
+                    }} 
                   />
+                  {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && 
+                  <Paragraph style={{color: "var(--hard-background-color)", marginTop: '0.4%', marginBottom: '0'}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</Paragraph>
+                  }
+                  </div>
                 </Form.Item>
-                {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && 
-                
-                  <p style={{color: "var(--hard-background-color)"}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</p>
-
-                }
-                  <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]}>
-                    <DatePicker format="DD/MM/YYYY" disabledDate={(current) => current && current < moment().startOf('day')} style={{width: '100%'}}/>
+                <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]}>
+                  <DatePicker format="DD/MM/YYYY" disabledDate={(current) => current && current < moment().startOf('day')} style={{width: '100%'}}/>
+                </Form.Item>
+                <Form.Item style={{ marginBottom: 0 }}>
+                  <Form.Item label = "Start Time " name="startTime" style={{ display: 'inline-block', marginRight: "2vw"}} rules={[{ required: true, message: 'Please choose the start time!' }]}>
+                    <TimePicker format="HH:mm" />
                   </Form.Item>
-                  <Form.Item style={{ marginBottom: 0 }}>
-                    <Form.Item label = "Start Time " name="startTime" style={{ display: 'inline-block', marginRight: "2vw"}} rules={[{ required: true, message: 'Please choose the start time!' }]}>
-                      <TimePicker format="HH:mm" />
-                    </Form.Item>
-                    <Form.Item label= "End Time" name="endTime" style={{ display: 'inline-block' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
-                      <TimePicker format="HH:mm" />
-                    </Form.Item>
+                  <Form.Item label= "End Time" name="endTime" style={{ display: 'inline-block' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
+                    <TimePicker format="HH:mm" />
                   </Form.Item>
+                </Form.Item>
               </Col>
               <Col>
-                  <Form.Item>
-                  
-                    <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '40vh', margin: 'auto', display: 'block', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={selectedAttractionId === null ? cityPosition : cityPosition } zoom={zoomLevel} onLoad={(map) => {setMap(map)}}>             
-                      { !selectedAttractionId && (
-                        <>
-                        {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
+                <Form.Item>
+                  <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '40vh', margin: 'auto', display: 'block', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={selectedAttractionId === null ? cityPosition : cityPosition } zoom={zoomLevel} onLoad={(map) => {setMap(map)}}>             
+                    { !selectedAttractionId && (
+                      <>
+                      {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
+                        return (
+                          <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} onMouseOver={() => setSelectedMarker(attraction)} onMouseOut={() => setSelectedMarker(null)}  onClick={() => {
+                            setSelectedAttractionId(attraction.id);
+                            form.setFieldsValue({ attraction: attraction.name }); // Update the AutoComplete value
+                          }}/>
+                        );
+                      })}
+                    </>
+                    )}
+                    { selectedAttractionId && (<>
+                      {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction) => {
+                        if (attraction.id === selectedAttractionId) {
                           return (
-                            <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} onMouseOver={() => setSelectedMarker(attraction)} onMouseOut={() => setSelectedMarker(null)}  onClick={() => {
-                              setSelectedAttractionId(attraction.id);
-                              form.setFieldsValue({ attraction: attraction.name }); // Update the AutoComplete value
-                            }}/>
+                            <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} onMouseOver={() => setSelectedMarker(attraction)} onMouseOut={() => setSelectedMarker(null)}/>
                           );
+                        }
+                          return null; // Render nothing if the attraction is not the selected one
                         })}
-                      </>
-                      )}
-                      { selectedAttractionId && (<>
-                        {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction) => {
-                          if (attraction.id === selectedAttractionId) {
-                            return (
-                              <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} onMouseOver={() => setSelectedMarker(attraction)} onMouseOut={() => setSelectedMarker(null)}/>
-                            );
-                          }
-                            return null; // Render nothing if the attraction is not the selected one
-                          })}
-                      </>)}
-                      {selectedMarker && (
-                        <InfoWindow
-                        options={{ pixelOffset: new google.maps.Size(0, -35), disableAutoPan: true }}
-                        position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
-                        onCloseClick={() => {setSelectedMarker(null)}}
-                      >
-                        <div className="attractionContainer">
-                          <img className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} />
-                          <h6 className="attractionName">{selectedMarker.name}</h6>
-                        </div>
-                      </InfoWindow>
-                      )}
-                    </GoogleMap>
+                    </>)}
+                    {selectedMarker && (
+                      <InfoWindow
+                      options={{ pixelOffset: new google.maps.Size(0, -35), disableAutoPan: true }}
+                      position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
+                      onCloseClick={() => {setSelectedMarker(null)}}
+                    >
+                      <div className="attractionContainer">
+                        <img className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} />
+                        <h6 className="attractionName">{selectedMarker.name}</h6>
+                      </div>
+                    </InfoWindow>
+                    )}
+                  </GoogleMap>
                 </Form.Item>
               </Col>
             </Row>
-              <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Button onClick={closeForm} style={{ marginRight: '10px' }}>
-                    Cancel
-                  </Button>
-                  <Button type="primary" htmlType="submit">
-                    Submit
-                  </Button>
-              </Form.Item>
-            </Form>
-          </Modal>
-        </>
-      );
-    };
+            <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button onClick={closeForm} style={{ marginRight: '10px' }}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </>
+    );
+  };
 
-    const renderMarkerForDay = (day: dayjs.Dayjs) => {
-      let attractionsForDay: TripAttraction[] = [];
-    
-      // Find the closest matching key
-      let closestKey: dayjs.Dayjs | null = null;
-      let minDifference: number | null = null;
-    
-      trip?.schedule.forEach((attractions, key) => {
-        const difference = Math.abs(day.diff(key, 'days'));
-    
-        if (minDifference === null || difference < minDifference) {
-          minDifference = difference;
-          closestKey = key;
-        }
-      });
-    
-      if (closestKey !== null) {
-        attractionsForDay = trip?.schedule.get(closestKey) || [];
+  const renderMarkerForDay = (day: dayjs.Dayjs) => {
+    let attractionsForDay: TripAttraction[] = [];
+    // Find the closest matching key
+    let closestKey: dayjs.Dayjs | null = null;
+    let minDifference: number | null = null;
+  
+    trip?.schedule.forEach((attractions, key) => {
+      const difference = Math.abs(day.diff(key, 'days'));
+      if (minDifference === null || difference < minDifference) {
+        minDifference = difference;
+        closestKey = key;
       }
-      return attractionsForDay;
+    });
+  
+    if (closestKey !== null) {
+      attractionsForDay = trip?.schedule.get(closestKey) || [];
     }
-    
-    const renderAttractionsForDay = (day: dayjs.Dayjs) => {
+    return attractionsForDay;
+  }
+  
+  const renderAttractionsForDay = (day: dayjs.Dayjs) => {
 
-      let attractionsForDay: TripAttraction[] = [];
+    let attractionsForDay: TripAttraction[] = [];
+    // Find the closest matching key
+    let closestKey: dayjs.Dayjs | null = null;
+    let minDifference: number | null = null;
 
-      // Find the closest matching key
-      let closestKey: dayjs.Dayjs | null = null;
-      let minDifference: number | null = null;
-
-      trip?.schedule.forEach((attractions, key) => {
-        const difference = Math.abs(day.diff(key, 'days'));
-
-        if (minDifference === null || difference < minDifference) {
-          minDifference = difference;
-          closestKey = key;
-        }
-      });
+    trip?.schedule.forEach((attractions, key) => {
+      const difference = Math.abs(day.diff(key, 'days'));
+      if (minDifference === null || difference < minDifference) {
+        minDifference = difference;
+        closestKey = key;
+      }
+    });
 
       if (closestKey !== null) {
         attractionsForDay = trip?.schedule.get(closestKey) || [];
       }
 
-      const timelineItems = attractionsForDay.flatMap((attraction, index) => {
-        const items: any[] = [
-          {
-            label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
-            children: (
-              <Flex key={index} style={{ display: 'grid', gridTemplateColumns: '3fr auto auto', gridTemplateRows: 'auto auto', alignItems: 'start', width: '100%' }}>
-                <Flex style={{ gridColumn: '1', gridRow: '1', paddingBottom: '5px'}}>{attraction.name}</Flex>
-                <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '60px' }}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
-                {editing && (
-                  <Button style={{border: 'none', marginTop: '-8px', gridColumn: '2', gridRow: '1 / span 2'}} onClick={() => handleEditClick(attraction)}>
-                    <EditTwoTone/>
-                  </Button>
-                )}
-                {editing && (
-                  <Button style={{border: 'none', marginTop: '-8px', gridColumn: '3', gridRow: '1 / span 2'}} onClick={() => handleDeleteClick(attraction)}>
-                    <DeleteTwoTone twoToneColor={colors.deleteButtonColor} />
-                  </Button>
-                )}
-              </Flex>
-            ),
-          },
-        ];
+    const timelineItems = attractionsForDay.flatMap((attraction, index) => {
 
-        // Add distance text between attractions
-        if (index < attractionsForDay.length - 1) {
-          const distance = attractionDistances[index];
+      let distanceInMeter = 0;
+      let distance;
 
-          let distanceInMeter = 0;
+      // Add distance text between attractions
+      if (index < attractionsForDay.length - 1) {
+        distance = attractionDistances[index];
 
-          if(distance){
-            if(distance.includes("km")){
-              distanceInMeter = parseFloat(distance.split(" ")[0]) * 1000;
-            }
-            else{
-              distanceInMeter = parseFloat(distance.split(" ")[0]);
-            }
+        if(distance){
+          if(distance.includes("km")){
+            distanceInMeter = parseFloat(distance.split(" ")[0]) * 1000;
           }
-
-          
-
-          items.push({
-            color: 'trasparent',
-            children: (
-              <Flex key={index} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', alignItems: 'center', marginBottom: '10px' }}>
-                <Flex style={{ fontSize: '13px' }}>{travelModel === "DRIVING" ? <TbCar className='fs-5 me-2' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5 me-2'/> : <TbWalk className='fs-5 me-2' /> )}{distance}</Flex>
-              </Flex>
-            ),
-          });
+          else{
+            distanceInMeter = parseFloat(distance.split(" ")[0]);
+          }
         }
-        
+      }
+      
+      const items: any[] = [
+        {
+          label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
+          children: (
+            <div className="static-popover">            
+              <div className="content">
+                <Flex justify='space-between' align='center'>
+                  <Title style={{ textAlign: 'left', fontSize: '15px'}}>{attraction.name}</Title>
+                    <div className='button-container'>
+                    {editing && (
+                      <Button onClick={() => handleEditClick(attraction)} icon={<EditTwoTone/>} style={{ marginRight: '1%' }}/>
+                    )}
+                    {editing && (
+                      <Button onClick={() => handleDeleteClick(attraction)} icon={<DeleteTwoTone twoToneColor={colors.deleteButtonColor}/>} />
+                    )}
+                    </div>
+                </Flex>
+                <Tag icon={<EuroCircleOutlined />} color="green" style={{textAlign: 'left', display: 'table'}}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
+              </div>
+            </div>
+          ),
+          position: index % 2 === 0 ? 'left' : 'right',
+        }
+      ];
+
+      // Push item conditionally
+      if (index < attractionsForDay.length - 1) {
+        items.push({
+          dot: travelModel==="DRIVING" ? <TbCar className='fs-5' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5'/> : <TbWalk className='fs-5' /> ),
+          children: distance,
+          color: 'black'
+        });
+      }
 
         return items;
       });
 
-      return (
-        <>
-          <div>
-            <Timeline mode="left" items={timelineItems}  style={{marginLeft: '-5vw'}}/>
-          </div>
-          <center>
-            {editing && (
-            
-              <Button type="primary" onClick={() => openForm(day)}>
-                Add Attraction
-              </Button>
-            )
-            
-            }
-        
-          </center>
-        </>
-      );
-    };
+    return (
+      <>
+        <Timeline mode='alternate' items={timelineItems}  />
+        <center>
+          {editing && (
+            <Button type="primary" onClick={() => openForm(day)}>
+              Add Attraction
+            </Button>
+          )}
+        </center>
+      </>
+    );
+  };
 
-    const dayLabels : Array<string> = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
-
+  const dayLabels : Array<string> = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
     const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
       key: `${index}`,
@@ -744,10 +733,10 @@
           <span>
           {(trip && totalCost > trip.budget) ? 
           <>
-            <Tooltip title={"You have surpassed your budget which you set to " + trip.budget + " €"} placement='bottom'>
               <TbCoinEuro style={{color: 'red'}}/>  
-              <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
-            </Tooltip> 
+              <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
+                <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
+              </Tooltip> 
           </> :
           <>
             <TbCoinEuro/>
@@ -802,17 +791,17 @@
           </Container>
         </div>
 
-
-          <Popover
+      {editing && 
+        <Popover
           content={
-              <Chatbot
-                  tripState={{ value: trip, setter: setTrip }}
-                  dirtyState={{ value: dirty, setter: setDirty }}
-                  undoState={{ value: undoVisibility, setter: setUndoVisibility }}
-                  messageAIState={{ value: messageAI, setter: setMessageAI }}
-                  tripId={tripId}
-                  messageApi={messageApi}
-              />
+            <Chatbot
+                tripState={{ value: trip, setter: setTrip }}
+                dirtyState={{ value: dirty, setter: setDirty }}
+                undoState={{ value: undoVisibility, setter: setUndoVisibility }}
+                messageAIState={{ value: messageAI, setter: setMessageAI }}
+                tripId={tripId}
+                messageApi={messageApi}
+            />
           }
           trigger="click"
           open={showChatbot}
@@ -820,40 +809,40 @@
           placement='right'
           arrow={{ pointAtCenter: true }}
           overlayStyle={{ width: '100%', maxWidth: '1120px' }}
+        >
+          <Button
+            style={{
+                width: '55px',
+                height: '55px',
+                borderRadius: '50%',
+                position: 'fixed',
+                right: '20px', 
+                marginLeft: '2%',
+                bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
+                boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+                transform: `scale(${isHovered ? 1.1 : 1})`,
+                transition: 'box-shadow transform 0.3s ease',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-            <Button
-                style={{
-                    width: '55px',
-                    height: '55px',
-                    borderRadius: '50%',
-                    position: 'fixed',
-                    right: '20px', 
-                    marginLeft: '2%',
-                    bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
-                    boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-                    transform: `scale(${isHovered ? 1.1 : 1})`,
-                    transition: 'box-shadow transform 0.3s ease',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-            >
-              <Image
-                  src="https://imgur.com/ijeaJNU.png"
-                  alt="UrbanHub assistant"
-                  preview={false}
-                  height={'auto'}
-                  style={{ maxWidth: '100%', maxHeight: '100%' }}
-              />
-            </Button>
-        </Popover>
-      </>
-    );
-  };
-    
-  interface SidebarProps {
+            <Image
+              src="https://imgur.com/ijeaJNU.png"
+              alt="UrbanHub assistant"
+              preview={false}
+              height={'auto'}
+              style={{ maxWidth: '100%', maxHeight: '100%' }}
+            />
+          </Button>
+        </Popover>}
+    </>
+  );
+};
+  
+interface SidebarProps {
 
     loadingState: {
       value: boolean;
@@ -891,7 +880,7 @@
         {!loadingState.value && !errorState.value && tripState.value && (
           <>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Flex style={{ display: 'flex', alignItems: 'center' }}>
                 <Title level={2} className="text-left" style={{ marginRight: '1vw' }}>{tripState.value.city}</Title>
                 <Button
                     size="middle"
@@ -911,7 +900,7 @@
                       {!editing.value ? (<EditOutlined />) : (<EyeOutlined />)}
                     </span>
                   </Button>
-              </div>     
+              </Flex>     
             </div>
             <div className='sidebar-div'>
               <Collapse size="large" items={dailyActivities}  accordion={true} activeKey={activeKeyState.value} onChange={(keys) => activeKeyState.setter(keys)}/>

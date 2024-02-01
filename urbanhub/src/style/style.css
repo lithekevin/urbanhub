@@ -104,28 +104,61 @@
   margin-top: 20px;
 }
 
-  .attractionContainer {
+.attractionContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 200px;
+}
+
+.attractionImage {
+  width: 100%;
+  max-width: 100%;
+  max-height: 80%;
+  object-fit:cover;
+  aspect-ratio: 3/2;
+  border-radius: 10px;
+}
+
+.attractionName {
+  margin-top: 20px;
+}
+
+.static-popover {
+    position: relative;
+    display: inline-block;
+    width: 100%; /* Adjust as needed */
+    max-width: 800px; /* Maximum width for larger screens */
+    margin: 0 auto; /* Center the popover horizontally */
+}
+
+.content {
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  padding: 5px 10px;
+  color: #555;
+}
+
+.button-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    max-width: 200px;
-  }
-  
-  .attractionImage {
-    width: 100%;
-    max-width: 100%;
-    max-height: 80%;
-    object-fit:cover;
-    aspect-ratio: 3/2;
-    border-radius: 10px;
-  }
-  
-  .attractionName {
-    margin-top: 20px;
-  }
+}
+
+@media (max-width: 768px) {
+    .static-popover {
+      width: 100%; /* Full width on small screens */
+      flex-direction: column; /* Stack popover content vertically */
+    }
+    .button-container {
+      flex-direction: column; /* Stack buttons vertically */
+      align-items: flex-end; /* Right-align buttons */
+    }
+}
 
 /************
  * NAVBAR
