@@ -185,6 +185,7 @@
     -webkit-backdrop-filter: blur(7px);
     backdrop-filter: blur(7px);
     overflow: hidden;
+    display:inline-flex;
 }
 
 .cover-style {
