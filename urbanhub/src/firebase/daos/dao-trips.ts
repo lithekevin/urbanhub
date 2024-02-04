@@ -1,13 +1,4 @@
-import {
-  getFirestore,
-  collection,
-  setDoc,
-  doc,
-  getDocs,
-  getDoc,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { getFirestore, collection, setDoc, doc, getDocs, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { app } from "../firebaseConfig";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -224,8 +215,6 @@ export const getTripById = async (id: string) => {
         image: docData.image,
       };
 
-      console.log(docData);
-
       // iterate through the schedule keys and convert them to dayjs objects
 
       const scheduleKeys = Object.keys(docData.schedule);
@@ -321,8 +310,7 @@ export const addAttractionToTrip = async (tripId: string, day: string, newAttrac
 
       // Add the new attraction to the day
       tripData.schedule[formattedDay].push(newAttraction);
-      
-      console.log(tripData);
+     
       // Update the trip document with the new schedule
       await updateDoc(tripRef, { schedule: tripData.schedule });
 
