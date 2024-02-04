@@ -19,9 +19,7 @@ interface Step0Props {
   isDestinationValid: boolean;
   setIsDestinationValid: React.Dispatch<React.SetStateAction<boolean>>;
   cityPosition: { lat: number; lng: number };
-  setCityPosition: React.Dispatch<
-    React.SetStateAction<{ lat: number; lng: number }>
-  >;
+  setCityPosition: React.Dispatch<React.SetStateAction<{ lat: number; lng: number }>>;
   mapZoom: number;
   setMapZoom: React.Dispatch<React.SetStateAction<number>>;
   formData: { destination: string };
@@ -30,23 +28,12 @@ interface Step0Props {
   nextStep: () => void;
 }
 
-const Step0: React.FC<Step0Props> = ({
-  isDestinationSelected,
-  setIsDestinationSelected,
-  isDestinationValid,
-  setIsDestinationValid,
-  cityPosition,
-  setCityPosition,
-  mapZoom,
-  setMapZoom,
-  handleInputChange,
-  formData,
-  step,
-  nextStep,
-}) => {
+function Step0(props: Step0Props) {
+  
+  const { isDestinationSelected, setIsDestinationSelected, isDestinationValid, setIsDestinationValid, 
+          cityPosition, setCityPosition, mapZoom, setMapZoom, formData, handleInputChange, step, nextStep } = props;
   const [showMarker, setShowMarker] = useState(false);
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
-
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {

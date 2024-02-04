@@ -33,7 +33,10 @@ interface TripFormProps {
   }) => void;
 }
 
-const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
+function NewTrip (props: TripFormProps) {
+
+  const { onSubmit } = props;
+  
   const steps = [
     {
       title: "Trip destination",
@@ -213,6 +216,7 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
             </Col>
           </Row>
         </ConfigProvider>
+      
       <Row justify={"center"} align={"top"} style={{ minHeight: "66vh" }}>
         <Col
           sm={{ span: 24 }}
@@ -258,7 +262,6 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
                 setDisplayedQuestions={setDisplayedQuestions}
                 allDisplayedQuestions={allDisplayedQuestions}
                 setAllDisplayedQuestions={setAllDisplayedQuestions}
-                canLoadMoreQuestions={canLoadMoreQuestions}
                 setCanLoadMoreQuestions={setCanLoadMoreQuestions}
                 userAnswers={userAnswers}
                 setUserAnswers={setUserAnswers}
@@ -271,8 +274,6 @@ const NewTrip: React.FC<TripFormProps> = ({onSubmit}) => {
             {step === 3 && (
               <Step3
                 step={step}
-                allDisplayedQuestions={allDisplayedQuestions}
-                userAnswers={userAnswers}
                 formData={formData}
                 prevStep={prevStep}
                 onSubmit={onSubmit}
