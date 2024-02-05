@@ -3,8 +3,6 @@ import { Card, Button, Typography, Space, Empty } from 'antd';
 const { Title, Text } = Typography;
 
 interface Step3Props {
-  allDisplayedQuestions: string[];
-  userAnswers: string[];
   formData: {
     destination: string;
     dateRange: string[];
@@ -27,7 +25,9 @@ interface Step3Props {
   }) => void;
 }
 
-const Step3: React.FC<Step3Props> = ({ step, allDisplayedQuestions, userAnswers, formData, prevStep, onSubmit }) => {
+function Step3 (props: Step3Props) {
+
+  const { formData, step, prevStep, onSubmit } = props;
 
   const step1Data = [
     { label: 'Destination: ', value: formData.destination }

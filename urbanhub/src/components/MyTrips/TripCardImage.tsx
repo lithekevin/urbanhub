@@ -22,7 +22,7 @@ function TripCardImage(props: { cityName: string }) {                  //PER ORA
     };
 
     fetchCityImage();
-  }, []);
+  }, [props.cityName]);
 
   return (
     <div>
