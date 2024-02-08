@@ -1,9 +1,9 @@
 import React from 'react';
-import { Form, DatePicker, InputNumber, Row, Col, Button, Typography } from 'antd';
+import { Button, Col, DatePicker, Form, InputNumber, Row, Tooltip, Typography } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
-const { Title, Paragraph } = Typography;
+const { Paragraph, Text, Title } = Typography;
 
 interface Step1Props {
   adultsValue: number;
@@ -59,7 +59,7 @@ function Step1 (props: Step1Props){
     <div className='form-container'>
       <Title level={2} className='step-title'> Select your trip settings </Title>
       
-      <Paragraph className='label'> When would you like to go? </Paragraph>
+      <Paragraph style={{color: 'red'}}>✽<Text className='label'> When would you like to go? </Text></Paragraph>
       <Form.Item name="dateRange" hidden={step !== 1}>
       <DatePicker.RangePicker 
         style={{ width: '100%' }}
@@ -68,7 +68,7 @@ function Step1 (props: Step1Props){
         allowClear={true}/>
       </Form.Item>
 
-      <Paragraph className='label'> How many adults are going? </Paragraph>
+      <Paragraph style={{color: 'red'}}>✽<Text className='label'> How many adults are going? </Text></Paragraph>
       <Form.Item name="adults" hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
         <Row gutter={8}>
           <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
@@ -80,9 +80,7 @@ function Step1 (props: Step1Props){
               controls={false}
               style={{ width: 'auto', marginRight: '8px' }}
             />
-            <span>
-              {adultsValue <= 1 ? <span> Adult </span> : <span> Adults </span>}
-            </span>
+            {adultsValue <= 1 ? <Text> Adult </Text> : <Text> Adults </Text>} <Text style={{ color: 'gray', marginLeft: '5px' }}>(13+ years old)</Text>
           </Col>
           <Col flex="none">
             <Button type='default' shape='circle' icon={<MinusOutlined/>} onClick={() => handleDecrement('adults')} disabled={adultsValue===0}/>
@@ -93,8 +91,8 @@ function Step1 (props: Step1Props){
         </Row>
       </Form.Item>
 
-      <Paragraph className='label'> How many kids are going? </Paragraph>
-      <Form.Item name="kids" hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
+      <Paragraph style={{color: 'red'}}>✽<Text className='label'> How many kids are going? </Text></Paragraph>
+      <Form.Item name="kids"  hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
         <Row gutter={8}>
           <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
             <InputNumber
@@ -105,9 +103,7 @@ function Step1 (props: Step1Props){
               controls={false}
               style={{ textAlign: 'center', width: 'auto', marginRight: '8px' }}
             />
-            <span>
-              {kidsValue <= 1 ? <span> Kid  </span> : <span> Kids </span>}
-            </span>
+            {kidsValue <= 1 ? <Text> Kid  </Text> : <Text> Kids </Text>} <Text style={{ color: 'gray', marginLeft: '5px'}}>(0-12 years old)</Text>
           </Col>
           <Col flex="none">
             <Button type='default' shape='circle' icon={<MinusOutlined/>} onClick={() => handleDecrement('kids')} disabled={kidsValue===0} />
@@ -118,7 +114,7 @@ function Step1 (props: Step1Props){
         </Row>
       </Form.Item>
 
-      <Paragraph className='label'> How much do you plan to spend on this trip? </Paragraph>
+      <Paragraph style={{color: 'red'}}>✽<Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>
       <Form.Item name="budget" hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
         <InputNumber
           onChange={(value) =>
@@ -137,9 +133,11 @@ function Step1 (props: Step1Props){
         <Button type="default" onClick={prevStep} className="button">
           Previous
         </Button>
-        <Button type='primary' onClick={nextStep} className="button" htmlType="submit" disabled={!isStepValid()}>
-          Next
-        </Button>
+        <Tooltip title={!isStepValid() ? 'Please fill correctly all the required fields' : ''} placement='right' overlayInnerStyle={{textAlign: 'center', fontSize: '13px'}}>
+          <Button type='primary' onClick={nextStep} className="button" htmlType="submit" disabled={!isStepValid()}>
+            Next
+          </Button>
+        </Tooltip>
       </div>
     </div>
   );

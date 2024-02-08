@@ -222,9 +222,9 @@ function NewTrip (props: TripFormProps) {
           sm={{ span: 24 }}
           md={{ span: 20 }}
           lg={{ span: 18 }}
-          xl={{ span: 12 }}
+          xl={{ span: 14 }}
         >
-          <Form>
+          <Form layout="vertical">
             {step === 0 && (
               <Step0
                 isDestinationSelected={isDestinationSelected}
