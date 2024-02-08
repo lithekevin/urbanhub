@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { Modal, Form, DatePicker, TimePicker, Button, AutoComplete, Typography } from 'antd';
 import { CloseSquareFilled } from '@ant-design/icons';
@@ -46,10 +46,13 @@ function AttractionForm (props: AttractionFormProps) {
             setIsFormVisible, setMap, setMessageAI, setSelectedAttractionId, setSelectedMarker, setUndoVisibility, 
             setValidSelection, tripId, validSelection, zoomLevel } = props;
 
+    const [showParagraph, setShowParagraph] = useState(false);
+
     const closeForm = () => {
       setIsFormVisible(false);
       setEditingAttraction(null);
       setSelectedAttractionId(null);
+      setShowParagraph(false);
     };
   
     const onFinish = (values: any) => {
@@ -83,6 +86,7 @@ function AttractionForm (props: AttractionFormProps) {
       setEditingAttraction(null);
       setIsFormVisible(false);
       setSelectedAttractionId(null);
+      setShowParagraph(false);
     };
 
     return (
@@ -110,6 +114,7 @@ function AttractionForm (props: AttractionFormProps) {
                       if(selectedAttraction) {
                         setSelectedAttractionId(selectedAttraction.id);
                         setValidSelection(true);
+                        setShowParagraph(true);
                       }
                     }}
                     onBlur={() => {
@@ -123,7 +128,7 @@ function AttractionForm (props: AttractionFormProps) {
 
                   />
                 </Form.Item>
-                {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && 
+                {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && showParagraph &&
                     <Paragraph style={{color: "var(--hard-background-color)", marginTop: '0', marginBottom: '10px'}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</Paragraph>
                 }
                 <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]}>
