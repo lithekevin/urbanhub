@@ -20,6 +20,7 @@ import cities from "./firebase/cities";
 import dayjs from "dayjs";
 import { message } from "antd";
 import { Attraction } from "./models/attraction";
+import { ArrayTypeNode } from "typescript";
 
 function App() {
   return (
@@ -52,17 +53,230 @@ function Main() {
     questions: string[];
     answers: string[];
   }) => {
+
+    const calculateNextTripID = function (trips: Trip[]): string {
+      const nextID =
+        trips.length > 0
+          ? Math.max(...trips.map((trip) => parseInt(trip.id.slice(1)))) + 1
+          : 1;
+
+      return "T" + nextID.toString().padStart(3, "0");
+    }
+
+    const createEmptyDatesInSchedule = function (startDate: string, endDate: string, schedule: { [date: string]: any[] } ) {
+      const tripStartDate = dayjs(startDate, "DD/MM/YYYY");
+      const tripEndDate = dayjs(endDate, "DD/MM/YYYY");
+
+      for (let d = tripStartDate; !d.isAfter(tripEndDate); d = d.add(1, "day")) {
+        const date = d.format("DD/MM/YYYY");
+        schedule[date] = [];
+      }
+    }
+
+    const initializeAvailableAttractions = function (cityAttractions: any, adults: number, kids: number, budget: number, isFirstCall: boolean) {
+      let availableAttractionsToBePicked: Attraction[] = []; // list of attractions that can be picked for the trip creation
+
+      let currentExpenses = 0;
+      const nTotPersons = adults + kids;
+
+      for (const attraction of cityAttractions) {
+        if (attraction.perPersonCost === 0) {
+          availableAttractionsToBePicked.push(attraction);
+        }
+        else if (
+          isFirstCall && (currentExpenses + attraction.perPersonCost * nTotPersons <= budget)
+        ) {
+          availableAttractionsToBePicked.push(attraction);
+          currentExpenses += attraction.perPersonCost * nTotPersons;
+        }
+      }
+
+      return availableAttractionsToBePicked;
+    }
+
+    const fillFirstAttractionPerDay = function (availableAttractionsToBePicked: Attraction[], schedule: { [date: string]: any[] }, date: string) {
+
+      const attractionRandomIndex = Math.floor(Math.random() * availableAttractionsToBePicked.length); // pick a random attraction from the list of available attractions to be picked
+      const attraction = availableAttractionsToBePicked[attractionRandomIndex]; // extract it from the list of attractions to be picked
+
+      let tripAttraction = {
+        id: attraction.id,
+        startDate: "",
+        endDate: "",
+      };
+
+      const endHour = 9 + Math.floor(attraction.estimatedTime / 60);
+      const endHourString = endHour.toString().padStart(2, "0");
+
+      const endMinutes = Math.floor(attraction.estimatedTime % 60);
+      const endMinutesString = endMinutes.toString().padStart(2, "0");
+
+      tripAttraction.startDate = "09:00";
+      tripAttraction.endDate = endHourString + ":" + endMinutesString;
+
+      schedule[date].push(tripAttraction);
+
+      availableAttractionsToBePicked.splice(attractionRandomIndex, 1); // popping the selected attraction from the available attractions array
+
+    }
+
+    const findTheCloserAttraction = function(availableAttractionsToBePicked: Attraction[], tripCity: any, previousAttractionID: string) {
+
+      let minDistance = Number.MAX_SAFE_INTEGER;
+
+      let closestAttractionIndex = 0;
+
+      for (let i = 0; i < availableAttractionsToBePicked.length; i++) {
+        const attractionOfTheList = availableAttractionsToBePicked[i];
+
+        const attractionLatitude = attractionOfTheList.location.latitude;
+        const attractionLongitude = attractionOfTheList.location.longitude;
+
+        const previousAttractionLatitude = tripCity!.attractions.find(
+          (att: Attraction) => att.id === previousAttractionID
+        )!.location.latitude;
+        const previousAttractionLongitude = tripCity!.attractions.find(
+          (att: Attraction) => att.id === previousAttractionID
+        )!.location.longitude;
+
+        const distance = Math.sqrt(
+          Math.pow(attractionLatitude - previousAttractionLatitude, 2) +
+            Math.pow(
+              attractionLongitude - previousAttractionLongitude,
+              2
+            )
+        );
+
+        if (
+          distance < minDistance && previousAttractionID !== attractionOfTheList.id
+        ) {
+          minDistance = distance;
+          closestAttractionIndex = i;
+        }
+      }
+
+      return closestAttractionIndex
+
+    }
+
+    const computeStartTime = function(previousAttraction: Attraction, nextAttraction: Attraction, endPreviousAttractionMinutes: number) {
+
+      const distanceBetweenAttractions = Math.sqrt(
+        Math.pow(nextAttraction.location.latitude - previousAttraction.location.latitude, 2) +
+          Math.pow(
+            nextAttraction.location.longitude - previousAttraction.location.longitude,
+            2
+          ) 
+      ) * 111 //find the distance in meters between two attractions
+
+      let transportTime;
+
+      if(distanceBetweenAttractions < 2){
+        transportTime = distanceBetweenAttractions/84; // in minutes
+      }
+      else{
+        transportTime = distanceBetweenAttractions/834;
+      }
+
+      const startTime = endPreviousAttractionMinutes + transportTime
+
+      const startHour = Math.floor(startTime / 60).toString().padStart(2, "0")
+      const startMinutes = Math.floor(startTime % 60).toString().padStart(2, "0")
+
+      return startHour + ":" + startMinutes;
+
+    }
+
+    const computeEndTime = function(nextAttraction: Attraction, startDate: string) {
+
+      const startTime = parseInt(startDate.split(":")[0]) * 60 + parseInt(startDate.split(":")[1])
+
+      const endTime = startTime + nextAttraction.estimatedTime
+
+      const endHour = Math.floor(endTime / 60).toString().padStart(2, "0")
+      const endMinutes = Math.floor(endTime % 60).toString().padStart(2, "0")
+
+      return endHour + ":" + endMinutes;
+
+    }
+
+    const fillAttractionInSchedule = function (schedule: { [date: string]: any[] }, date: string, availableAttractionsToBePicked: Attraction[], tripCity: any) {
+
+      const previousAttraction = schedule[date][schedule[date].length - 1];
+
+      const previousAttractionID = previousAttraction.id;
+
+      const previousAttractionEndHour = parseInt(
+        previousAttraction.endDate.split(":")[0]
+      );
+
+      const previousAttractionEndMinute = parseInt(
+        previousAttraction.endDate.split(":")[1]
+      );
+
+      const previousAttractionEndHourMinutes = previousAttractionEndHour * 60 + previousAttractionEndMinute; //minutes from 00:00 to the end of the previous attraction
+
+      const nextAttractionIndex = findTheCloserAttraction(availableAttractionsToBePicked, tripCity, previousAttractionID);
+
+      const nextAttraction = availableAttractionsToBePicked[nextAttractionIndex];
+
+      let tripAttraction = {
+        id: nextAttraction.id,
+        startDate: "",
+        endDate: "",
+      };
+
+      tripAttraction.startDate = computeStartTime(previousAttraction, nextAttraction, previousAttractionEndHourMinutes);
+      tripAttraction.endDate = computeEndTime(nextAttraction, tripAttraction.startDate);
+
+      schedule[date].push(tripAttraction);
+      availableAttractionsToBePicked.splice(nextAttractionIndex, 1);
+
+    //fare il check per controllare se l'attrazione finisce dopo le 18 in quel caso settare dayCompleted a true
+      
+
+    }
+
+    const fillSchedule = function (schedule: { [date: string]: any[] }, tripCity: any) {
+
+      let availableAttractionsToBePicked: Attraction[] = []; // list of attractions that can be picked for the trip creation
+
+      availableAttractionsToBePicked = initializeAvailableAttractions(tripCity!.attractions, data.adults, data.kids, data.budget, true); // fill the list of available attractions to be picked with free attractions and attractions that fit the budget
+
+      for (const date in schedule) {
+
+        let dayCompleted = false;
+
+        while (!dayCompleted) {
+
+          if (availableAttractionsToBePicked.length === 0) { // when the list of available attractions to be picked is empty, initialize it again
+            availableAttractionsToBePicked = initializeAvailableAttractions(tripCity!.attractions, data.adults, data.kids, data.budget, false); // fill the list of available attractions to be picked with free attractions
+          }
+
+          if (schedule[date].length === 0) { // if the schedule date is empty, add the first attraction in a random way starting from 09:00
+
+            fillFirstAttractionPerDay(availableAttractionsToBePicked, schedule, date);
+
+          } else {
+            
+            fillAttractionInSchedule(schedule, date, availableAttractionsToBePicked, tripCity);
+
+          }
+        }
+      }
+
+    }
+
+
     getAllTrips()
       .then((trips: Trip[]) => {
-        const tripCity = cities.find((city) => city.name === data.destination);
 
-        const nextID =
-          trips.length > 0
-            ? Math.max(...trips.map((trip) => parseInt(trip.id.slice(1)))) + 1
-            : 1;
+        const tripCity = cities.find((city) => city.name === data.destination);  // city object of the city to be visited
+
+        const nextTripID = calculateNextTripID(trips);
 
         const tripToAdd = {
-          id: "T" + nextID.toString().padStart(3, "0"),
+          id: nextTripID,
           city: data.destination,
           startDate: data.dateRange[0],
           endDate: data.dateRange[1],
@@ -79,175 +293,11 @@ function Main() {
           image: tripCity ? tripCity.image : "",
         };
 
-        const startDate = dayjs(tripToAdd.startDate, "DD/MM/YYYY");
-        const endDate = dayjs(tripToAdd.endDate, "DD/MM/YYYY");
-        const schedule: { [date: string]: any[] } = {};
+        const schedule: { [date: string]: any[] } = {}; // object to be copied in the schedule field of the tripToAdd object
 
-        for (let d = startDate; !d.isAfter(endDate); d = d.add(1, "day")) {
-          const date = d.format("DD/MM/YYYY");
-          schedule[date] = [];
-        }
+        createEmptyDatesInSchedule(data.dateRange[0], data.dateRange[1], schedule); // starting from startDate to endDate, create the dates in between in the schedule object
 
-        let attractions: Attraction[] = [];
-
-        let currentExpenses = 0;
-
-        for (const attraction of tripCity!.attractions) {
-          if (attraction.perPersonCost === 0) {
-            attractions.push(attraction);
-            continue;
-          }
-          if (
-            currentExpenses +
-              attraction.perPersonCost * (data.adults + data.kids) <=
-            tripToAdd.budget
-          ) {
-            attractions.push(attraction);
-            currentExpenses +=
-              attraction.perPersonCost * (data.adults + data.kids);
-          }
-        }
-
-        for (const date in schedule) {
-          const nAttractions = Math.floor(Math.random() * 3) + 5;
-          let entireDuration = 0;
-
-          for (let i = 0; i < nAttractions; i++) {
-            if (attractions.length === 0) {
-              for (const attraction of tripCity!.attractions) {
-                if (attraction.perPersonCost === 0) {
-                  attractions.push(attraction);
-                }
-              }
-            }
-
-            // if the schedule date is empty, add the first attraction in a random way starting from 8:00
-
-            if (schedule[date].length === 0) {
-              const index = Math.floor(Math.random() * attractions.length);
-              const attractionID = attractions[index].id;
-
-              let tripAttraction = {
-                id: attractionID,
-                startDate: "",
-                endDate: "",
-              };
-
-              const startHour = 8;
-
-              const startHourString = startHour.toString().padStart(2, "0");
-
-              const endHour =
-                startHour + Math.floor(attractions[index].estimatedTime / 60);
-
-              const endHourString = endHour.toString().padStart(2, "0");
-
-              tripAttraction.startDate = startHourString + ":00";
-              tripAttraction.endDate = endHourString + ":00";
-
-              schedule[date].push(tripAttraction);
-
-              entireDuration += attractions[index].estimatedTime;
-
-              attractions.splice(index, 1);
-            } else {
-              // if the schedule date is not empty, add the attraction picking from the attraction list the one whose latitude and longitude are the closest to the previous attraction trying to ignore the estimated time
-
-              const previousAttraction =
-                schedule[date][schedule[date].length - 1];
-
-              const previousAttractionID = previousAttraction.id;
-
-              const previousAttractionDuration = tripCity!.attractions.find(
-                (attraction) => attraction.id === previousAttractionID
-              )!.estimatedTime;
-
-              const previousAttractionEndHour = parseInt(
-                previousAttraction.endDate.split(":")[0]
-              );
-
-              const previousAttractionEndMinute = parseInt(
-                previousAttraction.endDate.split(":")[1]
-              );
-
-              const previousAttractionEndHourMinutes =
-                previousAttractionEndHour * 60 + previousAttractionEndMinute;
-
-              const previousAttractionEndHourMinutesString =
-                previousAttractionEndHourMinutes.toString().padStart(4, "0");
-
-              const previousAttractionEndHourMinutesNumber = parseInt(
-                previousAttractionEndHourMinutesString
-              );
-
-              let minDistance = 100000;
-
-              let attractionIndex = 0;
-
-              for (let i = 0; i < attractions.length; i++) {
-                const attraction = attractions[i];
-
-                const attractionLatitude = attraction.location.latitude;
-
-                const attractionLongitude = attraction.location.longitude;
-
-                const previousAttractionLatitude = tripCity!.attractions.find(
-                  (attraction) => attraction.id === previousAttractionID
-                )!.location.latitude;
-
-                const previousAttractionLongitude = tripCity!.attractions.find(
-                  (attraction) => attraction.id === previousAttractionID
-                )!.location.longitude;
-
-                const distance = Math.sqrt(
-                  Math.pow(attractionLatitude - previousAttractionLatitude, 2) +
-                    Math.pow(
-                      attractionLongitude - previousAttractionLongitude,
-                      2
-                    )
-                );
-
-                if (
-                  distance < minDistance &&
-                  previousAttractionID !== attraction.id
-                ) {
-                  minDistance = distance;
-                  attractionIndex = i;
-                }
-              }
-
-              const attractionID = attractions[attractionIndex].id;
-
-              let tripAttraction = {
-                id: attractionID,
-                startDate: "",
-                endDate: "",
-              };
-
-              const startHour = Math.floor(
-                previousAttractionEndHourMinutesNumber / 60
-              );
-
-              const startHourString = startHour.toString().padStart(2, "0");
-
-              const endHour =
-                startHour +
-                Math.floor(attractions[attractionIndex].estimatedTime / 60);
-
-              const endHourString = endHour.toString().padStart(2, "0");
-
-              tripAttraction.startDate = startHourString + ":00";
-
-              tripAttraction.endDate = endHourString + ":00";
-
-              entireDuration += attractions[attractionIndex].estimatedTime;
-
-              schedule[date].push(tripAttraction);
-
-              attractions.splice(attractionIndex, 1);
-            }
-          }
-        }
+        fillSchedule(schedule, tripCity); // fill the schedule with the attractions to be visited
 
         tripToAdd.schedule = schedule;
 
