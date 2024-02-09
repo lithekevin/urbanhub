@@ -198,7 +198,6 @@ function MyTrips() {
       
       {!loading && !error && (
         <>
-         
           <Container
             fluid
             className="position-relative d-flex flex-column align-items-center w-100 mt-2 px-5"

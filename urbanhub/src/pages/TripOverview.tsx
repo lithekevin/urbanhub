@@ -369,7 +369,7 @@ function TripOverview(props: any) {
         
       <Divider style={{ marginTop: '10px'}}/>
       
-      <Title level={1} style={{ textAlign: 'center' }}>Trip Overview</Title>
+      <Title level={1} style={{ textAlign: 'center' }}>TRIP OVERVIEW</Title>
 
       <div className='main-div'>
         <Container className="d-flex align-items-stretch height-full" >
@@ -461,7 +461,7 @@ function TripOverview(props: any) {
           onOpenChange={handlePopoverVisibleChange}
           placement='right'
           arrow={{ pointAtCenter: true }}
-          overlayStyle={{ width: '100%', maxWidth: '1120px' }}
+          overlayStyle={{ maxWidth: '90vw', width: '100%', marginLeft: '20px' }}
         >
           <Button
             style={{

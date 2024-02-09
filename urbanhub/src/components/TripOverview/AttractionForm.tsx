@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { Modal, Form, DatePicker, TimePicker, Button, AutoComplete, Typography } from 'antd';
+import { Modal, Form, DatePicker, Image, TimePicker, Button, AutoComplete, Typography } from 'antd';
 import { CloseSquareFilled } from '@ant-design/icons';
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { Attraction } from '../../models/attraction';
@@ -150,10 +150,19 @@ function AttractionForm (props: AttractionFormProps) {
                       <>
                       {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
                         return (
-                          <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} onMouseOver={() => setSelectedMarker(attraction)} onMouseOut={() => setSelectedMarker(null)}  onClick={() => {
-                            setSelectedAttractionId(attraction.id);
-                            form.setFieldsValue({ attraction: attraction.name }); // Update the AutoComplete value
-                          }}/>
+                          <Marker   
+                            key={attraction.id} 
+                            position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
+                            icon={{ url: "https://imgur.com/2YMvPKc.png", scaledSize: new window.google.maps.Size(30, 30) }}
+                            opacity={attraction === selectedMarker ? 0.9 : 0.7}
+                            onMouseOver={() => setSelectedMarker(attraction)} 
+                            onMouseOut={() => setSelectedMarker(null)}  
+                            onClick={() => {
+                              setSelectedAttractionId(attraction.id);
+                              form.setFieldsValue({ attraction: attraction.name }); // Update the AutoComplete value
+                              setSelectedMarker(null);
+                            }}
+                          />
                         );
                       })}
                     </>
@@ -162,7 +171,12 @@ function AttractionForm (props: AttractionFormProps) {
                       {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction) => {
                         if (attraction.id === selectedAttractionId) {
                           return (
-                            <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} onMouseOver={() => setSelectedMarker(attraction)} onMouseOut={() => setSelectedMarker(null)}/>
+                            <Marker 
+                              key={attraction.id} 
+                              position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
+                              icon={{ url: "https://imgur.com/2YMvPKc.png", scaledSize: new window.google.maps.Size(37, 37) }}
+                              onMouseOver={() => setSelectedMarker(attraction)} 
+                              onMouseOut={() => setSelectedMarker(null)}/>
                           );
                         }
                           return null; // Render nothing if the attraction is not the selected one
@@ -174,9 +188,9 @@ function AttractionForm (props: AttractionFormProps) {
                       position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
                       onCloseClick={() => {setSelectedMarker(null)}}
                     >
-                      <div className="attractionContainer">
-                        <img className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} />
-                        <h6 className="attractionName">{selectedMarker.name}</h6>
+                      <div className="smallAttractionContainer">
+                        <Image className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} preview={false}/>
+                        <Title level={5} className="attractionName">{selectedMarker.name}</Title>
                       </div>
                     </InfoWindow>
                     )}
