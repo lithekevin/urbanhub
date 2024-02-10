@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Card, Row, Col, Container } from "react-bootstrap";
-import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton, Image, Empty, Divider, Spin, Alert, Tabs, Flex } from "antd";
+import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton, Image, Empty, Spin, Alert, Tabs, Flex } from "antd";
 import { MoreOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
@@ -10,7 +10,6 @@ import colors from "../style/colors";
 import dayjs from "dayjs";
 import cities from "../firebase/cities";
 
-const { TabPane } = Tabs;
 const { Title, Paragraph } = Typography;
 const defaultImageURL = "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
@@ -194,7 +193,7 @@ function MyTrips() {
         <Title level={1} style={{marginBottom: '0'}}>MY TRIPS</Title>
         <AddTripButton />
       </Flex>
-      
+
       {!loading && !error && (
         <>
           <Tabs
