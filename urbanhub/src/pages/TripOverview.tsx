@@ -82,6 +82,32 @@ function TripOverview(props: any) {
   const [footerVisible, setFooterVisible] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
 
+  //ActiveKey is update opening the current day for ingoing trips
+  useEffect(() => {
+    if(!editing){
+      const currentDay = dayjs().startOf('day');
+      var closestIndex = null;
+
+      let index = -1;
+
+      // Iterate through the schedule
+      trip?.schedule.forEach((attractions, scheduledDay) => {
+        index++;
+
+        // Check if the current day matches any scheduled day
+        if (dayjs(scheduledDay).startOf('day').isSame(currentDay)) {
+          closestIndex = index;        
+        }
+      });
+
+      if(closestIndex !== null){
+        setActiveKey([closestIndex]);
+      }else{
+        setActiveKey([]);
+      }
+    }
+  }, [trip]);
+
   // Add an effect to detect when the footer becomes visible
   useEffect(() => {
     // Function to calculate the visible height of the footer
