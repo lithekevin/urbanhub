@@ -1,5 +1,5 @@
-import { Button, Input, Typography, Image, Flex } from 'antd';
-import { useState } from 'react';
+import { Button, Input, Typography, Image, Flex, Tooltip  } from 'antd';
+import { useState, useEffect } from 'react';
 import { editAttraction, deleteAttraction, addAttractionToTrip, editTrip } from "../../firebase/daos/dao-trips";
 import cities from "../../firebase/cities";
 import dayjs from 'dayjs';
@@ -47,6 +47,32 @@ function Chatbot(props: ChatbotProps) {
   const { TextArea } = Input;
 
   const [inputValue, setInputValue] = useState('');
+
+  const [halfWindowWidth, setHalfWindowWidth] = useState(0);
+
+  const [messageAI, setMessageAI] = useState('Is there anything I can do for you?'); 
+
+  useEffect(() => {
+    const calculateHalfWindowWidth = () => {
+      const windowWidth = window.innerWidth;
+      const halfWidth = Math.floor(windowWidth / 2);
+      setHalfWindowWidth(halfWidth);
+    };
+
+    // Calculate half window width on initial render
+    calculateHalfWindowWidth();
+
+    // Recalculate half window width on window resize
+    const handleResize = () => {
+      calculateHalfWindowWidth();
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const updateMessage = (msg: string) => {
     messageAIState.setter(msg);
@@ -561,6 +587,23 @@ function Chatbot(props: ChatbotProps) {
         <Text>{messageAIState.value}</Text>
       </Flex>
       <Flex style={{ flex: 1, display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
+      <Tooltip overlayInnerStyle={{ width: '250%', maxWidth: halfWindowWidth, color: 'black', backgroundColor: 'white', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)' }} color="white" placement="topLeft"
+      title={inputValue === "" ? (
+        <span>
+          USAGE:
+          <br />
+          -delete: 'Delete "Attraction to delete" from DD/MM/AAAA'
+          <br />
+          -add: 'Add "Attraction to add" to DD/MM/AAAA with time: hh:mm - hh:mm'
+          <br />
+          -edit: 'Edit "Attraction to edit" from DD/MM/AAAA to have time: hh:mm - hh:mm'
+          <br />
+          -edit: 'Edit "Attraction to edit" from DD/MM/AAAA to DD/MM/AAAA with time: hh:mm - hh:mm'
+          <br />
+          All commands can be inserted also without capital letter (delete/Delete for example)
+        </span>
+    ) : ''}
+  >
       <TextArea
           placeholder="Ask something to UrbanHub..."
           value={inputValue}
@@ -568,6 +611,7 @@ function Chatbot(props: ChatbotProps) {
           autoSize={{ minRows: 1, maxRows: 3 }}
           style={{ marginRight: '10px', width: 'calc(100% - 20px)' }} 
         />
+      </Tooltip>
         <Button type="primary" onClick={handleSendClick} style={{ width: '100px' }}>Send</Button>
         {undoState.value && (<Button type="primary" onClick={handleUndoClick} style={{ width: '100px' }}>Undo</Button>)}
       </Flex>
