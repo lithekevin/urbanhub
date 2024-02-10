@@ -66,7 +66,7 @@ function AttractionForm (props: AttractionFormProps) {
   
         if(tripId&&selectedDay){
           editAttraction(tripId, editingAttraction.id ,selectedDay, values.date.format('DD/MM/YYYY'), attraction);
-          setMessageAI("Attraction edited successfully! Is there anything else I can do for you?");
+          setMessageAI("Is there anything I can do for you?");
           setUndoVisibility(false);
         }
         else{
@@ -77,7 +77,7 @@ function AttractionForm (props: AttractionFormProps) {
       else{
         if(tripId){
           addAttractionToTrip(tripId, values.date.format('DD/MM/YYYY'), attraction);
-          setMessageAI("Attraction added successfully! Is there anything else I can do for you?");
+          setMessageAI("Is there anything I can do for you?");
           setUndoVisibility(false);
         }
       }

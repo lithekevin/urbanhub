@@ -133,7 +133,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
             if (tripId) {
               await deleteAttraction(tripId, attraction.startDate, attraction.id);
               setDirty(true);
-              setMessageAI("Attraction deleted succesully! Is there anything else I can do for you?");
+              setMessageAI("Is there anything I can do for you?");
               setUndoVisibility(false);
   
               // Show success message
