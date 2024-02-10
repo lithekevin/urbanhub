@@ -18,7 +18,11 @@ import { Trip } from "./models/trip";
 import { addTrip, getAllTrips } from "./firebase/daos/dao-trips";
 import cities from "./firebase/cities";
 import { message } from "antd";
-import { calculateNextTripID, createEmptyDatesInSchedule, fillSchedule } from "./utils/tripCreation";
+import {
+  calculateNextTripID,
+  createEmptyDatesInSchedule,
+  fillSchedule,
+} from "./utils/tripCreation";
 
 function App() {
   return (
@@ -51,11 +55,9 @@ function Main() {
     questions: string[];
     answers: string[];
   }) => {
-
     getAllTrips()
       .then((trips: Trip[]) => {
-
-        const tripCity = cities.find((city) => city.name === data.destination);  // city object of the city to be visited
+        const tripCity = cities.find((city) => city.name === data.destination); // city object of the city to be visited
 
         const nextTripID = calculateNextTripID(trips);
 
@@ -79,7 +81,11 @@ function Main() {
 
         const schedule: { [date: string]: any[] } = {}; // object to be copied in the schedule field of the tripToAdd object
 
-        createEmptyDatesInSchedule(data.dateRange[0], data.dateRange[1], schedule); // starting from startDate to endDate, create the dates in between in the schedule object
+        createEmptyDatesInSchedule(
+          data.dateRange[0],
+          data.dateRange[1],
+          schedule
+        ); // starting from startDate to endDate, create the dates in between in the schedule object
 
         fillSchedule(schedule, tripCity, data.adults, data.kids, data.budget); // fill the schedule with the attractions to be visited
 
