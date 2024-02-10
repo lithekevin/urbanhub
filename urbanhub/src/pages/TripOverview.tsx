@@ -451,7 +451,7 @@ function TripOverview(props: any) {
               tripState={{ value: trip, setter: setTrip }}
               dirtyState={{ value: dirty, setter: setDirty }}
               undoState={{ value: undoVisibility, setter: setUndoVisibility }}
-              messageAIState={{ value: messageAI, setter: setMessageAI }}
+              messageAIState={{ value: messageAI, setter: setMessageAI, color: 'black' }}
               tripId={tripId}
               messageApi={messageApi}
             />
