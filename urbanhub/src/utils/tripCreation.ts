@@ -247,6 +247,19 @@ export const fillAttractionInSchedule = function (
   return endsAfter18(tripAttraction.endDate); // check if the attraction ends after 18:00
 };
 
+export const computeTripCost = function (schedule: { [date: string]: any[] }) {
+  let totalCost = 0;
+
+  for (const date in schedule) {
+    for (const attraction of schedule[date]) {
+      totalCost += attraction.perPersonCost;
+    }
+  }
+
+  return totalCost;
+
+}
+
 export const fillSchedule = function (
   schedule: { [date: string]: any[] },
   tripCity: any,
@@ -256,11 +269,13 @@ export const fillSchedule = function (
 ) {
   let availableAttractionsToBePicked: Attraction[] = []; // list of attractions that can be picked for the trip creation
 
+  const partialTripCost = computeTripCost(schedule);
+
   availableAttractionsToBePicked = initializeAvailableAttractions(
     tripCity!.attractions,
     adults,
     kids,
-    budget,
+    budget - partialTripCost,
     true
   ); // fill the list of available attractions to be picked with free attractions and attractions that fit the budget
 

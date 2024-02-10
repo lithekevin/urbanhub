@@ -6,6 +6,7 @@ import { Trip } from "../../models/trip";
 import { TripAttraction } from "../../models/tripAttraction";
 import cities from "../cities";
 import { Attraction } from "../../models/attraction";
+import { fillAttractionInSchedule, fillFirstAttractionPerDay, fillSchedule } from "../../utils/tripCreation";
 
 dayjs.extend(customParseFormat);
 
@@ -417,7 +418,7 @@ export const editSettings = async (tripId: string | undefined, updatedFields: Pa
     );
 
     // Merge the existing schedule with the updated schedule
-    const mergedSchedule = { ...existingSchedule, ...updatedSchedule };
+    let mergedSchedule = { ...existingSchedule, ...updatedSchedule };
 
     // Remove days from the schedule that are not in the new date range
     const newStartDate = dayjs(mergedFields.startDate, "DD/MM/YYYY");
@@ -428,6 +429,11 @@ export const editSettings = async (tripId: string | undefined, updatedFields: Pa
       if (currentDate.isBefore(newStartDate) || currentDate.isAfter(newEndDate)) {
         delete mergedSchedule[date];
       }
+    }
+
+    if((updatedFields.nAdults! + updatedFields.nKids!) > (existingData.nAdults! + existingData.nKids!) || updatedFields.budget! < existingData.budget!) {
+      // Reduce the cost of the trip by removing attractions and replacing them with free ones
+      mergedSchedule = reduceCostsOfTrip(mergedFields, mergedSchedule, tripCity!);
     }
 
     // Add missing days to the schedule and assign random trips
@@ -449,6 +455,40 @@ export const editSettings = async (tripId: string | undefined, updatedFields: Pa
     console.error("Error editing settings: ", error);
     throw error;
   }
+};
+
+const reduceCostsOfTrip = (trip: Partial<Trip>, schedule: Record<string, any>, city: any) => {
+  let currentExpenses = 0;
+  let availableAttractionsToBePicked = [...city.attractions];
+  let newSchedule: any = {};
+  let orderedSchedule: Record<string, any> = {};
+  Object.keys(schedule).sort((a, b) => dayjs(a, 'DD/MM/YYYY').unix() - dayjs(b, 'DD/MM/YYYY').unix()).forEach(key => orderedSchedule[key] = schedule[key])
+
+  for(const date in orderedSchedule) {
+    const attractionsOfTheDay = orderedSchedule[date];
+    newSchedule[date] = [];
+    for(const attraction of attractionsOfTheDay) {
+      const attractionDetails = availableAttractionsToBePicked.find((a) => a.id === attraction.id);
+      const attractionCost = (attractionDetails?.perPersonCost || 0) * (trip.nAdults! + trip.nKids!);
+      currentExpenses += attractionCost;
+
+      if(currentExpenses <= trip.budget!){
+        newSchedule[date].push(attraction);
+      }
+      else{
+        break;
+      }
+
+    }
+  }
+
+  availableAttractionsToBePicked = availableAttractionsToBePicked.filter(att => att.perPersonCost === 0);
+
+  fillSchedule(newSchedule, city, trip.nAdults!, trip.nKids!, trip.budget!);
+
+
+  return newSchedule;
+
 };
 
 
