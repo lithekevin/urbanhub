@@ -6,7 +6,8 @@ import { Trip } from "../../models/trip";
 import { TripAttraction } from "../../models/tripAttraction";
 import cities from "../cities";
 import { Attraction } from "../../models/attraction";
-import { fillAttractionInSchedule, fillFirstAttractionPerDay, fillSchedule } from "../../utils/tripCreation";
+import { computeTripCost, fillAttractionInSchedule, fillFirstAttractionPerDay, fillSchedule, initializeAvailableAttractions } from "../../utils/tripCreation";
+import { all } from "axios";
 
 dayjs.extend(customParseFormat);
 
@@ -435,6 +436,30 @@ export const editSettings = async (tripId: string | undefined, updatedFields: Pa
       // Reduce the cost of the trip by removing attractions and replacing them with free ones
       mergedSchedule = reduceCostsOfTrip(mergedFields, mergedSchedule, tripCity!);
     }
+    else if((updatedFields.nAdults! + updatedFields.nKids!) < (existingData.nAdults! + existingData.nKids!) || updatedFields.budget! > existingData.budget!){
+      const partialTripCost = computeTripCost(mergedSchedule);
+      const availablePaidAttractionsToBePicked = initializeAvailableAttractions(tripCity!.attractions, updatedFields.nAdults!, updatedFields.nKids!, updatedFields.budget! - partialTripCost, true).filter(a => a.perPersonCost !== 0);
+      const allAttractions = tripCity?.attractions;
+
+      for (const date in mergedSchedule) {
+        for(let i = 0; i < mergedSchedule[date].length; i++){
+          const attraction = mergedSchedule[date][i];
+          const attractionDetails = allAttractions?.find(a => a.id === attraction.id);
+          if(attractionDetails?.perPersonCost === 0){
+            const index = allAttractions!.findIndex(a => a.id === attraction.id);
+            if(index !== -1){
+              const randomIndex = Math.floor(Math.random() * availablePaidAttractionsToBePicked.length);
+              mergedSchedule[date][i].id = availablePaidAttractionsToBePicked[randomIndex].id;
+              availablePaidAttractionsToBePicked.splice(randomIndex, 1);
+            }
+            else{
+              allAttractions!.splice(index, 1);
+            }
+          }
+        }
+      }
+
+    }
 
     // Add missing days to the schedule and assign random trips
     for (let d = newStartDate; !d.isAfter(newEndDate); d = d.add(1, "day")) {
@@ -481,8 +506,6 @@ const reduceCostsOfTrip = (trip: Partial<Trip>, schedule: Record<string, any>, c
 
     }
   }
-
-  availableAttractionsToBePicked = availableAttractionsToBePicked.filter(att => att.perPersonCost === 0);
 
   fillSchedule(newSchedule, city, trip.nAdults!, trip.nKids!, trip.budget!);
 
