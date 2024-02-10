@@ -77,7 +77,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
           <Badge.Ribbon 
             text={index+1}
             placement='start' 
-            style={{ backgroundColor: '#185b6f', color: '#185b6f', fontWeight: 'bolder', fontFamily: "'Google Sans', Roboto, Arial, sans-serif" }}
+            style={{ backgroundColor: '#185b6f', color: '#185b6f', fontWeight: 'bolder', fontFamily: "'Google Sans', Roboto, Arial, sans-serif", fontSize: '12px'}}
           >
             <div className="static-popover">            
               <div className="content">
