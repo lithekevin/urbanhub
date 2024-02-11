@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Container } from "react-bootstrap";
 import { TbCoinEuro, TbMoodKid, TbUser } from "react-icons/tb";
 import { Button, Divider, Flex, Form, Image, message, Popover, Spin, Tooltip, Typography } from 'antd';
-import { SettingOutlined} from '@ant-design/icons';
+import { ArrowLeftOutlined, SettingOutlined} from '@ant-design/icons';
 import { getTripById } from "../firebase/daos/dao-trips";
 import { Attraction } from '../models/attraction';
 import { TripAttraction } from '../models/tripAttraction';
@@ -30,6 +30,7 @@ function TripOverview(props: any) {
   };
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -366,33 +367,40 @@ function TripOverview(props: any) {
         <div> Loading </div>
         </Spin>
       )}
-      <Flex justify='space-evenly' align='center' style={{ fontSize: '25px', position: 'relative'}}>
+      <Flex justify='space-between' align='center' style={{ fontSize: '25px', position: 'relative', paddingLeft: '1%', paddingRight: '20%' }}>
+        {/* Arrow on the left */}
+        <ArrowLeftOutlined
+          className="float-left"
+          style={{ fontSize: "26px", marginLeft: "10px" }}
+          onClick={() => navigate(-1)}
+        />
         <span><TbUser/> <Text> Adults : {trip?.nAdults} </Text> </span>
         <span><TbMoodKid/> <Text> Kids : {trip?.nKids} </Text> </span>
         <span>
-        {(trip && totalCost > trip.budget) ? 
-        <>
-            <TbCoinEuro style={{color: 'red'}}/>  
-            <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
-              <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
-            </Tooltip> 
-        </> :
-        <>
-          <TbCoinEuro/>
-            <Text> Total Cost : {totalCost}{" €"} </Text>
-        </>
-        }
+          {(trip && totalCost > trip.budget) ? 
+            <>
+              <TbCoinEuro style={{color: 'red'}}/>  
+              <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
+                <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
+              </Tooltip> 
+            </> :
+            <>
+              <TbCoinEuro/>
+              <Text> Total Cost : {totalCost}{" €"} </Text>
+            </>
+          }
         </span>
-        {editing &&(<Button size="large" type="primary" className="button-new-trip" style={{ 
-          backgroundColor: colors.whiteBackgroundColor, color: 'black', textAlign: "center", position: 'absolute', right: 30 }}
-          onClick={() => handleOpenModal()}>
-            <span>
-              {<SettingOutlined />}
-            </span> 
-            
-        </Button>)}
+        {editing &&(
+          <Button size="large" type="primary" className="button-new-trip" style={{ 
+            backgroundColor: colors.whiteBackgroundColor, color: 'black', textAlign: "center", position: 'absolute', right: 30 }}
+            onClick={() => handleOpenModal()}>
+              <span>
+                {<SettingOutlined />}
+              </span> 
+          </Button>
+        )}
       </Flex>
-        
+
       <Divider style={{ marginTop: '10px'}}/>
       
       <Title level={1} style={{ textAlign: 'center' }}>TRIP OVERVIEW</Title>
