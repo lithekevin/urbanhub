@@ -442,13 +442,16 @@ export const editSettings = async (tripId: string | undefined, updatedFields: Pa
     }
 
     // Add missing days to the schedule and assign random trips
-    // for (let d = newStartDate; !d.isAfter(newEndDate); d = d.add(1, "day")) {
-    //   const date = d.format("DD/MM/YYYY");
-    //   if (!mergedSchedule[date]) {
-    //     const randomTripsForDay = handleRandomTripsForDay(tripCity!.attractions, mergedFields.budget || 0);
-    //     mergedSchedule[date] = randomTripsForDay;
-    //   }
-    // }
+    for (let d = newStartDate; !d.isAfter(newEndDate); d = d.add(1, "day")) {
+      const date = d.format("DD/MM/YYYY");
+      if (!mergedSchedule[date]) {
+        // const randomTripsForDay = handleRandomTripsForDay(tripCity!.attractions, mergedFields.budget || 0);
+        // mergedSchedule[date] = randomTripsForDay;
+        mergedSchedule[date] = [];
+      }
+    }
+
+    fillSchedule(mergedSchedule, tripCity, mergedFields.nAdults!, mergedFields.nKids!, mergedFields.budget!);
 
     // Update the document with the new fields and schedule
     await updateDoc(docRef, { ...mergedFields, schedule: mergedSchedule });
@@ -490,11 +493,7 @@ const reduceCostsOfTrip = (trip: Partial<Trip>, schedule: Record<string, any>, c
 
   }
 
-  console.log("Cost of the trip before modifications: " + computeTripCost(schedule, city.attractions, trip.nAdults!, trip.nKids!))
-
   fillSchedule(newSchedule, city, trip.nAdults!, trip.nKids!, trip.budget!);
-
-  console.log("Cost of the trip after modifications: " + computeTripCost(newSchedule, city.attractions, trip.nAdults!, trip.nKids!))
 
   return newSchedule;
 
