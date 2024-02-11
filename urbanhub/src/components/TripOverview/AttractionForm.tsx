@@ -157,31 +157,28 @@ function AttractionForm(props: AttractionFormProps) {
                     }
                   }}
 
-                />
-              </Form.Item>
-              {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) &&
-                <Paragraph style={{ color: "var(--hard-background-color)", marginTop: '0', marginBottom: '10px' }}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</Paragraph>
-              }
-              <Form.Item name="date" label="Date" rules={[{ required: true, message: 'Please choose the date!' }]}>
-                <DatePicker format="DD/MM/YYYY"
-                  defaultPickerValue={dayjs(trip?.startDate)} // Set the default picker value to the start date of the trip
-                  disabledDate={(current) => current && current < dayjs().startOf('day') || current && (current < dayjs(trip?.startDate) || current > dayjs(trip?.endDate))}
-                  style={{ width: '100%' }} />
-              </Form.Item>
-              <Form.Item style={{ marginBottom: 0 }}>
-                <Form.Item label="Start Time " name="startTime" style={{ display: 'inline-block', marginRight: "2vw" }} rules={[{ required: true, message: 'Please choose the start time!' }]}>
-                  <TimePicker format="HH:mm" />
+                  />
                 </Form.Item>
-                <Form.Item label="End Time" name="endTime" style={{ display: 'inline-block' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
-                  <TimePicker format="HH:mm" />
+                {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && 
+                    <Paragraph style={{color: "var(--hard-background-color)", marginTop: '0', marginBottom: '10px'}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</Paragraph>
+                }
+                <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]}>
+                  <DatePicker format="DD/MM/YYYY" disabledDate={(current) => current && current < moment().startOf('day')} style={{width: '100%'}}/>
                 </Form.Item>
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item>
-                <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '40vh', margin: 'auto', display: 'block', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={selectedAttractionId === null ? cityPosition : cityPosition} zoom={zoomLevel} onLoad={(map) => { setMap(map) }}>
-                  {!selectedAttractionId && (
-                    <>
+                <Form.Item style={{ marginBottom: 0 }}>
+                  <Form.Item label = "Start Time " name="startTime" style={{ display: 'inline-block', marginRight: "2vw"}} rules={[{ required: true, message: 'Please choose the start time!' }]}>
+                    <TimePicker format="HH:mm" minuteStep={5} />
+                  </Form.Item>
+                  <Form.Item label= "End Time" name="endTime" style={{ display: 'inline-block' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
+                    <TimePicker format="HH:mm" minuteStep={5} />
+                  </Form.Item>
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item>
+                  <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '40vh', margin: 'auto', display: 'block', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={selectedAttractionId === null ? cityPosition : cityPosition } zoom={zoomLevel} onLoad={(map) => {setMap(map)}}>             
+                    { !selectedAttractionId && (
+                      <>
                       {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
                         return (
                           <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} onMouseOver={() => setSelectedMarker(attraction)} onMouseOut={() => setSelectedMarker(null)} onClick={() => {
