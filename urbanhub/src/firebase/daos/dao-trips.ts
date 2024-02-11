@@ -445,8 +445,7 @@ export const editSettings = async (tripId: string | undefined, updatedFields: Pa
     for (let d = newStartDate; !d.isAfter(newEndDate); d = d.add(1, "day")) {
       const date = d.format("DD/MM/YYYY");
       if (!mergedSchedule[date]) {
-        // const randomTripsForDay = handleRandomTripsForDay(tripCity!.attractions, mergedFields.budget || 0);
-        // mergedSchedule[date] = randomTripsForDay;
+        
         mergedSchedule[date] = [];
       }
     }
