@@ -6,8 +6,7 @@ import { Trip } from "../../models/trip";
 import { TripAttraction } from "../../models/tripAttraction";
 import cities from "../cities";
 import { Attraction } from "../../models/attraction";
-import { computeTripCost, fillAttractionInSchedule, fillFirstAttractionPerDay, fillSchedule, initializeAvailableAttractions } from "../../utils/tripCreation";
-import { all } from "axios";
+import { computeTripCost, fillSchedule, initializeAvailableAttractions } from "../../utils/tripCreation";
 
 dayjs.extend(customParseFormat);
 
@@ -437,38 +436,19 @@ export const editSettings = async (tripId: string | undefined, updatedFields: Pa
       mergedSchedule = reduceCostsOfTrip(mergedFields, mergedSchedule, tripCity!);
     }
     else if((updatedFields.nAdults! + updatedFields.nKids!) < (existingData.nAdults! + existingData.nKids!) || updatedFields.budget! > existingData.budget!){
-      const partialTripCost = computeTripCost(mergedSchedule);
-      const availablePaidAttractionsToBePicked = initializeAvailableAttractions(tripCity!.attractions, updatedFields.nAdults!, updatedFields.nKids!, updatedFields.budget! - partialTripCost, true).filter(a => a.perPersonCost !== 0);
-      const allAttractions = tripCity?.attractions;
-
-      for (const date in mergedSchedule) {
-        for(let i = 0; i < mergedSchedule[date].length; i++){
-          const attraction = mergedSchedule[date][i];
-          const attractionDetails = allAttractions?.find(a => a.id === attraction.id);
-          if(attractionDetails?.perPersonCost === 0){
-            const index = allAttractions!.findIndex(a => a.id === attraction.id);
-            if(index !== -1){
-              const randomIndex = Math.floor(Math.random() * availablePaidAttractionsToBePicked.length);
-              mergedSchedule[date][i].id = availablePaidAttractionsToBePicked[randomIndex].id;
-              availablePaidAttractionsToBePicked.splice(randomIndex, 1);
-            }
-            else{
-              allAttractions!.splice(index, 1);
-            }
-          }
-        }
-      }
+      //Increasing the cost of trip by removing duplicated free attractions and replacing them with paid ones
+      mergedSchedule = increaseCostsOfTrip(mergedFields, mergedSchedule, tripCity!);
 
     }
 
     // Add missing days to the schedule and assign random trips
-    for (let d = newStartDate; !d.isAfter(newEndDate); d = d.add(1, "day")) {
-      const date = d.format("DD/MM/YYYY");
-      if (!mergedSchedule[date]) {
-        const randomTripsForDay = handleRandomTripsForDay(tripCity!.attractions, mergedFields.budget || 0);
-        mergedSchedule[date] = randomTripsForDay;
-      }
-    }
+    // for (let d = newStartDate; !d.isAfter(newEndDate); d = d.add(1, "day")) {
+    //   const date = d.format("DD/MM/YYYY");
+    //   if (!mergedSchedule[date]) {
+    //     const randomTripsForDay = handleRandomTripsForDay(tripCity!.attractions, mergedFields.budget || 0);
+    //     mergedSchedule[date] = randomTripsForDay;
+    //   }
+    // }
 
     // Update the document with the new fields and schedule
     await updateDoc(docRef, { ...mergedFields, schedule: mergedSchedule });
@@ -489,6 +469,7 @@ const reduceCostsOfTrip = (trip: Partial<Trip>, schedule: Record<string, any>, c
   let orderedSchedule: Record<string, any> = {};
   Object.keys(schedule).sort((a, b) => dayjs(a, 'DD/MM/YYYY').unix() - dayjs(b, 'DD/MM/YYYY').unix()).forEach(key => orderedSchedule[key] = schedule[key])
 
+
   for(const date in orderedSchedule) {
     const attractionsOfTheDay = orderedSchedule[date];
     newSchedule[date] = [];
@@ -498,6 +479,7 @@ const reduceCostsOfTrip = (trip: Partial<Trip>, schedule: Record<string, any>, c
       currentExpenses += attractionCost;
 
       if(currentExpenses <= trip.budget!){
+        
         newSchedule[date].push(attraction);
       }
       else{
@@ -505,12 +487,93 @@ const reduceCostsOfTrip = (trip: Partial<Trip>, schedule: Record<string, any>, c
       }
 
     }
+
   }
+
+  console.log("Cost of the trip before modifications: " + computeTripCost(schedule, city.attractions, trip.nAdults!, trip.nKids!))
 
   fillSchedule(newSchedule, city, trip.nAdults!, trip.nKids!, trip.budget!);
 
+  console.log("Cost of the trip after modifications: " + computeTripCost(newSchedule, city.attractions, trip.nAdults!, trip.nKids!))
 
   return newSchedule;
+
+};
+
+const increaseCostsOfTrip = (trip: Partial<Trip>, schedule: Record<string, any>, city: any) => {
+
+  let availablePaidAttractionsToBePicked = initializeAvailableAttractions(city.attractions, trip.nAdults!, trip.nKids!, trip.budget! - computeTripCost(schedule, city.attractions, trip.nAdults!, trip.nKids!), true).filter((att) => att.perPersonCost !== 0);
+  let alreadyUsedAttractions: any = [];
+  let newSchedule: any = {};
+  let orderedSchedule: Record<string, any> = {};
+  Object.keys(schedule).sort((a, b) => dayjs(a, 'DD/MM/YYYY').unix() - dayjs(b, 'DD/MM/YYYY').unix()).forEach(key => orderedSchedule[key] = schedule[key])
+  
+  // Creare un array di tutti gli ID delle attrazioni in orderedSchedule
+    let attractionIdsInSchedule: any = [];
+    for (const date in orderedSchedule) {
+    for (const attraction of orderedSchedule[date]) {
+      attractionIdsInSchedule.push(attraction.id);
+    }
+    }
+
+    // Ordinare availablePaidAttractionsToBePicked in modo che le attrazioni non presenti in orderedSchedule vengano prima
+    availablePaidAttractionsToBePicked.sort((a, b) => {
+    const aIsInSchedule = attractionIdsInSchedule.includes(a.id);
+    const bIsInSchedule = attractionIdsInSchedule.includes(b.id);
+
+    if (aIsInSchedule && !bIsInSchedule) {
+      return 1;
+    } else if (!aIsInSchedule && bIsInSchedule) {
+      return -1;
+    } else {
+      return 0;
+    }
+    });
+
+
+  for(const date in orderedSchedule){
+    const attractionsOfTheDay = orderedSchedule[date];
+    newSchedule[date] = [];
+
+    for(const attraction of attractionsOfTheDay){
+
+      const attractionDetails = city.attractions.find((att: Attraction) => att.id === attraction.id);
+      if(attractionDetails.perPersonCost === 0){
+        
+        if(availablePaidAttractionsToBePicked.length !== 0){
+          if(alreadyUsedAttractions.includes(attractionDetails.id)){
+            const attractionRandomIndex = Math.floor(
+              Math.random() * availablePaidAttractionsToBePicked.length
+            );
+            const attractionToBeAdded = {
+              id: availablePaidAttractionsToBePicked[attractionRandomIndex].id,
+              startDate: attraction.startDate,
+              endDate: attraction.endDate
+  
+            }
+            
+            newSchedule[date].push(attractionToBeAdded);
+            availablePaidAttractionsToBePicked.splice(attractionRandomIndex, 1);
+          }
+          else{
+            newSchedule[date].push(attraction);
+            alreadyUsedAttractions.push(attraction.id);
+          }
+
+        }
+        else{
+          newSchedule[date].push(attraction);
+        }
+        
+      }
+      else{
+        newSchedule[date].push(attraction);
+      }
+    }
+  }
+
+  return newSchedule;
+
 
 };
 
