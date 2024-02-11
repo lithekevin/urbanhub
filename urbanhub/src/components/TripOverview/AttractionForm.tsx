@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { Modal, Form, DatePicker, Image, TimePicker, Button, AutoComplete, Typography } from 'antd';
+import { Modal, Form, DatePicker, Image, TimePicker, Button, AutoComplete, Typography, message } from 'antd';
 import { CloseSquareFilled } from '@ant-design/icons';
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { Attraction } from '../../models/attraction';
@@ -9,42 +9,45 @@ import { Trip } from '../../models/trip';
 import { TripAttraction } from '../../models/tripAttraction';
 import moment from 'moment';
 import cities from "../../firebase/cities";
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import { MessageInstance } from 'antd/es/message/interface';
 
 const { Title, Paragraph } = Typography;
 
 interface AttractionFormProps {
-    cityPosition: { lat: number, lng: number };
-    defaultAttractionImageUrl: string;
-    editingAttraction: TripAttraction | null;
-    form: any;
-    imageUrl: string | null;
-    isFormVisible: boolean;
-    trip: Trip | null;
-    selAttraction: Attraction | null | undefined;
-    selectedAttractionId: string | null;
-    selectedDay: Dayjs | null;
-    selectedMarker: Attraction | null;
-    setDirty: React.Dispatch<React.SetStateAction<boolean>>;
-    setEditingAttraction: React.Dispatch<React.SetStateAction<TripAttraction | null>>;
-    setIsFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
-    setMap: React.Dispatch<React.SetStateAction<google.maps.Map | null>>;
-    setMessageAI: React.Dispatch<React.SetStateAction<string>>;
-    setSelectedAttractionId: React.Dispatch<React.SetStateAction<string | null>>;
-    setSelectedMarker: React.Dispatch<React.SetStateAction<Attraction | null>>;
-    setUndoVisibility: React.Dispatch<React.SetStateAction<boolean>>;
-    setValidSelection: React.Dispatch<React.SetStateAction<boolean>>;
-    tripId: string | undefined;
-    validSelection: boolean;
-    zoomLevel: number;
+  cityPosition: { lat: number, lng: number };
+  defaultAttractionImageUrl: string;
+  editingAttraction: TripAttraction | null;
+  form: any;
+  imageUrl: string | null;
+  isFormVisible: boolean;
+  trip: Trip | null;
+  selAttraction: Attraction | null | undefined;
+  selectedAttractionId: string | null;
+  selectedDay: Dayjs | null;
+  selectedMarker: Attraction | null;
+  messageApi: MessageInstance;
+  contextHolder: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+  setDirty: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditingAttraction: React.Dispatch<React.SetStateAction<TripAttraction | null>>;
+  setIsFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setMap: React.Dispatch<React.SetStateAction<google.maps.Map | null>>;
+  setMessageAI: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedAttractionId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedMarker: React.Dispatch<React.SetStateAction<Attraction | null>>;
+  setUndoVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+  setValidSelection: React.Dispatch<React.SetStateAction<boolean>>;
+  tripId: string | undefined;
+  validSelection: boolean;
+  zoomLevel: number;
 }
 
-function AttractionForm (props: AttractionFormProps) {
+function AttractionForm(props: AttractionFormProps) {
 
-    const { cityPosition, defaultAttractionImageUrl, editingAttraction, form, imageUrl, isFormVisible, trip, 
-            selAttraction, selectedAttractionId, selectedDay, selectedMarker, setDirty, setEditingAttraction, 
-            setIsFormVisible, setMap, setMessageAI, setSelectedAttractionId, setSelectedMarker, setUndoVisibility, 
-            setValidSelection, tripId, validSelection, zoomLevel } = props;
+  const { cityPosition, contextHolder , defaultAttractionImageUrl, editingAttraction, form, imageUrl, isFormVisible, trip,
+    selAttraction, selectedAttractionId, selectedDay, selectedMarker, setDirty, setEditingAttraction,
+    setIsFormVisible, setMap, setMessageAI, setSelectedAttractionId, setSelectedMarker, setUndoVisibility,
+    setValidSelection, tripId, validSelection, zoomLevel, messageApi } = props;
 
     const [showParagraph, setShowParagraph] = useState(false);
 
@@ -68,17 +71,43 @@ function AttractionForm (props: AttractionFormProps) {
           editAttraction(tripId, editingAttraction.id ,selectedDay, values.date.format('DD/MM/YYYY'), attraction);
           setMessageAI("Is there anything I can do for you?");
           setUndoVisibility(false);
+          // Show success message
+          messageApi.open({
+            type: 'success',
+            content: 'Attraction edited successfully!',
+            duration: 3,
+            style: {
+              marginTop: '70px',
+            },
+        });
         }
         else{
           console.log("error");
+          // Show error message
+          messageApi.open({
+            type: 'error',
+            content: 'Error while editing attraction!',
+            duration: 3,
+            style: {
+              marginTop: '70px',
+            },
+          });
         }
       }
   
       else{
         if(tripId){
           addAttractionToTrip(tripId, values.date.format('DD/MM/YYYY'), attraction);
-          setMessageAI("Is there anything I can do for you?");
           setUndoVisibility(false);
+           // Show success message
+          messageApi.open({
+            type: 'success',
+            content: 'Attraction added successfully!',
+            duration: 3,
+            style: {
+              marginTop: '70px',
+            },
+          });
         }
       }
   
@@ -90,6 +119,8 @@ function AttractionForm (props: AttractionFormProps) {
     };
 
     return (
+      <>
+        {contextHolder}
         <Modal open={isFormVisible} onCancel={closeForm} footer={null} centered width={1000}>
           <Form form={form} name={"formName"} layout= "vertical" onFinish={(values) => onFinish(values)}>
             <Title level={2} className='step-title'> {editingAttraction ? "Edit Attraction" : "Add Attraction"} </Title>
@@ -186,29 +217,30 @@ function AttractionForm (props: AttractionFormProps) {
                       <InfoWindow
                       options={{ pixelOffset: new google.maps.Size(0, -35), disableAutoPan: true }}
                       position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
-                      onCloseClick={() => {setSelectedMarker(null)}}
+                      onCloseClick={() => { setSelectedMarker(null) }}
                     >
                       <div className="smallAttractionContainer">
                         <Image className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} preview={false}/>
                         <Title level={5} className="attractionName" style={{textAlign: 'center'}}>{selectedMarker.name}</Title>
                       </div>
                     </InfoWindow>
-                    )}
-                  </GoogleMap>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button onClick={closeForm} style={{ marginRight: '10px' }}>
-                Cancel
-              </Button>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-    );
+                  )}
+                </GoogleMap>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button onClick={closeForm} style={{ marginRight: '10px' }}>
+              Cancel
+            </Button>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
+  );
 };
 
 export default AttractionForm;

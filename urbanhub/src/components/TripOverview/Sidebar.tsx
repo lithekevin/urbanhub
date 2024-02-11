@@ -7,6 +7,7 @@ import colors from '../../style/colors';
 import DailyAttractions from './DailyAttractions';
 import dayjs from 'dayjs';
 import { TripAttraction } from '../../models/tripAttraction';
+import { MessageInstance } from 'antd/es/message/interface';
 
 const { Title, Paragraph } = Typography;
 
@@ -30,7 +31,8 @@ interface SidebarProps {
     value: boolean;
     setter: React.Dispatch<React.SetStateAction<boolean>>;
   };
-  messageApi: any;
+  messageApi: MessageInstance;
+  contextHolder: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   setDirty: React.Dispatch<React.SetStateAction<boolean>>;
   setEditingAttraction: React.Dispatch<React.SetStateAction<TripAttraction | null>>;
   setIsFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -49,9 +51,9 @@ interface SidebarProps {
 
 function Sidebar(props: SidebarProps) {
   
-  const { activeKeyState, attractionDistances, dayLabels, editing, form, errorState, loadingState, messageApi, 
+  const { activeKeyState, attractionDistances, dayLabels, editing, form, errorState, loadingState, messageApi,
           setDirty, setEditingAttraction, setIsFormVisible, setMessageAI, setSelectedAttractionId, 
-          setSelectedDay, setUndoVisibility, travelModel, trip, tripId, tripState } = props;
+          setSelectedDay, setUndoVisibility, travelModel, trip, tripId, tripState,contextHolder } = props;
 
   const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
     key: `${index}`,
@@ -64,6 +66,7 @@ function Sidebar(props: SidebarProps) {
           form={form}
           day={dayjs(dayLabel, 'DD/MM/YYYY')}
           messageApi={messageApi}
+          contextHolder={contextHolder}
           setDirty={setDirty}
           setEditingAttraction={setEditingAttraction}
           setIsFormVisible={setIsFormVisible}

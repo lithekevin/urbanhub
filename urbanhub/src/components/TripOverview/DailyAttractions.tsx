@@ -5,8 +5,9 @@ import { TbCar, TbWalk } from 'react-icons/tb';
 import { deleteAttraction } from '../../firebase/daos/dao-trips';
 import { TripAttraction } from '../../models/tripAttraction';
 import { Trip } from '../../models/trip';
-import colors  from '../../style/colors';
+import colors from '../../style/colors';
 import dayjs from 'dayjs';
+import { MessageInstance } from 'antd/es/message/interface';
 
 const { Title } = Typography;
 
@@ -15,7 +16,8 @@ interface DailyAttractionsProps {
   day: dayjs.Dayjs;
   editing: boolean;
   form: any;
-  messageApi: any;
+  messageApi: MessageInstance;
+  contextHolder:React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   setDirty: React.Dispatch<React.SetStateAction<boolean>>;
   setEditingAttraction: React.Dispatch<React.SetStateAction<TripAttraction | null>>;
   setIsFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,11 +31,11 @@ interface DailyAttractionsProps {
 }
 
 function DailyAttractions(props: DailyAttractionsProps) {
-    
-  const { attractionDistances, day, editing, form, messageApi, 
-          setDirty, setEditingAttraction, setIsFormVisible, 
-          setMessageAI, setSelectedAttractionId, setSelectedDay, 
-          setUndoVisibility, travelModel, trip, tripId } = props;
+
+  const { attractionDistances, day, editing, form, messageApi,contextHolder,
+    setDirty, setEditingAttraction, setIsFormVisible,
+    setSelectedAttractionId, setSelectedDay,
+    setUndoVisibility, travelModel, trip, tripId } = props;
 
   let attractionsForDay: TripAttraction[] = [];
   let closestKey: dayjs.Dayjs | null = null; // Find the closest matching key
@@ -60,16 +62,16 @@ function DailyAttractions(props: DailyAttractionsProps) {
     if (index < attractionsForDay.length - 1) {
       distance = attractionDistances[index];
 
-      if(distance){
-        if(distance.includes("km")){
+      if (distance) {
+        if (distance.includes("km")) {
           distanceInMeter = parseFloat(distance.split(" ")[0]) * 1000;
         }
-        else{
+        else {
           distanceInMeter = parseFloat(distance.split(" ")[0]);
         }
       }
     }
-    
+
     const items: any[] = [
       {
         label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
@@ -105,66 +107,65 @@ function DailyAttractions(props: DailyAttractionsProps) {
     // Push item conditionally
     if (index < attractionsForDay.length - 1) {
       items.push({
-        dot: travelModel==="DRIVING" ? <TbCar className='fs-5' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5'/> : <TbWalk className='fs-5' /> ),
+        dot: travelModel === "DRIVING" ? <TbCar className='fs-5' /> : (distanceInMeter > 2000 ? <TbCar className='fs-5' /> : <TbWalk className='fs-5' />),
         children: distance,
         color: 'black'
       });
     }
 
-      return items;
+    return items;
   });
 
   const handleDeleteClick = async (attraction: TripAttraction) => {
-      // Display a custom confirmation dialog
-      Modal.confirm({
-        title: 'Delete Attraction',
-        content: (
-          <div>
-            <p>Are you sure you want to delete this attraction?</p>
-            <p>
-              <strong>Name:</strong> {attraction.name}<br />
-              <strong>Date:</strong> {attraction.startDate.format('DD/MM/YYYY')}<br />
-            </p>
-          </div>
-        ),
-        centered: true,
-        onOk: async () => {
-          try {
-            if (tripId) {
-              await deleteAttraction(tripId, attraction.startDate, attraction.id);
-              setDirty(true);
-              setMessageAI("Is there anything I can do for you?");
-              setUndoVisibility(false);
-  
-              // Show success message
-              messageApi.open({
-                type: 'success',
-                content: 'Attraction deleted successfully!',
-                duration: 3,
-                style: {
-                  marginTop: '70px',
-                },
-              });
-            }
-          } catch (error) {
-            console.error('Error deleting attraction:', error);
-  
-            // Show error message
+    // Display a custom confirmation dialog
+    Modal.confirm({
+      title: 'Delete Attraction',
+      content: (
+        <div>
+          <p>Are you sure you want to delete this attraction?</p>
+          <p>
+            <strong>Name:</strong> {attraction.name}<br />
+            <strong>Date:</strong> {attraction.startDate.format('DD/MM/YYYY')}<br />
+          </p>
+        </div>
+      ),
+      centered: true,
+      onOk: async () => {
+        try {
+          if (tripId) {
+            await deleteAttraction(tripId, attraction.startDate, attraction.id);
+            setDirty(true);
+            setUndoVisibility(false);
+
+            // Show success message
             messageApi.open({
-              type: 'error',
-              content: 'Error while deleting attraction!',
+              type: 'success',
+              content: 'Attraction deleted successfully!',
               duration: 3,
               style: {
                 marginTop: '70px',
               },
             });
           }
-        },
-  
-      });
+        } catch (error) {
+          console.error('Error deleting attraction:', error);
+
+          // Show error message
+          messageApi.open({
+            type: 'error',
+            content: 'Error while deleting attraction!',
+            duration: 3,
+            style: {
+              marginTop: '70px',
+            },
+          });
+        }
+      },
+
+    });
   };
-  
-  const handleEditClick = (attraction : TripAttraction) => {
+
+  const handleEditClick = (attraction: TripAttraction) => {
     form.setFieldsValue({
       attraction: attraction.name,
       date: dayjs(attraction.startDate, 'DD/MM/YYYY'),
@@ -177,24 +178,10 @@ function DailyAttractions(props: DailyAttractionsProps) {
     setIsFormVisible(true);
   };
 
-  const openForm = (selectedDay: dayjs.Dayjs) => {
-      form.resetFields();
-      form.setFieldsValue({ date: selectedDay });
-      setEditingAttraction(null);
-      setIsFormVisible(true);
-  };
-
   return (
     <>
-      <Timeline mode='alternate' items={timelineItems}/>
-      <center>
-        {editing && (
-          <Button type="primary" onClick={() => openForm(day)}>
-            Add Attraction
-          </Button>
-        )}
-      </center>
-      <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,700|Roboto:400,700&display=swap" rel="stylesheet"></link>
+      {contextHolder}
+      <Timeline mode='alternate' items={timelineItems} />
     </>
   );
 }
