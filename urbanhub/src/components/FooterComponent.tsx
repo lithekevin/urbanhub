@@ -31,8 +31,6 @@ function FooterComponent() {
           </Col>
         </Row>
       </Footer>
-
-
     );
 }
 
