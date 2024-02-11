@@ -130,10 +130,9 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
         {activeKeyState.value.length === 1 && <DirectionsRenderer directions={directionsState.value} options={{ suppressMarkers: true }}/>}
         {cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length > 0 && (
           <>
-            {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], 'DD/MM/YYYY')).map((attraction: Attraction, index: number) => {
-              return (
+            {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], 'DD/MM/YYYY')).map((attraction: Attraction, index: number) => {              return (
                 <Marker 
-                  key={attraction.id} 
+                  key={`${attraction.id}-${index}`} 
                   position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
                   label={{text:`${(index + 1).toString()}`,color:'white', fontWeight: 'bold'}} 
                   icon={{ url: 'https://imgur.com/qNd2Emj.png', scaledSize: new google.maps.Size(36, 36), labelOrigin: new google.maps.Point(18, 14)}}
