@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Form, InputNumber, DatePicker, Modal, Typography, Card, Row, Col, Button, Space } from 'antd';
+import { Form, InputNumber, DatePicker, Modal, Typography, Row, Col, Button } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { editSettings } from '../../firebase/daos/dao-trips';
 import { Trip } from '../../models/trip';
 
-const { Paragraph, Text } = Typography;
+const { Paragraph, Text, Title } = Typography;
 
 
 interface EditTripSettingsProps {
@@ -89,14 +89,15 @@ function EditTripSettings(props: EditTripSettingsProps) {
   
   return (
       <Modal
-        title="Edit Trip Details"
         open={visible}
         onOk={handleUpdateTrip}
         onCancel={handleCancel}
         destroyOnClose
+        style={{ top: 20 }}
       >
+        <Title level={3} className='step-title'> Edit Trip Settings </Title>
         <Form form={form1} layout="vertical">
-          <Paragraph style={{color: 'red', marginTop: '3vh'}}>✽<Text className='label'> When would you like to go? </Text></Paragraph>
+          <Paragraph style={{color: 'red'}}>✽<Text className='label'> When would you like to go? </Text></Paragraph>
               <Form.Item
                   name="dateRange"
                   rules={[{ required: true, message: 'Please select the date range' }]}

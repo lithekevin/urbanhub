@@ -399,13 +399,15 @@ function TripOverview(props: any) {
           }
         </span>
         {editing &&(
-          <Button size="large" type="primary" className="button-new-trip" style={{ 
-            backgroundColor: colors.whiteBackgroundColor, color: 'black', textAlign: "center", position: 'absolute', right: 30 }}
-            onClick={() => handleOpenModal()}>
-              <span>
-                {<SettingOutlined />}
-              </span> 
-          </Button>
+          <Tooltip title="Edit trip settings" placement='left'>
+            <Button size="large" type="primary" className="button-new-trip" style={{ 
+              backgroundColor: colors.whiteBackgroundColor, color: 'black', textAlign: "center", position: 'absolute', right: 30 }}
+              onClick={() => handleOpenModal()}>
+                <span>
+                  {<SettingOutlined />}
+                </span> 
+            </Button>
+          </Tooltip>
         )}
       </Flex>
 
@@ -440,14 +442,14 @@ function TripOverview(props: any) {
             />
           </div>
           <div className='body-space'>
-            <div style={{ height: '53px', display: 'flex', justifyContent: 'flex-end', paddingRight: '10px' }}>
+            <Flex style={{ height: '53px', display: 'flex', justifyContent: 'flex-end', paddingRight: '10px' }}>
               {editing && (
-                <Button type="primary" style={{ backgroundColor: colors.hardBackgroundColor }} onClick={() => openForm()}>
+                <Button type="primary" style={{ backgroundColor: colors.hardBackgroundColor }} onClick={() => openForm()} className='button-new-trip'>
                   Add Attraction
                 </Button>
               )}
-            </div>
-            <div style={{ height: 'calc(100% - 53px)' }}>
+            </Flex>
+            <Flex style={{ height: 'calc(100% - 53px)' }}>
               <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
                 <div className='map-space'>
                   <GoogleMapsComponent
@@ -459,7 +461,7 @@ function TripOverview(props: any) {
                   />
                 </div>
               </Container>
-            </div>
+            </Flex>
           </div>
 
           <AttractionForm

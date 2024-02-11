@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col } from 'react-bootstrap'
-import { Alert, Collapse, CollapseProps, Typography, Button, Flex, Spin } from 'antd';
+import { Alert, Collapse, CollapseProps, Typography, Button, Flex, Spin, Tooltip } from 'antd';
 import { EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Trip } from '../../models/trip';
 import colors from '../../style/colors';
@@ -113,24 +113,26 @@ function Sidebar(props: SidebarProps) {
           <div>
             <Flex style={{ display: 'flex', alignItems: 'center' }}>
               <Title level={2} className="text-left" style={{ marginRight: '1vw' }}>{tripState.value.city}</Title>
-              <Button
-                  size="middle"
-                  type="primary"
-                  className="button-new-trip"
-                  style={{
-                    backgroundColor: colors.whiteBackgroundColor,
-                    color: 'black',
-                    textAlign: "center",
-                    fontSize: "15px",
-                    marginBottom: "10px",
-                    marginRight: "1vw"
-                  }}
-                  onClick={() => { !editing.value ?editing.setter(true) : editing.setter(false)}}
-                >
-                  <span>
-                    {!editing.value ? (<EditOutlined />) : (<EyeOutlined />)}
-                  </span>
-                </Button>
+              <Tooltip title={editing.value===true ? "Exit edit mode" : "Enter edit mode"} placement='right'>
+                <Button
+                    size="middle"
+                    type="primary"
+                    className="button-new-trip"
+                    style={{
+                      backgroundColor: colors.whiteBackgroundColor,
+                      color: 'black',
+                      textAlign: "center",
+                      fontSize: "15px",
+                      marginBottom: "10px",
+                      marginRight: "1vw"
+                    }}
+                    onClick={() => { !editing.value ?editing.setter(true) : editing.setter(false)}}
+                  >
+                    <span>
+                      {!editing.value ? (<EditOutlined />) : (<EyeOutlined />)}
+                    </span>
+                  </Button>
+                </Tooltip>
             </Flex>     
           </div>
           <div className='sidebar-div'>
