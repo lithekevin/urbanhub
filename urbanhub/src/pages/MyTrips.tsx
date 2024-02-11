@@ -10,7 +10,7 @@ import colors from "../style/colors";
 import dayjs from "dayjs";
 import cities from "../firebase/cities";
 
-const { Title, Paragraph } = Typography;
+const { Text, Title, Paragraph } = Typography;
 const defaultImageURL = "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 function MyTrips() {
@@ -124,26 +124,11 @@ function MyTrips() {
     <Menu
       items={[
         {
-          key: "delete",
-          label: (
-            <>
-              <DeleteOutlined style={{ marginRight: "2px" }} />
-              Delete
-            </>
-          ),
-          onMouseEnter: () => handleMenuHover(trip),
-          onClick: (info: MenuInfo) => {
-            info.domEvent.preventDefault();
-            info.domEvent.stopPropagation();
-            handleDelete(trip);
-          },
-        },
-        {
           key: "edit",
           label: (
             <>
-              <EditOutlined style={{ marginRight: "2px" }} />
-              Edit
+              <EditOutlined style={{ marginRight: "2px", color: colors.primaryButtonColor }} />
+              <Text style={{ color: colors.primaryButtonColor }}>Edit</Text>
             </>
           ),
           onMouseEnter: () => handleMenuHover(trip),
@@ -154,6 +139,21 @@ function MyTrips() {
             
           },
         },
+        {
+          key: "delete",
+          label: (
+            <>
+              <DeleteOutlined style={{ marginRight: "2px", color: colors.deleteButtonColor }} />
+              <Text style={{ color: colors.deleteButtonColor }}>Delete</Text>
+            </>
+          ),
+          onMouseEnter: () => handleMenuHover(trip),
+          onClick: (info: MenuInfo) => {
+            info.domEvent.preventDefault();
+            info.domEvent.stopPropagation();
+            handleDelete(trip);
+          },
+        }
       ]}
     />
   );
@@ -210,7 +210,9 @@ function MyTrips() {
                   <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ marginTop: '20px' }}>
                     <Row className="d-flex flex-row justify-content-center">
                       {id === '1' && trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).length === 0 ? (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You are not currently on any trip" />
+                          <div className="empty-container">
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You are not currently on any trip"/>
+                          </div>
                       ) : id === '1' ? (
                         trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).map((trip, index) => (
                           <TripCard
@@ -276,15 +278,8 @@ function TripCard(props: Readonly<{
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleMenuHover: (trip: Trip) => void;
 }>) {
-  const {
-    trip,
-    menu,
-    enlargedCard,
-    setEnlargedCard,
-    isMenuOpen,
-    setIsMenuOpen,
-    handleMenuHover,
-  } = props;
+  
+  const { trip, menu, enlargedCard, setEnlargedCard, isMenuOpen, setIsMenuOpen, handleMenuHover } = props;
 
   useEffect(() => {
     if (!isMenuOpen) {
