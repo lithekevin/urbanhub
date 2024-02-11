@@ -131,10 +131,10 @@ function AttractionForm (props: AttractionFormProps) {
                 </Form.Item>
                 <Form.Item style={{ marginBottom: 0 }}>
                   <Form.Item label = "Start Time " name="startTime" style={{ display: 'inline-block', marginRight: "2vw"}} rules={[{ required: true, message: 'Please choose the start time!' }]}>
-                    <TimePicker format="HH:mm" />
+                    <TimePicker format="HH:mm" minuteStep={5} />
                   </Form.Item>
                   <Form.Item label= "End Time" name="endTime" style={{ display: 'inline-block' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
-                    <TimePicker format="HH:mm" />
+                    <TimePicker format="HH:mm" minuteStep={5} />
                   </Form.Item>
                 </Form.Item>
               </Col>
