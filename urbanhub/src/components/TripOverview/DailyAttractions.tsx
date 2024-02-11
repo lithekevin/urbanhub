@@ -1,5 +1,5 @@
 import React from 'react';
-import { Timeline, Tag, Button, Typography, Modal, Flex } from 'antd';
+import { Badge, Button, Flex, Modal, Tag, Timeline, Typography } from 'antd';
 import { EuroCircleOutlined, EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import { TbCar, TbWalk } from 'react-icons/tb';
 import { deleteAttraction } from '../../firebase/daos/dao-trips';
@@ -76,24 +76,31 @@ function DailyAttractions(props: DailyAttractionsProps) {
       {
         label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
         children: (
-          <div className="static-popover">
-            <div className="content">
-              <Flex justify='space-between' align='center'>
-                <Title style={{ textAlign: 'left', fontSize: '15px' }}>{attraction.name}</Title>
-                <div className='button-container'>
-                  {editing && (
-                    <Button onClick={() => handleEditClick(attraction)} icon={<EditTwoTone />} style={{ marginRight: '1%' }} />
-                  )}
-                  {editing && (
-                    <Button onClick={() => handleDeleteClick(attraction)} icon={<DeleteTwoTone twoToneColor={colors.deleteButtonColor} />} />
-                  )}
-                </div>
-              </Flex>
-              <Tag icon={<EuroCircleOutlined />} color="green" style={{ textAlign: 'left', display: 'table' }}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
+          <Badge.Ribbon 
+            text={index+1}
+            placement='start' 
+            style={{ backgroundColor: '#185b6f', color: '#185b6f', fontWeight: 'bolder', fontFamily: "'Google Sans', Roboto, Arial, sans-serif", fontSize: '12px'}}
+          >
+            <div className="static-popover">            
+              <div className="content">
+                <Flex justify='space-between' align='center'>
+                  <Title style={{ textAlign: 'left', fontSize: '15px' }}>{attraction.name}</Title>
+                    <div className='button-container'>
+                    {editing && (
+                      <Button onClick={() => handleEditClick(attraction)} icon={<EditTwoTone twoToneColor={colors.primaryButtonColor}/>} style={{ marginRight: '2%' }} className='edit-button' type='text'/>
+                    )}
+                    {editing && (
+                      <Button onClick={() => handleDeleteClick(attraction)} icon={<DeleteTwoTone twoToneColor={colors.deleteButtonColor}/>} className='delete-button' type='text'/>
+                    )}
+                    </div>
+                </Flex>
+                <Tag icon={<EuroCircleOutlined />} color="green" style={{textAlign: 'left', display: 'table'}}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
+              </div>
             </div>
-          </div>
+          </Badge.Ribbon>
         ),
         position: index % 2 === 0 ? 'left' : 'right',
+        color: '#185b6f'
       }
     ];
 

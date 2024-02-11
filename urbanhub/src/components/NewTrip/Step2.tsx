@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Row, Col, Button, Progress, Typography, Image, Modal } from 'antd';
+import { Button, Col, Form, Image, Input, Modal, Progress, Row, Typography } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import questions from '../../firebase/questions'; 
 import shuffle from 'lodash/shuffle';

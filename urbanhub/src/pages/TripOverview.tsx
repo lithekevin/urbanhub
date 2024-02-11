@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Container } from "react-bootstrap";
-import { TbCoinEuro, TbMoodKid, TbUser } from "react-icons/tb";
+import { FaChild, FaChildDress, FaPerson, FaPersonDress } from "react-icons/fa6";
+import { TbCoinEuroFilled } from 'react-icons/tb';
 import { Button, Divider, Flex, Form, Image, message, Popover, Spin, Tooltip, Typography } from 'antd';
-import { SettingOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, SettingOutlined} from '@ant-design/icons';
 import { getTripById } from "../firebase/daos/dao-trips";
 import { Attraction } from '../models/attraction';
 import { TripAttraction } from '../models/tripAttraction';
@@ -18,7 +19,7 @@ import colors from "../style/colors";
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-const { Title, Text } = Typography;
+const { Paragraph, Title, Text } = Typography;
 
 const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
@@ -30,6 +31,7 @@ function TripOverview(props: any) {
   };
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -167,8 +169,9 @@ function TripOverview(props: any) {
               });
 
               const index = tripData.questions.findIndex(question => question.includes("transportation"));
-              if (index !== -1) {
-                tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
+              if(index !== -1){
+                if(tripData.answers.length>0)
+                  tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
               }
 
             }
@@ -372,37 +375,45 @@ function TripOverview(props: any) {
           <div> Loading </div>
         </Spin>
       )}
-      <Flex justify='space-evenly' align='center' style={{ fontSize: '25px', position: 'relative' }}>
-        <span><TbUser /> <Text> Adults : {trip?.nAdults} </Text> </span>
-        <span><TbMoodKid /> <Text> Kids : {trip?.nKids} </Text> </span>
+      <Flex justify='space-between' align='center' style={{ fontSize: '25px', position: 'relative', paddingLeft: '1%', paddingRight: '20%' }}>
+        {/* Arrow on the left */}
+        <ArrowLeftOutlined
+          className="float-left"
+          style={{ fontSize: "26px", marginLeft: "10px" }}
+          onClick={() => navigate(-1)}
+        />
+        <span><FaPersonDress style={{ color: 'grey' }} size={30}/><FaPerson style={{ color: 'grey' }} size={30}/> <Text> Adults : {trip?.nAdults} </Text> </span>
+        <span><FaChildDress style={{ color: 'grey' }} size={25}/><FaChild style={{ color: 'grey' }} size={25}/> <Text> Kids : {trip?.nKids} </Text> </span>
         <span>
-          {(trip && totalCost > trip.budget) ?
+          {(trip && totalCost > trip.budget) ? 
             <>
-              <TbCoinEuro style={{ color: 'red' }} />
-              <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
-                <Text style={{ color: 'red' }}> Total Cost : {totalCost}{" €"} </Text>
-              </Tooltip>
+              <TbCoinEuroFilled style={{color: 'red'}}/>  
+              <Tooltip title={<Paragraph style={{textAlign: 'center', color: 'white', margin: '0'}}>The initial budget you set has been exceeded by {totalCost - trip.budget} €</Paragraph>} placement='bottom'>
+                <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
+              </Tooltip> 
             </> :
             <>
-              <TbCoinEuro />
+              <TbCoinEuroFilled style={{ color: 'grey'}}/>
               <Text> Total Cost : {totalCost}{" €"} </Text>
             </>
           }
         </span>
-        {editing && (<Button size="large" type="primary" className="button-new-trip" style={{
-          backgroundColor: colors.whiteBackgroundColor, color: 'black', textAlign: "center", position: 'absolute', right: 30
-        }}
-          onClick={() => handleOpenModal()}>
-          <span>
-            {<SettingOutlined />}
-          </span>
-
-        </Button>)}
+        {editing &&(
+          <Tooltip title="Edit trip settings" placement='left'>
+            <Button size="large" type="primary" className="button-new-trip" style={{ 
+              backgroundColor: colors.whiteBackgroundColor, color: 'black', textAlign: "center", position: 'absolute', right: 30 }}
+              onClick={() => handleOpenModal()}>
+                <span>
+                  {<SettingOutlined />}
+                </span> 
+            </Button>
+          </Tooltip>
+        )}
       </Flex>
 
-      <Divider style={{ marginTop: '10px' }} />
-
-      <Title level={1} style={{ textAlign: 'center' }}>Trip Overview</Title>
+      <Divider style={{ marginTop: '10px'}}/>
+      
+      <Title level={1} style={{ textAlign: 'center' }}>TRIP OVERVIEW</Title>
 
       <div className='main-div'>
         <Container className="d-flex align-items-stretch height-full" >
@@ -431,14 +442,14 @@ function TripOverview(props: any) {
             />
           </div>
           <div className='body-space'>
-            <div style={{ height: '53px', display: 'flex', justifyContent: 'flex-end', paddingRight: '10px' }}>
+            <Flex style={{ height: '53px', display: 'flex', justifyContent: 'flex-end', paddingRight: '10px' }}>
               {editing && (
-                <Button type="primary" style={{ backgroundColor: colors.hardBackgroundColor }} onClick={() => openForm()}>
+                <Button type="primary" style={{ backgroundColor: colors.hardBackgroundColor }} onClick={() => openForm()} className='button-new-trip'>
                   Add Attraction
                 </Button>
               )}
-            </div>
-            <div style={{ height: 'calc(100% - 53px)' }}>
+            </Flex>
+            <Flex style={{ height: 'calc(100% - 53px)' }}>
               <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
                 <div className='map-space'>
                   <GoogleMapsComponent
@@ -450,7 +461,7 @@ function TripOverview(props: any) {
                   />
                 </div>
               </Container>
-            </div>
+            </Flex>
           </div>
 
           <AttractionForm
@@ -490,53 +501,54 @@ function TripOverview(props: any) {
         </Container>
       </div>
 
-      <Popover
-        content={
-          <Chatbot
-            tripState={{ value: trip, setter: setTrip }}
-            dirtyState={{ value: dirty, setter: setDirty }}
-            undoState={{ value: undoVisibility, setter: setUndoVisibility }}
-            messageAIState={{ value: messageAI, setter: setMessageAI }}
-            tripId={tripId}
-            messageApi={messageApi}
-          />
-        }
-        trigger="click"
-        open={showChatbot}
-        onOpenChange={handlePopoverVisibleChange}
-        placement='right'
-        arrow={{ pointAtCenter: true }}
-        overlayStyle={{ width: '100%', maxWidth: '1120px' }}
-      >
-        <Button
-          style={{
-            width: '55px',
-            height: '55px',
-            borderRadius: '50%',
-            position: 'fixed',
-            right: '20px',
-            marginLeft: '2%',
-            bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
-            boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-            transform: `scale(${isHovered ? 1.1 : 1})`,
-            transition: 'box-shadow transform 0.3s ease',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+      {editing && 
+        <Popover
+          content={
+            <Chatbot
+              tripState={{ value: trip, setter: setTrip }}
+              dirtyState={{ value: dirty, setter: setDirty }}
+              undoState={{ value: undoVisibility, setter: setUndoVisibility }}
+              messageAIState={{ value: messageAI, setter: setMessageAI, color: 'black' }}
+              tripId={tripId}
+              messageApi={messageApi}
+            />
+          }
+          trigger="click"
+          open={showChatbot}
+          onOpenChange={handlePopoverVisibleChange}
+          placement='right'
+          arrow={{ pointAtCenter: true }}
+          overlayStyle={{ maxWidth: '90vw', width: '100%', marginLeft: '20px' }}
         >
-          <Image
-            src="https://imgur.com/ijeaJNU.png"
-            alt="UrbanHub assistant"
-            preview={false}
-            height={'auto'}
-            style={{ maxWidth: '100%', maxHeight: '100%' }}
-          />
-        </Button>
-      </Popover>
-
+          <Button
+            style={{
+              width: '55px',
+              height: '55px',
+              borderRadius: '50%',
+              position: 'fixed',
+              right: '20px', 
+              marginLeft: '2%',
+              bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
+              boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+              transform: `scale(${isHovered ? 1.1 : 1})`,
+              transition: 'box-shadow transform 0.3s ease',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <Image
+              src="https://imgur.com/ijeaJNU.png"
+              alt="UrbanHub assistant"
+              preview={false}
+              height={'auto'}
+              style={{ maxWidth: '100%', maxHeight: '100%' }}
+            />
+          </Button>
+        </Popover>
+      }
     </>
   );
 };

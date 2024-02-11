@@ -6,6 +6,13 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Override Ant Design Typography font family */
+:where(.css-dev-only-do-not-override-gzal6t)[class^="ant-typography"],
+:where(.css-dev-only-do-not-override-gzal6t)[class*=" ant-typography"] {
+  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
 }
 
 /* Style for the vertical scrollbar */
@@ -23,6 +30,57 @@
     border-radius: 10px;
 }
 
+h1:where(.css-dev-only-do-not-override-gzal6t).ant-typography,
+h2:where(.css-dev-only-do-not-override-gzal6t).ant-typography,
+h3:where(.css-dev-only-do-not-override-gzal6t).ant-typography,
+h4:where(.css-dev-only-do-not-override-gzal6t).ant-typography,
+h5:where(.css-dev-only-do-not-override-gzal6t).ant-typography,
+h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
+    font-weight: 400;
+}
+
+/************
+ * NAVBAR
+ ************/
+
+#navbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background-color: var(--hard-background-color);
+    color: whitesmoke;
+    min-height: 75px;
+    z-index: 1;
+}
+
+.header-style {
+    margin: 15px 20px 20px 20px;
+    border-radius: 20px;
+    position: sticky;
+    top: 15px;
+    z-index: 3;
+    background-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    -webkit-backdrop-filter: blur(50px);
+    backdrop-filter: blur(50px);
+    overflow: hidden;
+    display:inline-flex;
+}
+
+.cover-style {
+    background-color: white;
+    z-index: 2;
+    position: fixed;
+    top: 0;
+    min-width: 100%;
+    min-height: 16px;
+}
+
+.userInfo {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: black;
+}
 
 /************
  * FOOTER
@@ -42,7 +100,7 @@
     padding-left: 0;
     padding-right: 0;
     padding-top: 15px;
-    padding-bottom: 0;
+    padding-bottom: 5px;
     margin-top: 50px;
 }
 
@@ -113,17 +171,27 @@
   max-width: 200px;
 }
 
+.smallAttractionContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-width: 80px;
+}
+
 .attractionImage {
   width: 100%;
   max-width: 100%;
   max-height: 80%;
   object-fit:cover;
   aspect-ratio: 3/2;
-  border-radius: 10px;
+  border-radius: 4%;
 }
 
 .attractionName {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .static-popover {
@@ -139,13 +207,31 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border: 1px solid #d9d9d9;
   border-radius: 4px;
-  padding: 5px 10px;
+  padding: 10px 10px;
   color: #555;
+  padding-left: 25px;
 }
 
 .button-container {
     display: flex;
     align-items: center;
+}
+
+.delete-button {
+    background: #ffffff; 
+    border-color: #d9d9d9;
+}
+.delete-button:hover {
+    border-color: #d12121; /* Change border color on hover */
+}
+
+.edit-button {
+    background: #ffffff; 
+    border-color: #d9d9d9;
+}
+
+.edit-button:hover {
+    border-color: #1677ff; /* Change border color on hover */
 }
 
 @media (max-width: 768px) {
@@ -160,60 +246,23 @@
 }
 
 /************
- * NAVBAR
- ************/
-
-#navbar {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    background-color: var(--hard-background-color);
-    color: whitesmoke;
-    min-height: 75px;
-    z-index: 1;
-}
-
-.header-style {
-    margin: 15px 20px 20px 20px;
-    border-radius: 20px;
-    position: sticky;
-    top: 15px;
-    z-index: 3;
-    background-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    -webkit-backdrop-filter: blur(7px);
-    backdrop-filter: blur(7px);
-    overflow: hidden;
-    display:inline-flex;
-}
-
-.cover-style {
-    background-color: white;
-    z-index: 2;
-    position: fixed;
-    top: 0;
-    min-width: 100%;
-    min-height: 16px;
-}
-
-.projectName {
-   font-size: 30px;
-   margin-left: 10px;
-   position: relative;
-   top: -3px;
-}
-
-.userInfo {
-    margin-left: 5px;
-    margin-bottom: 20px;
-    font-size: 16px;
-    color: black;
-}
-
-
-/************
  * MYTRIPS
  ************/
+
+.ant-tabs-nav .ant-tabs-tab {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 14vw;
+}
 
 .city-image-container {
     position: relative;
@@ -314,6 +363,12 @@
     width: auto;
 }
 
+.input-container {
+    border: '1px solid #d9d9d9'; 
+    padding: '8px'; 
+    border-radius: '4px';
+}
+
 .ant-progress.ant-progress-status-success .ant-progress-bg{
     background-color: #00AA70;
 }
@@ -323,16 +378,14 @@
 }
 
 .citiesMapMarkerHoveredContainer{
-
     position: absolute;
-    transform: translate(-50%, -230px);
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: auto;
     background-color: whitesmoke;
-    border-radius: 10px;
+    border-radius: 4%;
     overflow: hidden;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
-
+    position: absolute;
 }
 
 .citiesMapMarkerHoveredImage{
