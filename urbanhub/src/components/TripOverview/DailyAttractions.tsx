@@ -85,10 +85,10 @@ function DailyAttractions(props: DailyAttractionsProps) {
                   <Title style={{ textAlign: 'left', fontSize: '15px' }}>{attraction.name}</Title>
                     <div className='button-container'>
                     {editing && (
-                      <Button onClick={() => handleEditClick(attraction)} icon={<EditTwoTone/>} style={{ marginRight: '1%' }}/>
+                      <Button onClick={() => handleEditClick(attraction)} icon={<EditTwoTone/>} style={{ marginRight: '2%' }}/>
                     )}
                     {editing && (
-                      <Button onClick={() => handleDeleteClick(attraction)} icon={<DeleteTwoTone twoToneColor={colors.deleteButtonColor}/>}/>
+                      <Button onClick={() => handleDeleteClick(attraction)} icon={<DeleteTwoTone twoToneColor={colors.deleteButtonColor}/>} className='delete-button' type='text'/>
                     )}
                     </div>
                 </Flex>

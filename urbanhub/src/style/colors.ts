@@ -11,7 +11,7 @@ const hardBackgroundColor = '#00AA70';
 const softBackgroundColor = '#a3e3b2'; 
 const whiteBackgroundColor = '#f5f5f5'; /*whitesmoke */
 
-const primaryButtonColor = '#4D7298';
+const primaryButtonColor = '#1677ff';
 const backButtonColor = '#6C757D';
 const deleteButtonColor = '#d12121';
 
