@@ -156,7 +156,7 @@ function Step0(props: Step0Props) {
                           title={city.name}
                           opacity={city.name === hoveredMarker ? 0.8 : 0.5}
                           icon={{
-                            url: "https://imgur.com/2YMvPKc.png",
+                            url: "https://imgur.com/HXGfoxe.png",
                             scaledSize: new window.google.maps.Size(38, 38),
                           }}
                           onMouseOver={() => {
@@ -187,7 +187,7 @@ function Step0(props: Step0Props) {
                           >
                             <div className={`citiesMapMarkerHoveredContainer`}>
                               <Image src={city.image} alt={city.name} className="citiesMapMarkerHoveredImage" preview={false}/>
-                              <Title level={4} style={{textAlign: 'center'}}>{city.name}</Title>
+                              <Title level={5} style={{textAlign: 'center'}}>{city.name}</Title>
                             </div>
                           </OverlayView>
                         )}
@@ -205,7 +205,7 @@ function Step0(props: Step0Props) {
                       position={cityPosition}
                       title={formData.destination}
                       opacity={1.0}
-                      icon={{ url: "https://imgur.com/2YMvPKc.png", scaledSize: new window.google.maps.Size(38, 38) }}
+                      icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(38, 38) }}
                     />
                   )
               }

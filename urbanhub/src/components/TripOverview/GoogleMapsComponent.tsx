@@ -126,7 +126,7 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
   return(
     <>
       <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '65vh', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={activeKeyState.value.length === 0 ? cityPositionState.value : directionsState.value?.routes[0]?.legs[0]?.start_location } zoom={zoomLevel} onLoad={(map) => {}}>
-        {(cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length === 0 && <Marker position={cityPositionState.value} icon={{ url: "https://imgur.com/2YMvPKc.png", scaledSize: new window.google.maps.Size(38, 38) }}/>)}             
+        {(cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length === 0 && <Marker position={cityPositionState.value} icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(38, 38) }}/>)}             
         {activeKeyState.value.length === 1 && <DirectionsRenderer directions={directionsState.value} options={{ suppressMarkers: true }}/>}
         {cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length > 0 && (
           <>
@@ -135,7 +135,7 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
                   key={`${attraction.id}-${index}`} 
                   position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
                   label={{text:`${(index + 1).toString()}`,color:'white', fontWeight: 'bold'}} 
-                  icon={{ url: 'https://imgur.com/qNd2Emj.png', scaledSize: new google.maps.Size(36, 36), labelOrigin: new google.maps.Point(18, 14)}}
+                  icon={{ url: 'https://imgur.com/gfrQTuH.png', scaledSize: new google.maps.Size(38, 38), labelOrigin: new google.maps.Point(19, 16)}}
                   onClick={() => {selectedMarker === null ? setSelectedMarker(attraction) : setSelectedMarker(null)}}/>
               );
             })}

@@ -25,9 +25,9 @@ function FooterComponent() {
           </Col>
           <Col span={8} style={{ fontStyle: 'normal'}}>
           <Title level={5} style={{ marginBottom: 0 }}>Attributions:</Title>
-            <Paragraph style={{ marginBottom: 0 }}>Logo icon made by <a href="https://www.flaticon.com/authors/rooman12" title="Rooman12"> Rooman12 </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></Paragraph>
-            <Paragraph style={{ marginBottom: 0 }}>Marker icons made by <a href="https://www.flaticon.com/authors/kmg-design" title="kmg design"> kmg design </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></Paragraph>
-            <Paragraph style={{ marginBottom: 0 }}>Marker Icons made by <a href="https://www.flaticon.com/authors/ian-anandara" title="Ian Anandara"> Ian Anandara </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></Paragraph>
+            <Paragraph style={{ marginBottom: 0, fontSize: '13px' }}>Logo icon made by <a href="https://www.flaticon.com/authors/rooman12" title="Rooman12"> Rooman12 </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></Paragraph>
+            <Paragraph style={{ marginBottom: 0, fontSize: '13px' }}>Marker icon made by <a href="https://www.flaticon.com/authors/ranksol-graphics" title="ranksol graphics"> ranksol graphics </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></Paragraph>
+            <Paragraph style={{ marginBottom: 0, fontSize: '13px' }}>Marker icon made by <a href="https://www.flaticon.com/authors/mia-elysia" title="mia elysia"> mia elysia </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></Paragraph>
           </Col>
         </Row>
       </Footer>

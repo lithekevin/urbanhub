@@ -153,7 +153,7 @@ function AttractionForm (props: AttractionFormProps) {
                           <Marker   
                             key={attraction.id} 
                             position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
-                            icon={{ url: "https://imgur.com/2YMvPKc.png", scaledSize: new window.google.maps.Size(30, 30) }}
+                            icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(30, 30) }}
                             opacity={attraction === selectedMarker ? 0.9 : 0.7}
                             onMouseOver={() => setSelectedMarker(attraction)} 
                             onMouseOut={() => setSelectedMarker(null)}  
@@ -174,7 +174,7 @@ function AttractionForm (props: AttractionFormProps) {
                             <Marker 
                               key={attraction.id} 
                               position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
-                              icon={{ url: "https://imgur.com/2YMvPKc.png", scaledSize: new window.google.maps.Size(37, 37) }}
+                              icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(37, 37) }}
                               onMouseOver={() => setSelectedMarker(attraction)} 
                               onMouseOut={() => setSelectedMarker(null)}/>
                           );
@@ -190,7 +190,7 @@ function AttractionForm (props: AttractionFormProps) {
                     >
                       <div className="smallAttractionContainer">
                         <Image className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} preview={false}/>
-                        <Title level={5} className="attractionName">{selectedMarker.name}</Title>
+                        <Title level={5} className="attractionName" style={{textAlign: 'center'}}>{selectedMarker.name}</Title>
                       </div>
                     </InfoWindow>
                     )}
