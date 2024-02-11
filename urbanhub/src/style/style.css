@@ -242,9 +242,11 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
  * MYTRIPS
  ************/
 
-.custom-tabs .ant-tabs-tab {
-   padding: 8px 16px; /* Adjust padding as needed */
-   font-size: 18px; /* Adjust font size as needed */
+.ant-tabs-nav .ant-tabs-tab {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .empty-container {

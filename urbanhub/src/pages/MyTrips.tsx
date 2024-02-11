@@ -198,22 +198,22 @@ function MyTrips() {
         <>
           <Tabs
             className="custom-tabs mt-4"
-            defaultActiveKey="1"
+            defaultActiveKey="2"
             centered
             items={new Array(3).fill(null).map((_, i) => {
               const id = String(i + 1);
-              const tabLabel = id === '1' ? 'Ongoing trips' : id === '2' ? 'Future trips' : 'Past trips';
+              const tabLabel = id === '1' ? 'Past Trips' : id === '2' ? 'Ongoing trips' : 'Future trips';
               return {
-                label: tabLabel,
+                label: <Flex align="middle" justify="center" style={{width: '130px'}}><Text style={{ fontSize: '18px' }}>{tabLabel}</Text></Flex>,
                 key: id,
                 children: (
                   <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ marginTop: '20px' }}>
                     <Row className="d-flex flex-row justify-content-center">
-                      {id === '1' && trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).length === 0 ? (
+                      {id === '2' && trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).length === 0 ? (
                           <div className="empty-container">
                             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You are not currently on any trip"/>
                           </div>
-                      ) : id === '1' ? (
+                      ) : id === '2' ? (
                         trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).map((trip, index) => (
                           <TripCard
                             key={trip.id}
@@ -226,9 +226,11 @@ function MyTrips() {
                             handleMenuHover={handleMenuHover}
                           />
                         ))
-                      ) : id === '2' && trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0 ? (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any trip planned for the future" />
-                      ) : id === '2' ? (
+                      ) : id === '3' && trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0 ? (
+                        <div className="empty-container">
+                          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any trip planned for the future" />
+                        </div>
+                      ) : id === '3' ? (
                         trips.filter((t) => t.startDate.isAfter(dayjs())).map((trip, index) => (
                           <TripCard
                             key={trip.id}
@@ -241,8 +243,10 @@ function MyTrips() {
                             handleMenuHover={handleMenuHover}
                           />
                         ))
-                      ) : id === '3' && trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0 ? (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any past trip" />
+                      ) : id === '1' && trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0 ? (
+                        <div className="empty-container">
+                          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any past trip" />
+                        </div>
                       ) : (
                         trips.filter((t) => t.endDate.isBefore(dayjs())).map((trip, index) => (
                           <TripCard
