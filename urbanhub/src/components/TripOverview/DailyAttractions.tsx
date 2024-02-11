@@ -85,7 +85,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
                   <Title style={{ textAlign: 'left', fontSize: '15px' }}>{attraction.name}</Title>
                     <div className='button-container'>
                     {editing && (
-                      <Button onClick={() => handleEditClick(attraction)} icon={<EditTwoTone/>} style={{ marginRight: '2%' }}/>
+                      <Button onClick={() => handleEditClick(attraction)} icon={<EditTwoTone twoToneColor={colors.primaryButtonColor}/>} style={{ marginRight: '2%' }} className='edit-button' type='text'/>
                     )}
                     {editing && (
                       <Button onClick={() => handleDeleteClick(attraction)} icon={<DeleteTwoTone twoToneColor={colors.deleteButtonColor}/>} className='delete-button' type='text'/>

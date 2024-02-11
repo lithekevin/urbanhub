@@ -224,7 +224,15 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
 }
 .delete-button:hover {
     border-color: #d12121; /* Change border color on hover */
-    background: #ffffff;
+}
+
+.edit-button {
+    background: #ffffff; 
+    border-color: #d9d9d9;
+}
+
+.edit-button:hover {
+    border-color: #1677ff; /* Change border color on hover */
 }
 
 @media (max-width: 768px) {
