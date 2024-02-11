@@ -64,7 +64,7 @@ function Step1 (props: Step1Props){
       <DatePicker.RangePicker 
         style={{ width: '100%' }}
         onChange={(dates, dateStrings) => handleDateRangeChange(dates as [moment.Moment, moment.Moment])}
-        disabledDate={(current) => current && current < moment().endOf('day')} 
+        disabledDate={(current) => current && current < moment().startOf('day')} 
         allowClear={true}/>
       </Form.Item>
 
