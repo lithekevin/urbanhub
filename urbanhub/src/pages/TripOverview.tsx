@@ -3,7 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { Container } from "react-bootstrap";
 import { TbCoinEuro, TbMoodKid, TbUser } from "react-icons/tb";
 import { Button, Divider, Flex, Form, Image, message, Popover, Spin, Tooltip, Typography } from 'antd';
-import { SettingOutlined} from '@ant-design/icons';
+import { SettingOutlined } from '@ant-design/icons';
 import { getTripById } from "../firebase/daos/dao-trips";
 import { Attraction } from '../models/attraction';
 import { TripAttraction } from '../models/tripAttraction';
@@ -23,9 +23,9 @@ const { Title, Text } = Typography;
 const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 function TripOverview(props: any) {
-  
+
   const defaultCenter = {
-    lat: 48.7758, 
+    lat: 48.7758,
     lng: 9.1829
   };
 
@@ -35,41 +35,41 @@ function TripOverview(props: any) {
   const [error, setError] = useState<boolean>(false);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [dirty, setDirty] = useState<boolean>(true);
-  const [messageApi] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
   const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
-  const [editing, setEdit] = useState<boolean>(location.state && location.state.mode === "edit"); 
+  const [editing, setEdit] = useState<boolean>(location.state && location.state.mode === "edit");
   const [cityPosition, setCityPosition] = useState({
     lat: defaultCenter.lat,
     lng: defaultCenter.lng,
   });
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [travelModel, setTravelModel] = useState('WALKING');
-  
+
   //used for path between attractions
-  var origin : any = null;
-  var destination : any = null;
-  var waypt : any[] = [];
+  var origin: any = null;
+  var destination: any = null;
+  var waypt: any[] = [];
   const [directions, setDirections] = useState<any>({
     geocoded_waypoints: [],
     routes: [],
     status: "ZERO_RESULTS",
-  });  
+  });
   const [attractionDistances, setAttractionDistances] = useState<any>([]);
-  
+
   const [form] = Form.useForm();
   const [form1] = Form.useForm();
   const [visible, setVisible] = useState(false);
   const [editingAttraction, setEditingAttraction] = useState<TripAttraction | null>(null);
   const [selectedAttractionId, setSelectedAttractionId] = useState<string | null>(null);
-  const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs | null>(null); 
+  const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs | null>(null);
   const zoomLevel = selectedAttractionId !== null ? 15 : 12;
-  const selAttraction : Attraction | null | undefined = selectedAttractionId !== null ? cities.find(city => city.name === trip?.city)?.attractions.find( attraction => attraction.id === selectedAttractionId) : null;
+  const selAttraction: Attraction | null | undefined = selectedAttractionId !== null ? cities.find(city => city.name === trip?.city)?.attractions.find(attraction => attraction.id === selectedAttractionId) : null;
   const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
 
   //Used for undo button and message in chatbot 
   const [undoVisibility, setUndoVisibility] = useState(false);
-  const [messageAI, setMessageAI] = useState('Is there anything I can do for you?');  
+  const [messageAI, setMessageAI] = useState('Is there anything I can do for you?');
   const [totalCost, setTotalCost] = useState(0);
   const [validSelection, setValidSelection] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
@@ -97,7 +97,7 @@ function TripOverview(props: any) {
       }
       return 0; // Footer not found
     };
-  
+
     // Update the state when the footer visibility changes
     const handleScroll = () => {
       const footer = document.querySelector('.footer-style');
@@ -109,20 +109,20 @@ function TripOverview(props: any) {
           const footerHeight = getVisibleFooterHeight();
           setFooterHeight(footerHeight);
           setFooterVisible(true);
-        }else{
+        } else {
           setFooterVisible(false);
         }
       }
     };
-  
+
     // Listen for scroll events to detect footer visibility changes
     window.addEventListener('scroll', handleScroll);
-    
+
     // Clean up event listener
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);  
+  }, []);
 
   useEffect(() => {
     // load trip details from firebase based on tripId
@@ -141,15 +141,15 @@ function TripOverview(props: any) {
               });
 
               const index = tripData.questions.findIndex(question => question.includes("transportation"));
-              if(index !== -1){
+              if (index !== -1) {
                 tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
               }
 
             }
             let sum = 0;
             tripData.schedule.forEach((dayAttractions) => {
-            dayAttractions.forEach((attraction) => {
-              sum += attraction.perPersonCost;
+              dayAttractions.forEach((attraction) => {
+                sum += attraction.perPersonCost;
               });
             });
             setTotalCost(sum * (tripData.nAdults + tripData.nKids));
@@ -165,12 +165,12 @@ function TripOverview(props: any) {
       }
     }
     loadTripDetails();
-  }, [dirty, tripId, trip?.location?.latitude, trip?.location?.longitude]);
+  }, [dirty]);
 
   useEffect(() => {
     const directionsService = new google.maps.DirectionsService();
 
-    if(activeKey.length === 0){
+    if (activeKey.length === 0) {
       setDirections({
         geocoded_waypoints: [],
         routes: [],
@@ -178,17 +178,17 @@ function TripOverview(props: any) {
       });
       setAttractionDistances([]);
     }
-    else{
+    else {
       //iterate throught all attractions of a day
       renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).map((attraction, index) => {
-        if(index === 0){
+        if (index === 0) {
           //update first element
           origin = { lat: attraction.location.latitude, lng: attraction.location.longitude };
           destination = null;
           waypt = [];
           return null;
         }
-        else if(index === (renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).length - 1)){
+        else if (index === (renderMarkerForDay(dayjs(dayLabels[parseInt(activeKey[0], 10)], 'DD/MM/YYYY')).length - 1)) {
           //update last element and caluclate route for the day
           destination = { lat: attraction.location.latitude, lng: attraction.location.longitude };
 
@@ -197,7 +197,7 @@ function TripOverview(props: any) {
               origin: origin,
               destination: destination,
               waypoints: waypt,
-              travelMode: travelModel === "WALKING" ? google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING,         
+              travelMode: travelModel === "WALKING" ? google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING,
               unitSystem: google.maps.UnitSystem.METRIC,
             },
             (result, status) => {
@@ -216,7 +216,7 @@ function TripOverview(props: any) {
           );
           return null;
         }
-        else{
+        else {
           //update middle elements
           waypt.push({
             location: { lat: attraction.location.latitude, lng: attraction.location.longitude },
@@ -240,7 +240,7 @@ function TripOverview(props: any) {
           Authorization: `Client-ID 4rjvZvwzFuPY3uX3WAnf2Qb8eWkwvDys-sdsyvDdai0`,
         },
       });
-  
+
       if (response.data.results.length > 0) {
         setImageLoading(false);
         return response.data.results[0].urls.regular;
@@ -254,7 +254,7 @@ function TripOverview(props: any) {
       return null;
     }
   };
-  
+
   useEffect(() => {
     if (selectedMarker) {
       fetchImage(selectedMarker.name).then(setImageUrl);
@@ -265,15 +265,15 @@ function TripOverview(props: any) {
   useEffect(() => {
     if (map) {
       const bounds = new window.google.maps.LatLngBounds();
-      if(selectedAttractionId !== null && selAttraction){
-        bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude});
-        bounds.extend({lat: selAttraction.location.latitude + 0.001, lng: selAttraction.location.longitude});
-        bounds.extend({lat: selAttraction.location.latitude - 0.001, lng: selAttraction.location.longitude});
-        bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude + 0.001});
-        bounds.extend({lat: selAttraction.location.latitude, lng: selAttraction.location.longitude - 0.001});
-      }else{
+      if (selectedAttractionId !== null && selAttraction) {
+        bounds.extend({ lat: selAttraction.location.latitude, lng: selAttraction.location.longitude });
+        bounds.extend({ lat: selAttraction.location.latitude + 0.001, lng: selAttraction.location.longitude });
+        bounds.extend({ lat: selAttraction.location.latitude - 0.001, lng: selAttraction.location.longitude });
+        bounds.extend({ lat: selAttraction.location.latitude, lng: selAttraction.location.longitude + 0.001 });
+        bounds.extend({ lat: selAttraction.location.latitude, lng: selAttraction.location.longitude - 0.001 });
+      } else {
         cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
-          bounds.extend({lat: attraction.location.latitude, lng: attraction.location.longitude});
+          bounds.extend({ lat: attraction.location.latitude, lng: attraction.location.longitude });
           return null;
         });
       }
@@ -288,13 +288,13 @@ function TripOverview(props: any) {
     }
   }, [mapBounds, map]);
 
-  const dayLabels : Array<string> = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
+  const dayLabels: Array<string> = Array.from(trip?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
   const renderMarkerForDay = (day: dayjs.Dayjs) => {
     let attractionsForDay: TripAttraction[] = [];
     // Find the closest matching key
     let closestKey: dayjs.Dayjs | null = null;
     let minDifference: number | null = null;
-  
+
     trip?.schedule.forEach((attractions, key) => {
       const difference = Math.abs(day.diff(key, 'days'));
       if (minDifference === null || difference < minDifference) {
@@ -302,7 +302,7 @@ function TripOverview(props: any) {
         closestKey = key;
       }
     });
-  
+
     if (closestKey !== null) {
       attractionsForDay = trip?.schedule.get(closestKey) || [];
     }
@@ -332,84 +332,102 @@ function TripOverview(props: any) {
     });
     setVisible(true);
   };
-    
+
+  const openForm = () => {
+    form.resetFields();
+    setEditingAttraction(null);
+    setIsFormVisible(true);
+  };
+
   return (
     <>
       {(loading || imageLoading) && (
         <Spin tip="Loading" size="large" fullscreen>
-        <div> Loading </div>
+          <div> Loading </div>
         </Spin>
       )}
-      <Flex justify='space-evenly' align='center' style={{ fontSize: '25px', position: 'relative'}}>
-        <span><TbUser/> <Text> Adults : {trip?.nAdults} </Text> </span>
-        <span><TbMoodKid/> <Text> Kids : {trip?.nKids} </Text> </span>
+      <Flex justify='space-evenly' align='center' style={{ fontSize: '25px', position: 'relative' }}>
+        <span><TbUser /> <Text> Adults : {trip?.nAdults} </Text> </span>
+        <span><TbMoodKid /> <Text> Kids : {trip?.nKids} </Text> </span>
         <span>
-        {(trip && totalCost > trip.budget) ? 
-        <>
-            <TbCoinEuro style={{color: 'red'}}/>  
-            <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
-              <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
-            </Tooltip> 
-        </> :
-        <>
-          <TbCoinEuro/>
-            <Text> Total Cost : {totalCost}{" €"} </Text>
-        </>
-        }
+          {(trip && totalCost > trip.budget) ?
+            <>
+              <TbCoinEuro style={{ color: 'red' }} />
+              <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
+                <Text style={{ color: 'red' }}> Total Cost : {totalCost}{" €"} </Text>
+              </Tooltip>
+            </> :
+            <>
+              <TbCoinEuro />
+              <Text> Total Cost : {totalCost}{" €"} </Text>
+            </>
+          }
         </span>
-        {editing &&(<Button size="large" type="primary" className="button-new-trip" style={{ 
-          backgroundColor: colors.whiteBackgroundColor, color: 'black', textAlign: "center", position: 'absolute', right: 30 }}
+        {editing && (<Button size="large" type="primary" className="button-new-trip" style={{
+          backgroundColor: colors.whiteBackgroundColor, color: 'black', textAlign: "center", position: 'absolute', right: 30
+        }}
           onClick={() => handleOpenModal()}>
-            <span>
-              {<SettingOutlined />}
-            </span> 
-            
+          <span>
+            {<SettingOutlined />}
+          </span>
+
         </Button>)}
       </Flex>
-        
-      <Divider style={{ marginTop: '10px'}}/>
-      
+
+      <Divider style={{ marginTop: '10px' }} />
+
       <Title level={1} style={{ textAlign: 'center' }}>Trip Overview</Title>
 
       <div className='main-div'>
         <Container className="d-flex align-items-stretch height-full" >
           <div className='sidebar-space'>
             <Sidebar
-                activeKeyState={{value: activeKey, setter: setActiveKey}}
-                attractionDistances={attractionDistances}
-                dayLabels={dayLabels}
-                editing={{value: editing, setter: setEdit}}
-                errorState={{value: error, setter: setError}}
-                form={form}
-                loadingState={{value: loading, setter: setLoading}}
-                messageApi={messageApi}
-                setDirty={setDirty}
-                setEditingAttraction={setEditingAttraction}
-                setIsFormVisible={setIsFormVisible}
-                setMessageAI={setMessageAI}
-                setSelectedAttractionId={setSelectedAttractionId}
-                setSelectedDay={setSelectedDay}
-                setUndoVisibility={setUndoVisibility}
-                travelModel={travelModel}
-                trip={trip}
-                tripId={tripId}
-                tripState={{ value: trip, setter: setTrip }}     
+              activeKeyState={{ value: activeKey, setter: setActiveKey }}
+              attractionDistances={attractionDistances}
+              dayLabels={dayLabels}
+              editing={{ value: editing, setter: setEdit }}
+              errorState={{ value: error, setter: setError }}
+              form={form}
+              loadingState={{ value: loading, setter: setLoading }}
+              messageApi={messageApi}
+              contextHolder={contextHolder}
+              setDirty={setDirty}
+              setEditingAttraction={setEditingAttraction}
+              setIsFormVisible={setIsFormVisible}
+              setMessageAI={setMessageAI}
+              setSelectedAttractionId={setSelectedAttractionId}
+              setSelectedDay={setSelectedDay}
+              setUndoVisibility={setUndoVisibility}
+              travelModel={travelModel}
+              trip={trip}
+              tripId={tripId}
+              tripState={{ value: trip, setter: setTrip }}
             />
           </div>
           <div className='body-space'>
-            <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
-              <div className='map-space'>
-                <GoogleMapsComponent 
-                  activeKeyState={{value: activeKey, setter: setActiveKey}}
-                  cityPositionState={{value: cityPosition, setter: setCityPosition}}
-                  defaultCenter={defaultCenter}
-                  directionsState={{value: directions, setter: setDirections}}
-                  tripState={{ value: trip, setter: setTrip }}
-                />
-              </div>
-            </Container>
+            <div style={{ height: '53px', display: 'flex', justifyContent: 'flex-end', paddingRight: '10px' }}>
+              {editing && (
+                <Button type="primary" style={{ backgroundColor: colors.hardBackgroundColor }} onClick={() => openForm()}>
+                  Add Attraction
+                </Button>
+              )}
+            </div>
+            <div style={{ height: 'calc(100% - 53px)' }}>
+              <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ height: '100%' }}>
+                <div className='map-space'>
+                  <GoogleMapsComponent
+                    activeKeyState={{ value: activeKey, setter: setActiveKey }}
+                    cityPositionState={{ value: cityPosition, setter: setCityPosition }}
+                    defaultCenter={defaultCenter}
+                    directionsState={{ value: directions, setter: setDirections }}
+                    tripState={{ value: trip, setter: setTrip }}
+                  />
+                </div>
+              </Container>
+            </div>
           </div>
-          <AttractionForm 
+
+          <AttractionForm
             cityPosition={cityPosition}
             defaultAttractionImageUrl={defaultAttractionImageUrl}
             editingAttraction={editingAttraction}
@@ -417,6 +435,8 @@ function TripOverview(props: any) {
             imageUrl={imageUrl}
             isFormVisible={isFormVisible}
             trip={trip}
+            messageApi={messageApi}
+            contextHolder={contextHolder}
             selAttraction={selAttraction}
             selectedAttractionId={selectedAttractionId}
             selectedDay={selectedDay}
@@ -444,54 +464,53 @@ function TripOverview(props: any) {
         </Container>
       </div>
 
-      {editing && 
-        <Popover
-          content={
-            <Chatbot
-              tripState={{ value: trip, setter: setTrip }}
-              dirtyState={{ value: dirty, setter: setDirty }}
-              undoState={{ value: undoVisibility, setter: setUndoVisibility }}
-              messageAIState={{ value: messageAI, setter: setMessageAI }}
-              tripId={tripId}
-              messageApi={messageApi}
-            />
-          }
-          trigger="click"
-          open={showChatbot}
-          onOpenChange={handlePopoverVisibleChange}
-          placement='right'
-          arrow={{ pointAtCenter: true }}
-          overlayStyle={{ width: '100%', maxWidth: '1120px' }}
+      <Popover
+        content={
+          <Chatbot
+            tripState={{ value: trip, setter: setTrip }}
+            dirtyState={{ value: dirty, setter: setDirty }}
+            undoState={{ value: undoVisibility, setter: setUndoVisibility }}
+            messageAIState={{ value: messageAI, setter: setMessageAI }}
+            tripId={tripId}
+            messageApi={messageApi}
+          />
+        }
+        trigger="click"
+        open={showChatbot}
+        onOpenChange={handlePopoverVisibleChange}
+        placement='right'
+        arrow={{ pointAtCenter: true }}
+        overlayStyle={{ width: '100%', maxWidth: '1120px' }}
+      >
+        <Button
+          style={{
+            width: '55px',
+            height: '55px',
+            borderRadius: '50%',
+            position: 'fixed',
+            right: '20px',
+            marginLeft: '2%',
+            bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+            transform: `scale(${isHovered ? 1.1 : 1})`,
+            transition: 'box-shadow transform 0.3s ease',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
-          <Button
-            style={{
-              width: '55px',
-              height: '55px',
-              borderRadius: '50%',
-              position: 'fixed',
-              right: '20px', 
-              marginLeft: '2%',
-              bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
-              boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-              transform: `scale(${isHovered ? 1.1 : 1})`,
-              transition: 'box-shadow transform 0.3s ease',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <Image
-              src="https://imgur.com/ijeaJNU.png"
-              alt="UrbanHub assistant"
-              preview={false}
-              height={'auto'}
-              style={{ maxWidth: '100%', maxHeight: '100%' }}
-            />
-          </Button>
-        </Popover>
-      }
+          <Image
+            src="https://imgur.com/ijeaJNU.png"
+            alt="UrbanHub assistant"
+            preview={false}
+            height={'auto'}
+            style={{ maxWidth: '100%', maxHeight: '100%' }}
+          />
+        </Button>
+      </Popover>
+
     </>
   );
 };

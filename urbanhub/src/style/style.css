@@ -89,9 +89,8 @@
 }
 
 .body-space {
-  flex: 0 0 50%;
-  height: 100%;
-  padding-top: 53px;
+    flex: 0 0 50%;
+    height: 100%;
 }
 
 .height-full {
