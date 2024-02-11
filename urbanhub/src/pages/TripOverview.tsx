@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Container } from "react-bootstrap";
-import { TbCoinEuro, TbMoodKid, TbUser } from "react-icons/tb";
+import { FaChild, FaChildDress, FaPerson, FaPersonDress } from "react-icons/fa6";
+import { TbCoinEuroFilled } from 'react-icons/tb';
 import { Button, Divider, Flex, Form, Image, message, Popover, Spin, Tooltip, Typography } from 'antd';
 import { ArrowLeftOutlined, SettingOutlined} from '@ant-design/icons';
 import { getTripById } from "../firebase/daos/dao-trips";
@@ -18,7 +19,7 @@ import colors from "../style/colors";
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-const { Title, Text } = Typography;
+const { Paragraph, Title, Text } = Typography;
 
 const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
@@ -169,7 +170,8 @@ function TripOverview(props: any) {
 
               const index = tripData.questions.findIndex(question => question.includes("transportation"));
               if(index !== -1){
-                tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
+                if(tripData.answers.length>0)
+                  tripData.answers[index].includes("car") || tripData.answers[index].includes("driv") || tripData.answers[index].includes("public") ? setTravelModel("DRIVING") : setTravelModel("WALKING");
               }
 
             }
@@ -374,18 +376,18 @@ function TripOverview(props: any) {
           style={{ fontSize: "26px", marginLeft: "10px" }}
           onClick={() => navigate(-1)}
         />
-        <span><TbUser/> <Text> Adults : {trip?.nAdults} </Text> </span>
-        <span><TbMoodKid/> <Text> Kids : {trip?.nKids} </Text> </span>
+        <span><FaPersonDress style={{ color: 'grey' }} size={30}/><FaPerson style={{ color: 'grey' }} size={30}/> <Text> Adults : {trip?.nAdults} </Text> </span>
+        <span><FaChildDress style={{ color: 'grey' }} size={25}/><FaChild style={{ color: 'grey' }} size={25}/> <Text> Kids : {trip?.nKids} </Text> </span>
         <span>
           {(trip && totalCost > trip.budget) ? 
             <>
-              <TbCoinEuro style={{color: 'red'}}/>  
-              <Tooltip title={"The initial budget you set has been exceeded by " + (totalCost - trip.budget) + " €"} placement='bottom'>
+              <TbCoinEuroFilled style={{color: 'red'}}/>  
+              <Tooltip title={<Paragraph style={{textAlign: 'center', color: 'white', margin: '0'}}>The initial budget you set has been exceeded by {totalCost - trip.budget} €</Paragraph>} placement='bottom'>
                 <Text style={{color: 'red'}}> Total Cost : {totalCost}{" €"} </Text> 
               </Tooltip> 
             </> :
             <>
-              <TbCoinEuro/>
+              <TbCoinEuroFilled style={{ color: 'grey'}}/>
               <Text> Total Cost : {totalCost}{" €"} </Text>
             </>
           }
