@@ -137,10 +137,7 @@ function Main() {
       <Routes>
         <Route path="/" element={<PageLayout />}>
           <Route index path="/" element={<MyTrips />} />
-          <Route
-            path="/newtrip"
-            element={<NewTrip onSubmit={handleTripSubmission} />}
-          />
+          <Route path="/newtrip"element={<NewTrip onSubmit={handleTripSubmission} />}/>
           <Route path="/trips/:tripId" element={<TripOverview />} />
           <Route path="/*" element={<Error />} />
         </Route>
