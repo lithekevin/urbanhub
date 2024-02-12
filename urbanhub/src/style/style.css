@@ -88,7 +88,6 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
 
 .footer-style {
     position: relative;
-    bottom: 0;
     width: 100%;
     text-align: center;
     background-color: white;
@@ -97,11 +96,7 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
     border-top-right-radius: 10px;
     font-size: 8px;
     font-style: italic;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 15px;
-    padding-bottom: 5px;
-    margin-top: 50px;
+    margin-top: auto;
 }
 
 /************
