@@ -388,6 +388,63 @@ export const editAttraction = async (
       // Add the updated attraction to the new day
       tripData.schedule[formattedNewDay].push(updatedAttraction);
 
+      const newStartDate = dayjs(updatedAttraction.startDate, 'HH:mm');
+      const newEndDate = dayjs(updatedAttraction.endDate, 'HH:mm');
+      const tripCityAttractions = cities.find((c) => c.name === tripData.city)!.attractions;
+
+      for(let i = 0; i < tripData.schedule[formattedNewDay].length; i++){
+        const attraction = tripData.schedule[formattedNewDay][i];
+
+        if(attraction.id === updatedAttraction.id){
+          continue;
+        }
+
+        const attStartDate = dayjs(attraction.startDate, 'HH:mm');
+        const attEndDate = dayjs(attraction.endDate, 'HH:mm');
+
+        const distanceBetweenAttractions =
+        Math.sqrt(
+          Math.pow(
+            tripCityAttractions.find((a) => a.id === updatedAttraction.id)!.location.latitude - tripCityAttractions.find((a) => a.id === attraction.id)!.location.latitude,
+            2
+          ) +
+            Math.pow(
+              tripCityAttractions.find((a) => a.id === updatedAttraction.id)!.location.longitude -
+                tripCityAttractions.find((a) => a.id === attraction.id)!.location.longitude,
+              2
+            )
+        ) * 111; //find the distance in meters between two attractions
+
+        let transportTime;
+
+        if (distanceBetweenAttractions < 2) {
+          transportTime = distanceBetweenAttractions / 0.084; // in minutes
+        } else {
+          transportTime = distanceBetweenAttractions / 0.834;
+        }
+
+        if(attStartDate.isBefore(newStartDate) && !attEndDate.isBefore(newStartDate)){
+          let resultDate = dayjs(newStartDate).subtract(transportTime, 'm');
+          const minutes = resultDate.minute();
+          const roundedMinutes = Math.floor(minutes / 5) * 5;
+          resultDate = resultDate.minute(roundedMinutes).second(0);
+          const prevEndDateToBeModified = resultDate.format('HH:mm');
+          tripData.schedule[formattedNewDay][i].endDate = prevEndDateToBeModified;
+        }
+        else if(!attStartDate.isBefore(newStartDate) && !attEndDate.isAfter(newEndDate)){
+          tripData.schedule[formattedNewDay].splice(i, 1);
+        }
+        else if(newStartDate.isBefore(attStartDate) && !newEndDate.isBefore(attStartDate)){
+          let resultDate = dayjs(newEndDate).add(transportTime, 'm');
+          const minutes = resultDate.minute();
+          const roundedMinutes = Math.ceil(minutes / 5) * 5;
+          resultDate = resultDate.minute(roundedMinutes).second(0);
+          const succStartDateToBeModified = resultDate.format('HH:mm');
+          tripData.schedule[formattedNewDay][i].startDate = succStartDateToBeModified;
+        }
+
+      }
+
       // Update the trip document with the new schedule
       await updateDoc(tripRef, { schedule: tripData.schedule });
 

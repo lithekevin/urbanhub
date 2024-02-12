@@ -812,7 +812,7 @@ const cities: City[] = [
         id: "A094",
         name: "Montmartre",
         city: "Paris",
-        location: { latitude: 48.8867, longitude: 2.3431 },
+        location: { latitude: 48.886 , longitude: 2.343 },
         estimatedTime: 60,
         perPersonCost: 0,
       },
