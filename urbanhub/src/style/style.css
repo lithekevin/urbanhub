@@ -131,19 +131,19 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
 ************/
 
 .sidebar-div {
-  overflow: auto;
-  max-height: 65vh;
+    overflow: auto;
+    max-height: 65vh;
 }
 
 .map-space {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .sidebar-space {
-  flex: 0 0 50%;
-  height: 100%;
-  width: 100%;
+    flex: 0 0 50%;
+    height: 100%;
+    width: 100%;
 }
 
 .body-space {
@@ -152,23 +152,23 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
 }
 
 .height-full {
-  height: 100%;
+    height: 100%;
 }
 
 .main-div {
-  min-height: calc(78vh - 30px);
-  position: relative;
-  margin-top: 20px;
+    min-height: calc(78vh - 30px);
+    position: relative;
+    margin-top: 20px;
 }
 
 .attractionContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  max-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
 }
 
 .smallAttractionContainer{
@@ -182,16 +182,17 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
 }
 
 .attractionImage {
-  width: 100%;
-  max-width: 100%;
-  max-height: 80%;
-  object-fit:cover;
-  aspect-ratio: 3/2;
-  border-radius: 4%;
+    margin-top: 5px;
+    width: 100%;
+    max-width: 100%;
+    max-height: 150px;
+    object-fit:cover;
+    aspect-ratio: 3/2;
+    border-radius: 4%;
 }
 
 .attractionName {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .static-popover {
@@ -203,13 +204,13 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
 }
 
 .content {
-  background-color: #f0f0f0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  padding: 10px 10px;
-  color: #555;
-  padding-left: 25px;
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    padding: 10px 10px;
+    color: #555;
+    padding-left: 25px;
 }
 
 .button-container {
@@ -250,10 +251,10 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
  ************/
 
 .ant-tabs-nav .ant-tabs-tab {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .empty-container {
@@ -268,7 +269,6 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
     position: relative;
     width: 100%;
     aspect-ratio: 3/2;
-    
     overflow: hidden;
   }
   
@@ -301,9 +301,9 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
 .tripCard.enlarged:hover,
 .tripCard.enlarged .ant-dropdown-trigger:hover,
 .tripCard.enlarged .ant-dropdown-trigger:focus {
-   transform: scale(1.05);
-   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-   overflow: hidden;
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    overflow: hidden;
 }
   
 .tripCard:hover {
@@ -378,20 +378,25 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
 }
 
 .citiesMapMarkerHoveredContainer{
-    position: absolute;
-    width: 100px;
-    height: auto;
-    background-color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-width: 150px;
     border-radius: 4%;
     overflow: hidden;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
-    position: absolute;
+    border-color: white;
+    background-color: white;
 }
 
 .citiesMapMarkerHoveredImage{
+    margin-top: 5px;
     width: 100%;
+    max-width: 100%;
     height: 80%;
     object-fit: cover;
-    background: linear-gradient(to bottom, transparent 80%, white 100%);
-    background-repeat: no-repeat;
+    aspect-ratio: 3/2;
+    border-radius: 4%;
 }
