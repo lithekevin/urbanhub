@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Card, Row, Col, Container } from "react-bootstrap";
-import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton, Image, Empty, Spin, Alert, Tabs, Flex } from "antd";
+import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton, Image, Empty, Spin, Alert, Tabs, Flex, ConfigProvider } from "antd";
 import { MoreOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
@@ -120,43 +120,45 @@ function MyTrips() {
     setEnlargedCard(trip.id);
   };
 
-  const menu = (trip: Trip) => (
-    <Menu
-      items={[
-        {
-          key: "edit",
-          label: (
-            <>
-              <EditOutlined style={{ marginRight: "2px", color: colors.primaryButtonColor }} />
-              <Text style={{ color: colors.primaryButtonColor }}>Edit</Text>
-            </>
-          ),
-          onMouseEnter: () => handleMenuHover(trip),
-          onClick: (info: MenuInfo) => {
-            info.domEvent.preventDefault();
-            info.domEvent.stopPropagation();
-            navigate(`/trips/${trip.id}`, { state: { mode: "edit" } });
-            
-          },
-        },
-        {
-          key: "delete",
-          label: (
-            <>
-              <DeleteOutlined style={{ marginRight: "2px", color: colors.deleteButtonColor }} />
-              <Text style={{ color: colors.deleteButtonColor }}>Delete</Text>
-            </>
-          ),
-          onMouseEnter: () => handleMenuHover(trip),
-          onClick: (info: MenuInfo) => {
-            info.domEvent.preventDefault();
-            info.domEvent.stopPropagation();
-            handleDelete(trip);
-          },
-        }
-      ]}
-    />
-  );
+  const menu = (trip: Trip) => {
+    const isPastTrip = dayjs().isAfter(dayjs(trip.endDate));
+    return (
+      <Menu
+        items={[
+          ...(!isPastTrip ? [{
+            key: "edit",
+            label: (
+              <>
+                <EditOutlined style={{ marginRight: "2px", color: colors.primaryButtonColor }} />
+                <Text style={{ color: colors.primaryButtonColor }}>Edit</Text>
+              </>
+            ),
+            onMouseEnter: () => handleMenuHover(trip),
+            onClick: (info: MenuInfo) => {
+              info.domEvent.preventDefault();
+              info.domEvent.stopPropagation();
+              navigate(`/trips/${trip.id}`, { state: { mode: "edit" } });
+            },
+          }] : []),
+          {
+            key: "delete",
+            label: (
+              <>
+                <DeleteOutlined style={{ marginRight: "2px", color: colors.deleteButtonColor }} />
+                <Text style={{ color: colors.deleteButtonColor }}>Delete</Text>
+              </>
+            ),
+            onMouseEnter: () => handleMenuHover(trip),
+            onClick: (info: MenuInfo) => {
+              info.domEvent.preventDefault();
+              info.domEvent.stopPropagation();
+              handleDelete(trip);
+            },
+          }
+        ]}
+      />
+    );
+  };
 
   return (
     <>
@@ -196,6 +198,17 @@ function MyTrips() {
 
       {!loading && !error && (
         <>
+        <ConfigProvider
+          theme={{
+            components: {
+              Tabs: {
+                inkBarColor: "var(--hard-background-color)"
+              },
+            },
+          }}
+        >
+          
+        
           <Tabs
             className="custom-tabs mt-4"
             defaultActiveKey="2"
@@ -267,6 +280,7 @@ function MyTrips() {
               };
             })}
           />
+          </ConfigProvider>
         </>
       )}
     </>

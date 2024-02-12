@@ -681,7 +681,7 @@ const cities: City[] = [
         id: "A079",
         name: "Vienna Woods",
         city: "Vienna",
-        location: { latitude: 49.0284, longitude: 16.4675 },
+        location: { latitude: 48.1116, longitude: 15.9527 },
         estimatedTime: 380,
         perPersonCost: 0,
       },

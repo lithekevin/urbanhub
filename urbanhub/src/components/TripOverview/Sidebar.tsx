@@ -113,7 +113,9 @@ function Sidebar(props: SidebarProps) {
           <div>
             <Flex style={{ display: 'flex', alignItems: 'center' }}>
               <Title level={2} className="text-left" style={{ marginRight: '1vw' }}>{tripState.value.city}</Title>
-              <Tooltip title={editing.value===true ? "Exit edit mode" : "Enter edit mode"} placement='right'>
+              { !dayjs(tripState.value.endDate).isBefore(dayjs()) &&
+
+                <Tooltip title={editing.value===true ? "Exit edit mode" : "Enter edit mode"} placement='right'>
                 <Button
                     size="middle"
                     type="primary"
@@ -133,6 +135,9 @@ function Sidebar(props: SidebarProps) {
                     </span>
                   </Button>
                 </Tooltip>
+
+              }
+              
             </Flex>     
           </div>
           <div className='sidebar-div'>

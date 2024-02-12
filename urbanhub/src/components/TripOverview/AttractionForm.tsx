@@ -164,7 +164,10 @@ function AttractionForm(props: AttractionFormProps) {
                 }
                 <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]} style={{ marginBottom: '10px'}}>
                 <DatePicker format="DD/MM/YYYY"
-                  disabledDate={(current) => current && current < dayjs().startOf('day') || current && (current < dayjs(trip?.startDate) || current > dayjs(trip?.endDate))}
+                  disabledDate={(current) => 
+                    (current && current.isBefore(dayjs())) || 
+                    (current && ((current.isBefore(dayjs(trip?.startDate))  || current.isAfter(dayjs(trip?.endDate).add(1, 'day').subtract(1, 'second')))))
+                  }
                   style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item style={{ marginBottom: '10px'}}>
@@ -175,6 +178,11 @@ function AttractionForm(props: AttractionFormProps) {
                     <TimePicker format="HH:mm" minuteStep={5} />
                   </Form.Item>
                 </Form.Item>
+                <Row>
+                  <small>
+                    {(editingAttraction ? "Editing" : "Adding") + " an attraction to this trip will shift and/or delete other attractions in the same day if they overlap."}
+                  </small>
+                </Row>
               </Col>
               <Col>
                 <Form.Item>
