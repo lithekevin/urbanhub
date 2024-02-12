@@ -7,7 +7,6 @@ import { Attraction } from '../../models/attraction';
 import { addAttractionToTrip, editAttraction } from '../../firebase/daos/dao-trips';
 import { Trip } from '../../models/trip';
 import { TripAttraction } from '../../models/tripAttraction';
-import moment from 'moment';
 import cities from "../../firebase/cities";
 import dayjs, { Dayjs } from 'dayjs';
 import { MessageInstance } from 'antd/es/message/interface';
