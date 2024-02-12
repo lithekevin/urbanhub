@@ -130,13 +130,15 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
         {activeKeyState.value.length === 1 && <DirectionsRenderer directions={directionsState.value} options={{ suppressMarkers: true }}/>}
         {cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length > 0 && (
           <>
-            {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], 'DD/MM/YYYY')).map((attraction: Attraction, index: number) => {              return (
+            {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], 'DD/MM/YYYY')).map((attraction: Attraction, index: number) => {              
+              return (
                 <Marker 
                   key={`${attraction.id}-${index}`} 
                   position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
-                  label={{text:`${(index + 1).toString()}`,color:'white', fontWeight: 'bold'}} 
+                  label={{text:`${(index + 1).toString()}`, color:'white', fontWeight: 'bold'}} 
                   icon={{ url: 'https://imgur.com/gfrQTuH.png', scaledSize: new google.maps.Size(38, 38), labelOrigin: new google.maps.Point(19, 16)}}
-                  onClick={() => {selectedMarker === null ? setSelectedMarker(attraction) : setSelectedMarker(null)}}/>
+                  onClick={() => {selectedMarker === null ? setSelectedMarker(attraction) : setSelectedMarker(null)}}
+                />
               );
             })}
           </>
@@ -150,7 +152,7 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
             <div className="attractionContainer">
               <Image className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} preview={false}/>
               <Title level={5} className="attractionName" style={{ fontWeight: 'bold'}}>{selectedMarker.name}</Title>
-              <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '60px' }}> {selectedMarker.perPersonCost ? selectedMarker.perPersonCost * (tripState!.value!.nAdults + tripState!.value!.nKids) : "free"}</Tag>
+              <Tag icon={<EuroCircleOutlined />} color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '60px' }}> {selectedMarker.perPersonCost ? selectedMarker.perPersonCost * (tripState!.value!.nAdults + tripState!.value!.nKids) : "free"}</Tag>
             </div>
           </InfoWindow>
         )}
