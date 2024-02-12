@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Form, AutoComplete, Row, Col, Button, Typography } from "antd";
+import { AutoComplete, Button, Col, Form, Image, Row, Tooltip, Typography } from "antd";
 import { GoogleMap, Marker, OverlayView } from "@react-google-maps/api";
 import cities from "../../firebase/cities";
 import { DEFAULT_LOCATION } from "../../pages/NewTrip";
 
-const { Title, Paragraph } = Typography;
+const { Paragraph, Text, Title } = Typography;
 
 interface CustomEvent {
   target: {
@@ -69,7 +69,7 @@ function Step0(props: Step0Props) {
         lat: selectedCity?.location.latitude ?? DEFAULT_LOCATION.lat,
         lng: selectedCity?.location.longitude ?? DEFAULT_LOCATION.lng,
       });
-      setMapZoom(7);
+      setMapZoom(9);
     } else {
       setCityPosition({ lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng });
       setMapZoom(3);
@@ -86,7 +86,7 @@ function Step0(props: Step0Props) {
         {" "}
         Choose your trip destination{" "}
       </Title>
-      <Paragraph className="label"> Where would you want to go? </Paragraph>
+      <Paragraph style={{color: 'red'}}>✽<Text className='label'> Where would you want to go? </Text></Paragraph>
       <Form.Item
         hidden={step !== 0}
         validateStatus={isDestinationValid ? "success" : "error"}
@@ -131,7 +131,6 @@ function Step0(props: Step0Props) {
               zoom={mapZoom}
               onLoad={(map) => {
                 setMapLoaded(true);
-
                 map.addListener("zoom_changed", () => {
                   const currentZoom = map.getZoom();
                   setMapZoom(currentZoom ?? 3);
@@ -156,6 +155,10 @@ function Step0(props: Step0Props) {
                           }}
                           title={city.name}
                           opacity={city.name === hoveredMarker ? 0.8 : 0.5}
+                          icon={{
+                            url: "https://imgur.com/HXGfoxe.png",
+                            scaledSize: new window.google.maps.Size(38, 38),
+                          }}
                           onMouseOver={() => {
                             setHoveredMarker(city.name);
                           }}
@@ -171,6 +174,7 @@ function Step0(props: Step0Props) {
                                   c.location.longitude === city.location.longitude
                               )!!.name
                             );
+                            setHoveredMarker(null);
                           }}
                         />
                         {city.name === hoveredMarker && (
@@ -182,8 +186,8 @@ function Step0(props: Step0Props) {
                             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                           >
                             <div className={`citiesMapMarkerHoveredContainer`}>
-                              <img src={city.image} alt={city.name} className="citiesMapMarkerHoveredImage"/>
-                              <h3 className="d-flex w-100 justify-content-center mt-1">{city.name}</h3>
+                              <Image src={city.image} alt={city.name} className="citiesMapMarkerHoveredImage" preview={false}/>
+                              <Title level={5} style={{textAlign: 'center'}}>{city.name}</Title>
                             </div>
                           </OverlayView>
                         )}
@@ -201,6 +205,7 @@ function Step0(props: Step0Props) {
                       position={cityPosition}
                       title={formData.destination}
                       opacity={1.0}
+                      icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(38, 38) }}
                     />
                   )
               }
@@ -209,15 +214,17 @@ function Step0(props: Step0Props) {
         </Row>
       </Form.Item>
       <div className="mb-2 d-flex align-items-center justify-content-center">
-        <Button
-          type="primary"
-          onClick={nextStep}
-          className="button"
-          htmlType="submit"
-          disabled={!isStepValid()}
-        >
-          Next
-        </Button>
+        <Tooltip title={!isStepValid() ? "Please select a valid destination" : ""} placement="right">
+          <Button
+            type="primary"
+            onClick={nextStep}
+            className="button"
+            htmlType="submit"
+            disabled={!isStepValid()}
+          >
+            Next
+          </Button>
+        </Tooltip>
       </div>
     </div>
   );

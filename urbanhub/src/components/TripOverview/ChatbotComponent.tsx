@@ -1,4 +1,4 @@
-import { Button, Input, Typography, Image, Flex, Tooltip  } from 'antd';
+import { Button, Flex, Image, Input, List, Tooltip, Typography  } from 'antd';
 import { useState, useEffect } from 'react';
 import { editAttraction, deleteAttraction, addAttractionToTrip, editTrip } from "../../firebase/daos/dao-trips";
 import cities from "../../firebase/cities";
@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { Trip } from "../../models/trip";
 import { TripAttraction } from '../../models/tripAttraction';
 
-const { Text } = Typography;
+const { Text, Title, Paragraph } = Typography;
 /*
    USAGE:
     -delete: 'Delete "Attraction to delete" from DD/MM/AAAA'
@@ -32,6 +32,7 @@ interface ChatbotProps {
     };
     messageAIState: {
       value: string;
+      color: string;
       setter: React.Dispatch<React.SetStateAction<string>>;
     };
     tripId: string | undefined;
@@ -49,8 +50,6 @@ function Chatbot(props: ChatbotProps) {
   const [inputValue, setInputValue] = useState('');
 
   const [halfWindowWidth, setHalfWindowWidth] = useState(0);
-
-  const [messageAI, setMessageAI] = useState('Is there anything I can do for you?'); 
 
   useEffect(() => {
     const calculateHalfWindowWidth = () => {
@@ -151,7 +150,6 @@ function Chatbot(props: ChatbotProps) {
         updateMessage("Attraction not found in the specified date, please try again");
         return;
       }
-      
       //If everything is good, delete the attraction
       void (async () => {
         try {
@@ -563,7 +561,8 @@ function Chatbot(props: ChatbotProps) {
         setTripUpdates(tempTrip);
       }      
     } else{
-      updateMessage("Invalid input format, please try again");
+        updateMessage("Invalid input format, please try again");
+        messageAIState.color = "red";
         return;
     }
   }
@@ -572,7 +571,9 @@ function Chatbot(props: ChatbotProps) {
     if(inputValue !== ''){
       const text : string = inputValue;
       parseInput(text);
-      setInputValue('');
+      if(messageAIState.value !== "Invalid input format, please try again"){
+        setInputValue('');
+      }
     }
   };
 
@@ -584,32 +585,28 @@ function Chatbot(props: ChatbotProps) {
     <Flex align='center' justify='space-between'>
       <Flex style={{ alignItems: 'center', display: 'flex'}}>
         <Image src={"https://imgur.com/ijeaJNU.png"} alt="UrbanHub assistant" preview={false} width={60}/>
-        <Text>{messageAIState.value}</Text>
+        <Text style={{ color: messageAIState.color === 'red' ? 'red' : 'black' }}>{messageAIState.value}</Text>
       </Flex>
       <Flex style={{ flex: 1, display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
-      <Tooltip overlayInnerStyle={{ width: '250%', maxWidth: halfWindowWidth, color: 'black', backgroundColor: 'white', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)' }} color="white" placement="topLeft"
-      title={(
-        <span>
-          USAGE:
-          <br />
-          -delete: 'Delete "Attraction to delete" from DD/MM/AAAA'
-          <br />
-          -add: 'Add "Attraction to add" to DD/MM/AAAA with time: hh:mm - hh:mm'
-          <br />
-          -edit: 'Edit "Attraction to edit" from DD/MM/AAAA to have time: hh:mm - hh:mm'
-          <br />
-          -edit: 'Edit "Attraction to edit" from DD/MM/AAAA to DD/MM/AAAA with time: hh:mm - hh:mm'
-          <br />
-          All commands can be inserted also without capital letter (delete/Delete for example)
-        </span>
-    )}
-  >
-      <TextArea
-          placeholder="Ask something to UrbanHub..."
-          value={inputValue}
-          onChange={handleInputChange}
-          autoSize={{ minRows: 1, maxRows: 3 }}
-          style={{ marginRight: '10px', width: 'calc(100% - 20px)' }} 
+      <Tooltip 
+        overlayInnerStyle={{ width: '250%', maxWidth: halfWindowWidth, color: 'black', backgroundColor: 'white', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', padding: '4%' }} color="white" placement="topLeft"
+        title={(
+          <List size='small'>
+            <Title level={3} style={{textAlign: 'center', marginBottom: '0'}}>USAGE</Title>
+            <List.Item><strong>DELETE</strong>: Delete "Attraction name" from DD/MM/AAAA</List.Item>
+            <List.Item><strong>ADD</strong>: Add "Attraction name" to DD/MM/AAAA with time: hh:mm - hh:mm</List.Item>
+            <List.Item><strong>EDIT</strong>: Edit "Attraction name" from DD/MM/AAAA to have time: hh:mm - hh:mm</List.Item>
+            <List.Item><strong>EDIT</strong>: Edit "Attraction name" from DD/MM/AAAA to DD/MM/AAAA with time: hh:mm - hh:mm</List.Item>
+            <Paragraph style={{ fontStyle: 'italic', textAlign: 'center', marginBottom: '0'}}>All commands can be inserted also without capital letter (delete/Delete for example)</Paragraph>
+          </List>
+        )}        
+      >
+        <TextArea
+            placeholder="Ask something to UrbanHub..."
+            value={inputValue}
+            onChange={handleInputChange}
+            autoSize={{ minRows: 1, maxRows: 3 }}
+            style={{ marginRight: '10px', width: 'calc(100% - 20px)' }} 
         />
       </Tooltip>
         <Button type="primary" onClick={handleSendClick} style={{ width: '100px' }}>Send</Button>

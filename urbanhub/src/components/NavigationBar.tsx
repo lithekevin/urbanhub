@@ -11,13 +11,16 @@ function NavigationBar() {
     <Row justify="space-between" align="middle" style={{ width: "100%" }}>
       <Col>
         <Link to="/" style={{ textDecoration: 'none', color: 'black', display: "flex", alignItems: "center" }}>
-          <Image src="/smart-city.png" alt="logo" style={{ width: '50px', marginRight: '10px' }} preview={false}/>
-          <Title level={1} className="projectName" style={{ marginBottom: 0 }}>UrbanHub</Title>
+          <Image src="/logo(1).png" alt="logo" style={{ width: '50px', marginRight: '5px', marginBottom: '4px' }} preview={false}/>
+          <Title 
+            level={1} 
+            style={{ marginBottom: 0, marginTop: '6px', position: 'relative', top: '-3px', fontWeight: '600', backgroundImage: 'radial-gradient(circle, #00AA70, #00987e, #008483, #00707e, #185b6f, #2f4858)', color: 'transparent', backgroundClip: 'text' }}
+          >UrbanHUB</Title>
         </Link>
       </Col>
       <Col>
         <div className="d-flex align-items-center">
-          <PiUserCircleFill style={{ fontSize: '35px', color: "black", marginRight: '10px' }} />
+          <PiUserCircleFill style={{ fontSize: '35px', color: "black", marginRight: '5px' }} />
           <Text className="userInfo" style={{ marginBottom: 0}}>Mario Rossi</Text>
         </div>
       </Col>

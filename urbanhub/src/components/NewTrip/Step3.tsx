@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card, Button, Typography, Space, Empty } from 'antd';
-const { Title, Text } = Typography;
+import { Button, Card, Empty, Space, Typography } from 'antd';
+
+const { Text, Title } = Typography;
 
 interface Step3Props {
   formData: {

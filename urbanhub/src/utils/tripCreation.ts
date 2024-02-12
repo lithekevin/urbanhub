@@ -222,7 +222,11 @@ export const fillAttractionInSchedule = function (
       nextAttractionIndex,
       1
     )[0];
-  } while (schedule[date].find((a: Attraction) => a.id === nextAttraction.id));
+  } while (
+    availableAttractionsToBePicked.length !== 0 &&
+    nextAttraction &&
+    schedule[date].find((a: Attraction) => a.id === nextAttraction.id)
+  );
 
   let tripAttraction = {
     id: nextAttraction.id,
@@ -247,6 +251,26 @@ export const fillAttractionInSchedule = function (
   return endsAfter18(tripAttraction.endDate); // check if the attraction ends after 18:00
 };
 
+export const computeTripCost = function (
+  schedule: { [date: string]: any[] },
+  cityAttractions: Attraction[],
+  nAdults: number,
+  nKids: number
+) {
+  let totalCost = 0;
+
+  for (const date in schedule) {
+    for (const attraction of schedule[date]) {
+      totalCost +=
+        cityAttractions.find((att: Attraction) => att.id === attraction.id)!
+          .perPersonCost *
+        (nAdults + nKids);
+    }
+  }
+
+  return totalCost;
+};
+
 export const fillSchedule = function (
   schedule: { [date: string]: any[] },
   tripCity: any,
@@ -256,11 +280,18 @@ export const fillSchedule = function (
 ) {
   let availableAttractionsToBePicked: Attraction[] = []; // list of attractions that can be picked for the trip creation
 
+  const partialTripCost = computeTripCost(
+    schedule,
+    tripCity.attractions,
+    adults,
+    kids
+  );
+
   availableAttractionsToBePicked = initializeAvailableAttractions(
     tripCity!.attractions,
     adults,
     kids,
-    budget,
+    budget - partialTripCost,
     true
   ); // fill the list of available attractions to be picked with free attractions and attractions that fit the budget
 

@@ -12,7 +12,7 @@ import Step2 from "../components/NewTrip/Step2";
 import Step3 from "../components/NewTrip/Step3";
 const { Step } = Steps;
 
-export const DEFAULT_LOCATION = { lat: 45.95941, lng: -47.66127 };
+export const DEFAULT_LOCATION = { lat: 45.95941, lng: -50.66127 };
 
 interface CustomEvent {
   target: {
@@ -222,9 +222,9 @@ function NewTrip (props: TripFormProps) {
           sm={{ span: 24 }}
           md={{ span: 20 }}
           lg={{ span: 18 }}
-          xl={{ span: 12 }}
+          xl={{ span: 14 }}
         >
-          <Form>
+          <Form layout="vertical">
             {step === 0 && (
               <Step0
                 isDestinationSelected={isDestinationSelected}

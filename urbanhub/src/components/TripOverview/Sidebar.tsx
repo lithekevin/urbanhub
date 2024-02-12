@@ -1,12 +1,13 @@
 import React from 'react';
 import { Col } from 'react-bootstrap'
-import { Alert, Collapse, CollapseProps, Typography, Button, Flex, Spin } from 'antd';
+import { Alert, Collapse, CollapseProps, Typography, Button, Flex, Spin, Tooltip } from 'antd';
 import { EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Trip } from '../../models/trip';
 import colors from '../../style/colors';
 import DailyAttractions from './DailyAttractions';
 import dayjs from 'dayjs';
 import { TripAttraction } from '../../models/tripAttraction';
+import { MessageInstance } from 'antd/es/message/interface';
 
 const { Title, Paragraph } = Typography;
 
@@ -30,7 +31,8 @@ interface SidebarProps {
     value: boolean;
     setter: React.Dispatch<React.SetStateAction<boolean>>;
   };
-  messageApi: any;
+  messageApi: MessageInstance;
+  contextHolder: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   setDirty: React.Dispatch<React.SetStateAction<boolean>>;
   setEditingAttraction: React.Dispatch<React.SetStateAction<TripAttraction | null>>;
   setIsFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -49,9 +51,9 @@ interface SidebarProps {
 
 function Sidebar(props: SidebarProps) {
   
-  const { activeKeyState, attractionDistances, dayLabels, editing, form, errorState, loadingState, messageApi, 
+  const { activeKeyState, attractionDistances, dayLabels, editing, form, errorState, loadingState, messageApi,
           setDirty, setEditingAttraction, setIsFormVisible, setMessageAI, setSelectedAttractionId, 
-          setSelectedDay, setUndoVisibility, travelModel, trip, tripId, tripState } = props;
+          setSelectedDay, setUndoVisibility, travelModel, trip, tripId, tripState,contextHolder } = props;
 
   const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
     key: `${index}`,
@@ -64,6 +66,7 @@ function Sidebar(props: SidebarProps) {
           form={form}
           day={dayjs(dayLabel, 'DD/MM/YYYY')}
           messageApi={messageApi}
+          contextHolder={contextHolder}
           setDirty={setDirty}
           setEditingAttraction={setEditingAttraction}
           setIsFormVisible={setIsFormVisible}
@@ -110,24 +113,26 @@ function Sidebar(props: SidebarProps) {
           <div>
             <Flex style={{ display: 'flex', alignItems: 'center' }}>
               <Title level={2} className="text-left" style={{ marginRight: '1vw' }}>{tripState.value.city}</Title>
-              <Button
-                  size="middle"
-                  type="primary"
-                  className="button-new-trip"
-                  style={{
-                    backgroundColor: colors.whiteBackgroundColor,
-                    color: 'black',
-                    textAlign: "center",
-                    fontSize: "15px",
-                    marginBottom: "10px",
-                    marginRight: "1vw"
-                  }}
-                  onClick={() => { !editing.value ?editing.setter(true) : editing.setter(false)}}
-                >
-                  <span>
-                    {!editing.value ? (<EditOutlined />) : (<EyeOutlined />)}
-                  </span>
-                </Button>
+              <Tooltip title={editing.value===true ? "Exit edit mode" : "Enter edit mode"} placement='right'>
+                <Button
+                    size="middle"
+                    type="primary"
+                    className="button-new-trip"
+                    style={{
+                      backgroundColor: colors.whiteBackgroundColor,
+                      color: 'black',
+                      textAlign: "center",
+                      fontSize: "15px",
+                      marginBottom: "10px",
+                      marginRight: "1vw"
+                    }}
+                    onClick={() => { !editing.value ?editing.setter(true) : editing.setter(false)}}
+                  >
+                    <span>
+                      {!editing.value ? (<EditOutlined />) : (<EyeOutlined />)}
+                    </span>
+                  </Button>
+                </Tooltip>
             </Flex>     
           </div>
           <div className='sidebar-div'>

@@ -6,7 +6,9 @@ import { Trip } from '../../models/trip';
 import { Attraction } from '../../models/attraction';
 import { EuroCircleOutlined } from "@ant-design/icons"
 import axios from 'axios';
-import { Tag } from 'antd';
+import { Image, Tag, Typography } from 'antd';
+
+const { Title } = Typography;
 
 const defaultAttractionImageUrl = "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 
@@ -124,13 +126,17 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
   return(
     <>
       <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '65vh', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={activeKeyState.value.length === 0 ? cityPositionState.value : directionsState.value?.routes[0]?.legs[0]?.start_location } zoom={zoomLevel} onLoad={(map) => {}}>
-        {(cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length === 0 && <Marker position={cityPositionState.value} />)}             
+        {(cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length === 0 && <Marker position={cityPositionState.value} icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(38, 38) }}/>)}             
         {activeKeyState.value.length === 1 && <DirectionsRenderer directions={directionsState.value} options={{ suppressMarkers: true }}/>}
         {cityPositionState.value.lat !== defaultCenter.lat && cityPositionState.value.lng !== defaultCenter.lng && activeKeyState.value.length > 0 && (
           <>
-            {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], 'DD/MM/YYYY')).map((attraction: Attraction, index: number) => {
-              return (
-                <Marker key={attraction.id} position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} label={{text:`${(index + 1).toString()}`,color:'white', fontWeight: 'bold'}} onClick={() => {selectedMarker === null ? setSelectedMarker(attraction) : setSelectedMarker(null)}}/>
+            {renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], 'DD/MM/YYYY')).map((attraction: Attraction, index: number) => {              return (
+                <Marker 
+                  key={`${attraction.id}-${index}`} 
+                  position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
+                  label={{text:`${(index + 1).toString()}`,color:'white', fontWeight: 'bold'}} 
+                  icon={{ url: 'https://imgur.com/gfrQTuH.png', scaledSize: new google.maps.Size(38, 38), labelOrigin: new google.maps.Point(19, 16)}}
+                  onClick={() => {selectedMarker === null ? setSelectedMarker(attraction) : setSelectedMarker(null)}}/>
               );
             })}
           </>
@@ -142,8 +148,8 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
             onCloseClick={() => {setSelectedMarker(null)}}
           >
             <div className="attractionContainer">
-              <img className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} />
-              <h6 className="attractionName">{selectedMarker.name}</h6>
+              <Image className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} preview={false}/>
+              <Title level={5} className="attractionName" style={{ fontWeight: 'bold'}}>{selectedMarker.name}</Title>
               <Tag icon={<EuroCircleOutlined />}color="green" style={{ gridColumn: '1', gridRow: '2', display: 'inline-block', maxWidth: '60px' }}> {selectedMarker.perPersonCost ? selectedMarker.perPersonCost * (tripState!.value!.nAdults + tripState!.value!.nKids) : "free"}</Tag>
             </div>
           </InfoWindow>
