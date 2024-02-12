@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge, Button, Flex, Modal, Tag, Timeline, Typography } from 'antd';
 import { EuroCircleOutlined, EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import { TbCar, TbWalk } from 'react-icons/tb';
@@ -53,6 +53,21 @@ function DailyAttractions(props: DailyAttractionsProps) {
     attractionsForDay = trip?.schedule.get(closestKey) || [];
   }
 
+  const [wikipediaUrls, setWikipediaUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    attractionsForDay.forEach((attraction) => {
+      fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(attraction.name)}&limit=1&namespace=0&format=json`)
+        .then(response => response.json())
+        .then(data => {
+          if (data[3].length > 0) {
+            setWikipediaUrls(prevUrls => ({ ...prevUrls, [attraction.name]: data[3][0] }));
+          }
+        })
+        .catch(error => console.error(error));
+    });
+  }, [attractionsForDay]);
+
   const timelineItems = attractionsForDay.flatMap((attraction, index) => {
 
     let distanceInMeter = 0;
@@ -84,7 +99,13 @@ function DailyAttractions(props: DailyAttractionsProps) {
             <div className="static-popover">            
               <div className="content">
                 <Flex justify='space-between' align='center'>
-                  <Title style={{ textAlign: 'left', fontSize: '15px' }}>{attraction.name}</Title>
+                  <Title style={{ textAlign: 'left', fontSize: '15px' }}>
+                    <a href={wikipediaUrls[attraction.name]} target="_blank" style={{color: "#185b6f"}}>
+                      <div >
+                      {attraction.name}
+                      </div>
+                    </a>
+                  </Title>
                     <div className='button-container'>
                     {editing && (
                       <Button onClick={() => handleEditClick(attraction)} icon={<EditTwoTone twoToneColor={colors.primaryButtonColor}/>} style={{ marginRight: '2%' }} className='edit-button' type='text'/>

@@ -1870,7 +1870,7 @@ const cities: City[] = [
       },
       {
         id: "A221",
-        name: "San Francisco Museum of Modern Art (SFMOMA)",
+        name: "San Francisco Museum of Modern Art",
         city: "San Francisco",
         location: { latitude: 37.7857, longitude: -122.4011 },
         estimatedTime: 90,
