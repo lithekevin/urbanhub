@@ -35,6 +35,7 @@ function App() {
         >
           <Main />
         </LoadScript>
+        <div style={{paddingBottom: '50px'}}></div>
         <FooterComponent />
       </div>
     </BrowserRouter>
