@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AutoComplete, Button, Col, Form, Image, Row, Tooltip, Typography } from "antd";
-import { GoogleMap, Marker, OverlayView } from "@react-google-maps/api";
+import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
 import cities from "../../firebase/cities";
 import { DEFAULT_LOCATION } from "../../pages/NewTrip";
 
@@ -178,18 +178,19 @@ function Step0(props: Step0Props) {
                           }}
                         />
                         {city.name === hoveredMarker && (
-                          <OverlayView
+                          <InfoWindow
+                            options={{ pixelOffset:  new google.maps.Size(0, -35), disableAutoPan: true }}
                             position={{
                               lat: city.location.latitude,
                               lng: city.location.longitude,
                             }}
-                            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                            
                           >
                             <div className={`citiesMapMarkerHoveredContainer`}>
                               <Image src={city.image} alt={city.name} className="citiesMapMarkerHoveredImage" preview={false}/>
                               <Title level={5} style={{textAlign: 'center'}}>{city.name}</Title>
                             </div>
-                          </OverlayView>
+                          </InfoWindow>
                         )}
                       </React.Fragment>
                     ))
@@ -198,16 +199,16 @@ function Step0(props: Step0Props) {
               {
                 // Selected marker
                 showMarker &&
-                  formData.destination &&
-                  cityPosition.lat !== DEFAULT_LOCATION.lat &&
-                  cityPosition.lng !== DEFAULT_LOCATION.lng && (
-                    <Marker
-                      position={cityPosition}
-                      title={formData.destination}
-                      opacity={1.0}
-                      icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(38, 38) }}
-                    />
-                  )
+                formData.destination &&
+                cityPosition.lat !== DEFAULT_LOCATION.lat &&
+                cityPosition.lng !== DEFAULT_LOCATION.lng && (
+                  <Marker
+                    position={cityPosition}
+                    title={formData.destination}
+                    opacity={1.0}
+                    icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(38, 38) }}
+                  />
+                )
               }
             </GoogleMap>
           </Col>
