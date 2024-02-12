@@ -375,6 +375,9 @@ function TripOverview(props: any) {
           <div> Loading </div>
         </Spin>
       )}
+
+      {contextHolder}
+
       <Flex justify='space-between' align='center' style={{ fontSize: '25px', position: 'relative', paddingLeft: '1%', paddingRight: '20%' }}>
         {/* Arrow on the left */}
         <ArrowLeftOutlined
