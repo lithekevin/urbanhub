@@ -9,7 +9,7 @@ import { Trip } from '../../models/trip';
 import { TripAttraction } from '../../models/tripAttraction';
 import moment from 'moment';
 import cities from "../../firebase/cities";
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { MessageInstance } from 'antd/es/message/interface';
 
 const { Title, Paragraph } = Typography;
@@ -163,7 +163,9 @@ function AttractionForm(props: AttractionFormProps) {
                     <Paragraph style={{color: "var(--hard-background-color)", marginTop: '0', marginBottom: '10px'}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</Paragraph>
                 }
                 <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]} style={{ marginBottom: '10px'}}>
-                  <DatePicker format="DD/MM/YYYY" disabledDate={(current) => current && current < moment().startOf('day')} style={{width: '100%'}}/>
+                <DatePicker format="DD/MM/YYYY"
+                  disabledDate={(current) => current && current < dayjs().startOf('day') || current && (current < dayjs(trip?.startDate) || current > dayjs(trip?.endDate))}
+                  style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item style={{ marginBottom: '10px'}}>
                   <Form.Item label = "Start Time " name="startTime" style={{ display: 'inline-block', marginRight: "2vw"}} rules={[{ required: true, message: 'Please choose the start time!' }]}>
@@ -230,6 +232,9 @@ function AttractionForm(props: AttractionFormProps) {
                   </GoogleMap>
                 </Form.Item>
               </Col>
+            </Row>
+            <Row style={{color: "red"}}>
+                  <small className='text-end mb-2'>* This field is mandatory</small>
             </Row>
             <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button onClick={closeForm} style={{ marginRight: '10px' }}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, InputNumber, DatePicker, Modal, Typography, Row, Col, Button } from 'antd';
+import { Form, InputNumber, DatePicker, Modal, Typography, Row, Col, Button, message } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { editSettings } from '../../firebase/daos/dao-trips';
@@ -17,6 +17,8 @@ interface EditTripSettingsProps {
 }
 
 function EditTripSettings(props: EditTripSettingsProps) {
+
+  const [messageApi, contextHolder] = message.useMessage();
 
   const { form1, setDirty, setVisible, trip, visible } = props;
   const [numKids, setNumKids] = useState(0);
@@ -50,8 +52,24 @@ function EditTripSettings(props: EditTripSettingsProps) {
           // Call editSettings and wait for it to complete
           await editSettings(trip?.id, trip);
           setDirty(true);
+          messageApi.open({
+            type: "success",
+            content: "Trip settings edited successfully!",
+            duration: 3,
+            style: {
+              marginTop: "70px",
+            },
+          });
       } catch (error) {
           console.error('Error while saving: ', error);
+          messageApi.open({
+            type: "error",
+            content: "Error while editibg trip settings!",
+            duration: 3,
+            style: {
+              marginTop: "70px",
+            },
+          });
           // Handle the error as needed
       }
   
@@ -87,7 +105,8 @@ function EditTripSettings(props: EditTripSettingsProps) {
   
   
   
-  return (
+  return (<>
+      {contextHolder}
       <Modal
         open={visible}
         onOk={handleUpdateTrip}
@@ -97,14 +116,14 @@ function EditTripSettings(props: EditTripSettingsProps) {
       >
         <Title level={3} className='step-title'> Edit Trip Settings </Title>
         <Form form={form1} layout="vertical">
-          <Paragraph style={{color: 'red'}}>✽<Text className='label'> When would you like to go? </Text></Paragraph>
+          <Paragraph style={{color: 'red'}}><span>*</span><Text className='label'> When would you like to go? </Text></Paragraph>
               <Form.Item
                   name="dateRange"
                   rules={[{ required: true, message: 'Please select the date range' }]}
               >
                   <DatePicker.RangePicker style = {{width: "100%"}} format="DD-MM-YYYY" disabledDate={(current) => current && current < moment().startOf('day')} />
               </Form.Item>
-          <Paragraph style={{color: 'red', marginTop: '3vh'}}>✽<Text className='label'> How many adults are going? </Text></Paragraph>
+          <Paragraph style={{color: 'red', marginTop: '3vh'}}><span>*</span><Text className='label'> How many adults are going? </Text></Paragraph>
           <Row gutter={8} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px', height: '50px' }}>
             <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
               <Form.Item
@@ -129,7 +148,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
               <Button type='default' shape='circle' icon={<PlusOutlined />} onClick={() => handleIncrement('nAdults')} />
             </Col>
           </Row>              
-          <Paragraph style={{color: 'red', marginTop: '3vh'}}>✽<Text className='label'> How many kids are going? </Text></Paragraph>
+          <Paragraph style={{color: 'red', marginTop: '3vh'}}><span>*</span><Text className='label'> How many kids are going? </Text></Paragraph>
           <Row gutter={8} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px', height: '50px' }}>
           <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
             <Form.Item
@@ -154,7 +173,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
             <Button type='default' shape='circle' icon={<PlusOutlined />} onClick={() => handleIncrement('nKids')} />
           </Col>
           </Row>
-          <Paragraph style={{color: 'red', marginTop: '3vh'}}>✽<Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>
+          <Paragraph style={{color: 'red', marginTop: '3vh'}}><span>*</span><Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>
           <Row gutter={8} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px', height: '50px' }}>
           <Form.Item 
             name="budget"
@@ -169,7 +188,12 @@ function EditTripSettings(props: EditTripSettingsProps) {
         </Form.Item>
         </Row>
       </Form>
+      <Row className='d-flex justify-content-end mt-3'>
+        <small style={{color: "red"}}>* This field is mandatory</small>
+      </Row>
+      
       </Modal>
+      </>
   );
 }
 

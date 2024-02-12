@@ -59,7 +59,7 @@ function Step1 (props: Step1Props){
     <div className='form-container'>
       <Title level={2} className='step-title'> Select your trip settings </Title>
       
-      <Paragraph style={{color: 'red'}}>✽<Text className='label'> When would you like to go? </Text></Paragraph>
+      <Paragraph style={{color: 'red'}}>*<Text className='label'> When would you like to go? </Text></Paragraph>
       <Form.Item name="dateRange" hidden={step !== 1}>
       <DatePicker.RangePicker 
         style={{ width: '100%' }}
@@ -68,7 +68,7 @@ function Step1 (props: Step1Props){
         allowClear={true}/>
       </Form.Item>
 
-      <Paragraph style={{color: 'red'}}>✽<Text className='label'> How many adults are going? </Text></Paragraph>
+      <Paragraph style={{color: 'red'}}>*<Text className='label'> How many adults are going? </Text></Paragraph>
       <Form.Item name="adults" hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
         <Row gutter={8}>
           <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
@@ -91,7 +91,7 @@ function Step1 (props: Step1Props){
         </Row>
       </Form.Item>
 
-      <Paragraph style={{color: 'red'}}>✽<Text className='label'> How many kids are going? </Text></Paragraph>
+      <Paragraph style={{color: 'red'}}><Text className='label'> How many kids are going? </Text></Paragraph>
       <Form.Item name="kids"  hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
         <Row gutter={8}>
           <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
@@ -114,7 +114,7 @@ function Step1 (props: Step1Props){
         </Row>
       </Form.Item>
 
-      <Paragraph style={{color: 'red'}}>✽<Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>
+      <Paragraph style={{color: 'red'}}>*<Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>
       <Form.Item name="budget" hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
         <InputNumber
           onChange={(value) =>
@@ -129,6 +129,9 @@ function Step1 (props: Step1Props){
           style={{ width: 'auto' }}
         />
       </Form.Item>
+      <Row className="d-flex justify-content-end mt-2" style={{color: "red"}}>
+          <small>* This field is mandatory</small>
+        </Row>
       <div className="mb-2 d-flex align-items-center justify-content-center">
         <Button type="default" onClick={prevStep} className="button">
           Previous

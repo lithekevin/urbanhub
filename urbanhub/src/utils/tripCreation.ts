@@ -241,6 +241,11 @@ export const fillAttractionInSchedule = function (
     nextAttraction,
     previousAttractionEndHourMinutes
   );
+
+  if(endsAfter18(tripAttraction.startDate)){
+    return true;
+  }
+
   tripAttraction.endDate = computeEndTime(
     nextAttraction,
     tripAttraction.startDate
