@@ -35,7 +35,7 @@ function TripOverview(props: any) {
   const [error, setError] = useState<boolean>(false);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [dirty, setDirty] = useState<boolean>(true);
-  const [messageApi] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
   const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
   const [editing, setEdit] = useState<boolean>(location.state && location.state.mode === "edit"); 
@@ -366,6 +366,9 @@ function TripOverview(props: any) {
         <div> Loading </div>
         </Spin>
       )}
+
+      {contextHolder}
+
       <Flex justify='space-evenly' align='center' style={{ fontSize: '25px', position: 'relative'}}>
         <span><TbUser/> <Text> Adults : {trip?.nAdults} </Text> </span>
         <span><TbMoodKid/> <Text> Kids : {trip?.nKids} </Text> </span>

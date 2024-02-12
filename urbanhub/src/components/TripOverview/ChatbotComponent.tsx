@@ -588,7 +588,7 @@ function Chatbot(props: ChatbotProps) {
       </Flex>
       <Flex style={{ flex: 1, display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
       <Tooltip overlayInnerStyle={{ width: '250%', maxWidth: halfWindowWidth, color: 'black', backgroundColor: 'white', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)' }} color="white" placement="topLeft"
-      title={inputValue === "" ? (
+      title={(
         <span>
           USAGE:
           <br />
@@ -602,7 +602,7 @@ function Chatbot(props: ChatbotProps) {
           <br />
           All commands can be inserted also without capital letter (delete/Delete for example)
         </span>
-    ) : ''}
+    )}
   >
       <TextArea
           placeholder="Ask something to UrbanHub..."
