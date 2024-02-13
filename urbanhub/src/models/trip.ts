@@ -7,7 +7,7 @@ export interface Trip {
     startDate: dayjs.Dayjs;
     endDate: dayjs.Dayjs;
     nAdults: number;
-    nKids: number;
+    nChildren: number;
     budget: number;
     questions: string[];
     answers: string[];

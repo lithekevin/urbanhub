@@ -204,7 +204,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
                   >
                     {" "}
                     {attraction.perPersonCost
-                      ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids)
+                      ? attraction.perPersonCost * (trip!.nAdults + trip!.nChildren)
                       : "free"}
                   </Tag>
                 </div>

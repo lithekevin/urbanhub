@@ -40,7 +40,7 @@ export const setDefaultTrips = async () => {
       startDate: "17/08/2024",
       endDate: "19/08/2024",
       nAdults: 2,
-      nKids: 0,
+      nChildren: 0,
       budget: 500,
       questions: [
         "What are the best museums in Barcelona?",
@@ -65,7 +65,7 @@ export const setDefaultTrips = async () => {
       startDate: "04/11/2024",
       endDate: "07/11/2024",
       nAdults: 3,
-      nKids: 1,
+      nChildren: 1,
       budget: 800,
       questions: [
         "What are the best museums in London?",
@@ -113,7 +113,7 @@ export const getAllTrips = async () => {
         startDate: dayjs(doc.data().startDate, "DD/MM/YYYY"),
         endDate: dayjs(doc.data().endDate, "DD/MM/YYYY"),
         nAdults: doc.data().nAdults,
-        nKids: doc.data().nKids,
+        nChildren: doc.data().nChildren,
         budget: doc.data().budget,
         questions: doc.data().questions,
         answers: doc.data().answers,
@@ -217,7 +217,7 @@ export const getTripById = async (id: string) => {
         startDate: dayjs(docData.startDate, "DD/MM/YYYY"),
         endDate: dayjs(docData.endDate, "DD/MM/YYYY"),
         nAdults: docData.nAdults,
-        nKids: docData.nKids,
+        nChildren: docData.nChildren,
         budget: docData.budget,
         questions: docData.questions,
         answers: docData.answers,
@@ -577,8 +577,8 @@ export const editSettings = async (
     }
 
     if (
-      updatedFields.nAdults! + updatedFields.nKids! >
-        existingData.nAdults! + existingData.nKids! ||
+      updatedFields.nAdults! + updatedFields.nChildren! >
+        existingData.nAdults! + existingData.nChildren! ||
       updatedFields.budget! < existingData.budget!
     ) {
       // Reduce the cost of the trip by removing attractions and replacing them with free ones
@@ -588,8 +588,8 @@ export const editSettings = async (
         tripCity!
       );
     } else if (
-      updatedFields.nAdults! + updatedFields.nKids! <
-        existingData.nAdults! + existingData.nKids! ||
+      updatedFields.nAdults! + updatedFields.nChildren! <
+        existingData.nAdults! + existingData.nChildren! ||
       updatedFields.budget! > existingData.budget!
     ) {
       //Increasing the cost of trip by removing duplicated free attractions and replacing them with paid ones
@@ -612,7 +612,7 @@ export const editSettings = async (
       mergedSchedule,
       tripCity,
       mergedFields.nAdults!,
-      mergedFields.nKids!,
+      mergedFields.nChildren!,
       mergedFields.budget!
     );
 
@@ -651,7 +651,7 @@ const reduceCostsOfTrip = (
         (a) => a.id === attraction.id
       );
       const attractionCost =
-        (attractionDetails?.perPersonCost || 0) * (trip.nAdults! + trip.nKids!);
+        (attractionDetails?.perPersonCost || 0) * (trip.nAdults! + trip.nChildren!);
       currentExpenses += attractionCost;
 
       if (currentExpenses <= trip.budget!) {
@@ -662,7 +662,7 @@ const reduceCostsOfTrip = (
     }
   }
 
-  fillSchedule(newSchedule, city, trip.nAdults!, trip.nKids!, trip.budget!);
+  fillSchedule(newSchedule, city, trip.nAdults!, trip.nChildren!, trip.budget!);
 
   return newSchedule;
 };
@@ -675,9 +675,9 @@ const increaseCostsOfTrip = (
   let availablePaidAttractionsToBePicked = initializeAvailableAttractions(
     city.attractions,
     trip.nAdults!,
-    trip.nKids!,
+    trip.nChildren!,
     trip.budget! -
-      computeTripCost(schedule, city.attractions, trip.nAdults!, trip.nKids!),
+      computeTripCost(schedule, city.attractions, trip.nAdults!, trip.nChildren!),
     true
   ).filter((att) => att.perPersonCost !== 0);
   let alreadyUsedAttractions: any = [];

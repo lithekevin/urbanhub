@@ -26,7 +26,7 @@ interface TripFormProps {
     destination: string;
     dateRange: string[];
     adults: number;
-    kids: number;
+    children: number;
     budget: number;
     questions: string[];
     answers: string[];
@@ -57,7 +57,7 @@ function NewTrip (props: TripFormProps) {
     destination: "",
     dateRange: ["", ""],
     adults: 0,
-    kids: 0,
+    children: 0,
     budget: 0,
     additionalInfo: "",
     questions: [""],
@@ -74,7 +74,7 @@ function NewTrip (props: TripFormProps) {
   const [mapZoom, setMapZoom] = React.useState(3);
 
   const [adultsValue, setAdultsValue] = React.useState<number>(0);
-  const [kidsValue, setKidsValue] = React.useState<number>(0);
+  const [childrenValue, setChildrenValue] = React.useState<number>(0);
 
   const [questionsPageNumber, setQuestionsPageNumber] = React.useState(0);
 
@@ -110,14 +110,14 @@ function NewTrip (props: TripFormProps) {
   );
 
   React.useEffect(() => {
-    // Update the form data when adultsValue or kidsValue changes
+    // Update the form data when adultsValue or childrenValue changes
     handleInputChange({
       target: { name: "adults", value: adultsValue },
     } as CustomEvent);
     handleInputChange({
-      target: { name: "kids", value: kidsValue },
+      target: { name: "children", value: childrenValue },
     } as CustomEvent);
-  }, [adultsValue, kidsValue, handleInputChange]);
+  }, [adultsValue, childrenValue, handleInputChange]);
 
   const handleDateRangeChange = (dates: [moment.Moment, moment.Moment]) => {
     if(dates){
@@ -247,8 +247,8 @@ function NewTrip (props: TripFormProps) {
                 handleDateRangeChange={handleDateRangeChange}
                 adultsValue={adultsValue}
                 setAdultsValue={setAdultsValue}
-                kidsValue={kidsValue}
-                setKidsValue={setKidsValue}
+                childrenValue={childrenValue}
+                setChildrenValue={setChildrenValue}
                 handleInputChange={handleInputChange}
                 formData={formData}
                 prevStep={prevStep}

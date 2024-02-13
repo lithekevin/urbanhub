@@ -8,7 +8,7 @@ interface Step3Props {
     destination: string;
     dateRange: string[];
     adults: number;
-    kids: number;
+    children: number;
     budget: number;
     questions: string[];
     answers: string[];
@@ -19,7 +19,7 @@ interface Step3Props {
     destination: string;
     dateRange: string[];
     adults: number;
-    kids: number;
+    children: number;
     budget: number;
     questions: string[];
     answers: string[];
@@ -37,7 +37,7 @@ function Step3 (props: Step3Props) {
   const step2Data = [
     { label: 'Date Range: ', value: formData.dateRange.join(' to ') },
     { label: 'Number of Adults: ', value: formData.adults },
-    { label: 'Number of Kids: ', value: formData.kids },
+    { label: 'Number of Children: ', value: formData.children },
     { label: 'Budget: ', value: `${formData.budget} €` }
   ];
 
