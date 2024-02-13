@@ -11,7 +11,6 @@ interface Step2Props {
   setDisplayedQuestions: React.Dispatch<React.SetStateAction<string[]>>;
   allDisplayedQuestions: string[];
   setAllDisplayedQuestions: React.Dispatch<React.SetStateAction<string[]>>;
-  setCanLoadMoreQuestions: React.Dispatch<React.SetStateAction<boolean>>;
   userAnswers: string[];
   setUserAnswers: React.Dispatch<React.SetStateAction<string[]>>;
   questionsPageNumber: number;
@@ -23,7 +22,7 @@ interface Step2Props {
 
 function Step2(props: Step2Props) {
   const { displayedQuestions, setDisplayedQuestions, allDisplayedQuestions, setAllDisplayedQuestions, 
-          setCanLoadMoreQuestions, userAnswers, setUserAnswers, questionsPageNumber, setQuestionsPageNumber, 
+          userAnswers, setUserAnswers, questionsPageNumber, setQuestionsPageNumber, 
           step, prevStep, nextStep } = props;
           
   // Handle user's answers to questions
@@ -49,11 +48,6 @@ function Step2(props: Step2Props) {
       ...prevAllDisplayedQuestions,
       ...newQuestions,
     ]);
-
-    // Disable loading more questions if all questions are displayed
-    if (allDisplayedQuestions.length + newQuestions.length === 9) {
-      setCanLoadMoreQuestions(false);
-    }
   };
 
   const handleClickNextStep = () => {

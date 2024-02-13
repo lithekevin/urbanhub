@@ -89,9 +89,6 @@ function NewTrip (props: TripFormProps) {
     Array(allDisplayedQuestions.length).fill("")
   );
 
-  // New state to track whether more questions can be loaded
-  const [canLoadMoreQuestions, setCanLoadMoreQuestions] = React.useState(true);
-
   const handleInputChange = React.useCallback(
     (e: CustomEvent) => {
       const { name, value } = e.target;
@@ -262,7 +259,6 @@ function NewTrip (props: TripFormProps) {
                 setDisplayedQuestions={setDisplayedQuestions}
                 allDisplayedQuestions={allDisplayedQuestions}
                 setAllDisplayedQuestions={setAllDisplayedQuestions}
-                setCanLoadMoreQuestions={setCanLoadMoreQuestions}
                 userAnswers={userAnswers}
                 setUserAnswers={setUserAnswers}
                 questionsPageNumber={questionsPageNumber}
