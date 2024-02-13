@@ -104,20 +104,23 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
       return;
     }
     setImagesLoading(true);
-    renderMarkerForDay(dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], "DD/MM/YYYY")).forEach((attraction: Attraction) => {
-      if(imageUrls[attraction.id]) return;
+    renderMarkerForDay(
+      dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], "DD/MM/YYYY")
+    ).forEach((attraction: Attraction) => {
+      if (imageUrls[attraction.id]) return;
 
       fetchImage(attraction.name + " " + tripState.value?.city).then((url) => {
         if (url) {
           setImageUrls((prev) => ({ ...prev, [attraction.id]: url }));
-        }
-        else {
-          setImageUrls((prev) => ({ ...prev, [attraction.id]: defaultAttractionImageUrl }));
+        } else {
+          setImageUrls((prev) => ({
+            ...prev,
+            [attraction.id]: defaultAttractionImageUrl,
+          }));
         }
       });
     });
     setImagesLoading(false);
-
   }, [activeKeyState.value.length, activeKeyState.value[0]]);
 
   useEffect(() => {
@@ -244,50 +247,52 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
               })}
             </>
           )}
-        {activeKeyState.value.length > 0 && selectedMarker && !imagesLoading && (
-          <InfoWindow
-            options={{ pixelOffset: new google.maps.Size(0, -35) }}
-            position={{
-              lat: selectedMarker.location.latitude,
-              lng: selectedMarker.location.longitude,
-            }}
-            onCloseClick={() => {
-              setSelectedMarker(null);
-            }}
-          >
-            <div className="attractionContainer">
-              <Image
-                className="attractionImage"
-                src={imageUrls[selectedMarker.id]}
-                alt={selectedMarker.name}
-                preview={false}
-              />
-              <Title
-                level={5}
-                className="attractionName"
-                style={{ fontWeight: "bold" }}
-              >
-                {selectedMarker.name}
-              </Title>
-              <Tag
-                icon={<EuroCircleOutlined />}
-                color="green"
-                style={{
-                  gridColumn: "1",
-                  gridRow: "2",
-                  display: "inline-block",
-                  maxWidth: "60px",
-                }}
-              >
-                {" "}
-                {selectedMarker.perPersonCost
-                  ? selectedMarker.perPersonCost *
-                    (tripState!.value!.nAdults + tripState!.value!.nKids)
-                  : "free"}
-              </Tag>
-            </div>
-          </InfoWindow>
-        )}
+        {activeKeyState.value.length > 0 &&
+          selectedMarker &&
+          !imagesLoading && (
+            <InfoWindow
+              options={{ pixelOffset: new google.maps.Size(0, -35) }}
+              position={{
+                lat: selectedMarker.location.latitude,
+                lng: selectedMarker.location.longitude,
+              }}
+              onCloseClick={() => {
+                setSelectedMarker(null);
+              }}
+            >
+              <div className="attractionContainer">
+                <Image
+                  className="attractionImage"
+                  src={imageUrls[selectedMarker.id]}
+                  alt={selectedMarker.name}
+                  preview={false}
+                />
+                <Title
+                  level={5}
+                  className="attractionName"
+                  style={{ fontWeight: "bold" }}
+                >
+                  {selectedMarker.name}
+                </Title>
+                <Tag
+                  icon={<EuroCircleOutlined />}
+                  color="green"
+                  style={{
+                    gridColumn: "1",
+                    gridRow: "2",
+                    display: "inline-block",
+                    maxWidth: "60px",
+                  }}
+                >
+                  {" "}
+                  {selectedMarker.perPersonCost
+                    ? selectedMarker.perPersonCost *
+                      (tripState!.value!.nAdults + tripState!.value!.nKids)
+                    : "free"}
+                </Tag>
+              </div>
+            </InfoWindow>
+          )}
       </GoogleMap>
     </>
   );
