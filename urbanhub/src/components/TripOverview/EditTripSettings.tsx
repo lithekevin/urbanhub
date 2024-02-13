@@ -148,23 +148,22 @@ function EditTripSettings(props: EditTripSettingsProps) {
               <Button type='default' shape='circle' icon={<PlusOutlined />} onClick={() => handleIncrement('nAdults')} />
             </Col>
           </Row>              
-          <Paragraph style={{color: 'red', marginTop: '3vh'}}><span>*</span><Text className='label'> How many kids are going? </Text></Paragraph>
+          <Paragraph style={{color: 'red', marginTop: '3vh'}}><Text className='label'> How many kids are going? </Text></Paragraph>
           <Row gutter={8} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px', height: '50px' }}>
           <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
             <Form.Item
                 name="nKids"
-                rules={[{ required: true, message: '' }]}
-              >
-                <InputNumber
-                  min={0}
-                  keyboard={false}
-                  controls={false}
-                  style={{ width: 'auto', marginRight: '8px' }}
-                  onChange={value => setNumKids(value??0)}
-                />
-              </Form.Item>
-                <Text style={{ marginBottom: '20px' }}> {numKids <= 1 ? 'Kid' : 'Kids'} </Text>
-                <Text style={{ color: 'gray', marginLeft: '5px', marginBottom: '20px' }}>(0-12 years old)</Text>
+            >
+              <InputNumber
+                min={0}
+                keyboard={false}
+                controls={false}
+                style={{ width: 'auto', marginRight: '8px' }}
+                onChange={value => setNumKids(value??0)}
+              />
+            </Form.Item>
+            <Text style={{ marginBottom: '20px' }}> {numKids <= 1 ? 'Kid' : 'Kids'} </Text>
+            <Text style={{ color: 'gray', marginLeft: '5px', marginBottom: '20px' }}>(0-12 years old)</Text>
           </Col>
           <Col>
             <Button type='default' shape='circle' icon={<MinusOutlined />} onClick={() => handleDecrement('nKids')} />
