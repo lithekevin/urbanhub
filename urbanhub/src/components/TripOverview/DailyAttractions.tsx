@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Badge, Button, Flex, Modal, Tag, Timeline, Typography } from 'antd';
-import { EuroCircleOutlined, EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
+import { EuroCircleOutlined, EditTwoTone, DeleteTwoTone, InfoCircleOutlined } from '@ant-design/icons';
 import { TbCar, TbWalk } from 'react-icons/tb';
 import { deleteAttraction } from '../../firebase/daos/dao-trips';
 import { TripAttraction } from '../../models/tripAttraction';
@@ -99,12 +99,9 @@ function DailyAttractions(props: DailyAttractionsProps) {
             <div className="static-popover">            
               <div className="content">
                 <Flex justify='space-between' align='center'>
-                  <Title style={{ textAlign: 'left', fontSize: '15px' }}>
-                    <a href={wikipediaUrls[attraction.name]} target="_blank" style={{color: "#185b6f"}}>
-                      <div >
+                  <Title style={{ textAlign: 'left', fontSize: '18px', color: "#185b6f", fontWeight: 'bold' }}>
                       {attraction.name}
-                      </div>
-                    </a>
+                
                   </Title>
                     <div className='button-container'>
                     {editing && (
@@ -115,6 +112,12 @@ function DailyAttractions(props: DailyAttractionsProps) {
                     )}
                     </div>
                 </Flex>
+                  <a href={wikipediaUrls[attraction.name]} target="_blank" style={{color: "black", textDecoration: 'none', textAlign: 'left'}}>
+                    <Flex align='center' className='mb-3'>
+                    <InfoCircleOutlined />
+                      <p className='ms-1 my-auto'>read more...</p>
+                    </Flex>
+                  </a>
                 <Tag icon={<EuroCircleOutlined />} color="green" style={{textAlign: 'left', display: 'table'}}> {attraction.perPersonCost ? attraction.perPersonCost * (trip!.nAdults + trip!.nKids) : "free"}</Tag>
               </div>
             </div>
