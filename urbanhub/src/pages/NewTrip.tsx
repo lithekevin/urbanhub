@@ -158,7 +158,7 @@ function NewTrip (props: TripFormProps) {
       case 1:
         return (
           formData.dateRange[0] !== "" &&
-          (formData.adults > 0 || formData.kids > 0) &&
+          (formData.adults > 0) &&
           formData.budget > 0
         );
       case 2:
