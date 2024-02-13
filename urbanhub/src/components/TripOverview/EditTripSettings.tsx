@@ -166,7 +166,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
             <Text style={{ color: 'gray', marginLeft: '5px', marginBottom: '20px' }}>(0-12 years old)</Text>
           </Col>
           <Col>
-            <Button type='default' shape='circle' icon={<MinusOutlined />} onClick={() => handleDecrement('nChildren')} />
+            <Button type='default' shape='circle' icon={<MinusOutlined />} disabled={numChildren<=0} onClick={() => handleDecrement('nChildren')} />
           </Col>
           <Col>
             <Button type='default' shape='circle' icon={<PlusOutlined />} onClick={() => handleIncrement('nChildren')} />
