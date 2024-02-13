@@ -7,6 +7,7 @@ import { Attraction } from '../../models/attraction';
 import { EuroCircleOutlined } from "@ant-design/icons"
 import axios from 'axios';
 import { Image, Tag, Typography } from 'antd';
+import cities from '../../firebase/cities';
 
 const { Title } = Typography;
 
@@ -44,11 +45,15 @@ interface GoogleMapsComponentProps {
     value: Trip | null;
     setter: React.Dispatch<React.SetStateAction<Trip | null>>;
   };
+  attractionCardHoveredID: {
+    value: string | null;
+    setter: React.Dispatch<React.SetStateAction<string | null>>;
+  };
 }
 
 function GoogleMapsComponent(props : GoogleMapsComponentProps) {
   
-  const { activeKeyState, cityPositionState, defaultCenter, directionsState, tripState } = props;
+  const { activeKeyState, cityPositionState, defaultCenter, directionsState, tripState, attractionCardHoveredID } = props;
 
   const [imageUrl, setImageUrl] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
@@ -122,6 +127,19 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
   const dayLabels = Array.from(tripState.value?.schedule.keys() || []).map((day) => day.format('DD/MM/YYYY'));
 
   const zoomLevel = activeKeyState.value.length === 1 ? 15 : 10;
+
+  useEffect(() => {
+    console.log(attractionCardHoveredID.value);
+    if (attractionCardHoveredID.value) {
+      const attraction = cities.find((city) => city.name === tripState.value?.city)?.attractions.find((attraction) => attraction.id === attractionCardHoveredID.value);
+      if (attraction) {
+        setSelectedMarker(attraction);
+      }
+    }
+    else {
+      setSelectedMarker(null);
+    }
+  }, [attractionCardHoveredID.value]);
 
   return(
     <>

@@ -47,13 +47,17 @@ interface SidebarProps {
     value: Trip | null;
     setter: React.Dispatch<React.SetStateAction<Trip | null>>;
   };
+  attractionCardHoveredID: {
+    value: string | null;
+    setter: React.Dispatch<React.SetStateAction<string | null>>;
+  };
 }
 
 function Sidebar(props: SidebarProps) {
   
   const { activeKeyState, attractionDistances, dayLabels, editing, form, errorState, loadingState, messageApi,
           setDirty, setEditingAttraction, setIsFormVisible, setMessageAI, setSelectedAttractionId, 
-          setSelectedDay, setUndoVisibility, travelModel, trip, tripId, tripState,contextHolder } = props;
+          setSelectedDay, setUndoVisibility, travelModel, trip, tripId, tripState,contextHolder, attractionCardHoveredID } = props;
 
   const dailyActivities: CollapseProps['items'] = dayLabels.map((dayLabel, index) => ({
     key: `${index}`,
@@ -77,6 +81,7 @@ function Sidebar(props: SidebarProps) {
           travelModel={travelModel}
           trip={trip}
           tripId={tripId}
+          attractionCardHoveredID={{value: attractionCardHoveredID.value, setter: attractionCardHoveredID.setter}}
         />
       </div>,
   }));

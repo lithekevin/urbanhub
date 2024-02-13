@@ -28,6 +28,10 @@ interface DailyAttractionsProps {
   travelModel: string;
   trip: Trip | null;
   tripId: string | undefined;
+  attractionCardHoveredID: {
+    value: string | null;
+    setter: React.Dispatch<React.SetStateAction<string | null>>;
+  };
 }
 
 function DailyAttractions(props: DailyAttractionsProps) {
@@ -35,7 +39,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
   const { attractionDistances, day, editing, form, messageApi,contextHolder,
     setDirty, setEditingAttraction, setIsFormVisible,
     setSelectedAttractionId, setSelectedDay,
-    setUndoVisibility, travelModel, trip, tripId } = props;
+    setUndoVisibility, travelModel, trip, tripId, attractionCardHoveredID } = props;
 
   let attractionsForDay: TripAttraction[] = [];
   let closestKey: dayjs.Dayjs | null = null; // Find the closest matching key
@@ -91,6 +95,12 @@ function DailyAttractions(props: DailyAttractionsProps) {
       {
         label: `${attraction.startDate.format("HH:mm")} - ${attraction.endDate.format("HH:mm")}`,
         children: (
+          <div
+          
+          onMouseEnter={() => attractionCardHoveredID.setter(attraction.id)}
+          onMouseLeave={() => attractionCardHoveredID.setter(null)}
+          
+          >
           <Badge.Ribbon 
             text={index+1}
             placement='start' 
@@ -122,6 +132,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
               </div>
             </div>
           </Badge.Ribbon>
+          </div>
         ),
         position: index % 2 === 0 ? 'left' : 'right',
         color: '#185b6f'

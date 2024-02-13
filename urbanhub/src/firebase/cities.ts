@@ -665,7 +665,7 @@ const cities: City[] = [
         id: "A077",
         name: "Graben",
         city: "Vienna",
-        location: { latitude: 48.5463, longitude: 16.3475 },
+        location: { latitude: 48.2087, longitude: 16.3695 },
         estimatedTime: 60,
         perPersonCost: 0,
       },

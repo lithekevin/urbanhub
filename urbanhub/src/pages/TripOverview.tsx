@@ -48,6 +48,8 @@ function TripOverview(props: any) {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [travelModel, setTravelModel] = useState('WALKING');
 
+  const [attractionCardHoveredID, setAttractionCardHoveredID] = useState<string | null>(null);
+
   //used for path between attractions
   var origin: any = null;
   var destination: any = null;
@@ -442,6 +444,7 @@ function TripOverview(props: any) {
               trip={trip}
               tripId={tripId}
               tripState={{ value: trip, setter: setTrip }}
+              attractionCardHoveredID={{ value: attractionCardHoveredID, setter: setAttractionCardHoveredID }}
             />
           </div>
           <div className='body-space'>
@@ -461,6 +464,7 @@ function TripOverview(props: any) {
                     defaultCenter={defaultCenter}
                     directionsState={{ value: directions, setter: setDirections }}
                     tripState={{ value: trip, setter: setTrip }}
+                    attractionCardHoveredID={{ value: attractionCardHoveredID, setter: setAttractionCardHoveredID }}
                   />
                 </div>
               </Container>
