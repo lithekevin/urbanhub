@@ -89,7 +89,7 @@ function GoogleMapsComponent(props : GoogleMapsComponentProps) {
   
   useEffect(() => {
     if (selectedMarker) {
-      fetchImage(selectedMarker.name).then(setImageUrl);
+      fetchImage(selectedMarker.name + " " + tripState.value?.city).then(setImageUrl);
     }
   }, [selectedMarker]);  
   

@@ -61,7 +61,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
 
   useEffect(() => {
     attractionsForDay.forEach((attraction) => {
-      fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(attraction.name)}&limit=1&namespace=0&format=json`)
+      fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(attraction.name + " " + trip?.city)}&limit=1&namespace=0&format=json`)
         .then(response => response.json())
         .then(data => {
           if (data[3].length > 0) {
