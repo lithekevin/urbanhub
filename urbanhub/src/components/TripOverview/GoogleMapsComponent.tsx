@@ -225,10 +225,11 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
                       scaledSize: new google.maps.Size(38, 38),
                       labelOrigin: new google.maps.Point(19, 16),
                     }}
-                    onClick={() => {
-                      selectedMarker === null
-                        ? setSelectedMarker(attraction)
-                        : setSelectedMarker(null);
+                    onMouseOver={() => {
+                      setSelectedMarker(attraction);
+                    }}
+                    onMouseOut={() => {
+                      setSelectedMarker(null);
                     }}
                   />
                 );
@@ -241,9 +242,6 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
             position={{
               lat: selectedMarker.location.latitude,
               lng: selectedMarker.location.longitude,
-            }}
-            onCloseClick={() => {
-              setSelectedMarker(null);
             }}
           >
             <div className="attractionContainer">
