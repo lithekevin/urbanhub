@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Card, Empty, Space, Typography } from 'antd';
+import colors from '../../style/colors';
 
 const { Text, Title } = Typography;
 
@@ -100,7 +101,7 @@ function Step3 (props: Step3Props) {
         <Button type="default" onClick={prevStep} className="button">
           Previous
         </Button>
-        <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button" onClick={() => { setLoading(true); onSubmit(formData) }}>
+        <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button" onClick={() => { setLoading(true); onSubmit(formData) }} style={{backgroundColor: colors.hardBackgroundColor}}>
           Create Trip
         </Button>
       </div>
