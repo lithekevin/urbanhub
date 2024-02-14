@@ -1,10 +1,13 @@
 import { Button, Flex, Image, Input, List, Tooltip, Typography  } from 'antd';
+import { FaUndo } from "react-icons/fa";
+import { IoMdSend } from "react-icons/io";
 import { useState, useEffect } from 'react';
 import { editAttraction, deleteAttraction, addAttractionToTrip, editTrip } from "../../firebase/daos/dao-trips";
 import cities from "../../firebase/cities";
 import dayjs from 'dayjs';
 import { Trip } from "../../models/trip";
 import { TripAttraction } from '../../models/tripAttraction';
+import colors from '../../style/colors';
 
 const { Text, Title, Paragraph } = Typography;
 /*
@@ -32,7 +35,6 @@ interface ChatbotProps {
     };
     messageAIState: {
       value: string;
-      color: string;
       setter: React.Dispatch<React.SetStateAction<string>>;
     };
     tripId: string | undefined;
@@ -156,7 +158,7 @@ function Chatbot(props: ChatbotProps) {
           if (tripId) {
             await deleteAttraction(tripId, attractionDate, attractionId);
             dirtyState.setter(true);
-            updateMessage(inputAttraction + " deleted succesfully. Is there anything else I can do for you?");
+            updateMessage(inputAttraction + " deleted successfully. Is there anything else I can do for you?");
             undoState.setter(true);
             setTripUpdates(tempTrip);
       
@@ -293,7 +295,7 @@ function Chatbot(props: ChatbotProps) {
         };
 
         addAttractionToTrip(tripId, attractionDate.format('DD/MM/YYYY'), attraction);
-        updateMessage(attractionName + " added succesfully in date " + date + " with time: " + startTime + " - " + endTime);
+        updateMessage(attractionName + " added successfully in date " + date + " with time: " + startTime + " - " + endTime);
         dirtyState.setter(true);
         undoState.setter(true);
         setTripUpdates(tempTrip);
@@ -406,7 +408,7 @@ function Chatbot(props: ChatbotProps) {
         };
 
         editAttraction(tripId, attractionId , attractionDate, attractionDate.format('DD/MM/YYYY'), attraction);
-        updateMessage(attractionName + " edited succesfully, new time scheduling is " + startTime + " - " + endTime);
+        updateMessage(attractionName + " edited successfully, new time scheduling is " + startTime + " - " + endTime);
         dirtyState.setter(true);
         undoState.setter(true);
         setTripUpdates(tempTrip);
@@ -562,7 +564,6 @@ function Chatbot(props: ChatbotProps) {
       }      
     } else{
         updateMessage("Invalid input format, please try again");
-        messageAIState.color = "red";
         return;
     }
   }
@@ -584,12 +585,12 @@ function Chatbot(props: ChatbotProps) {
   return (
     <Flex align='center' justify='space-between'>
       <Flex style={{ alignItems: 'center', display: 'flex'}}>
-        <Image src={"https://imgur.com/ijeaJNU.png"} alt="UrbanHub assistant" preview={false} width={60}/>
-        <Text style={{ color: messageAIState.color === 'red' ? 'red' : 'black' }}>{messageAIState.value}</Text>
+        <Image src={"https://imgur.com/VjTAdBj.png"} alt="UrbanHub assistant" preview={false} width={60} style={{ paddingRight: '10px'}}/>
+        <Text style={{ maxWidth: '250px'}}>{messageAIState.value}</Text>
       </Flex>
       <Flex style={{ flex: 1, display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
       <Tooltip 
-        overlayInnerStyle={{ width: '250%', maxWidth: halfWindowWidth, color: 'black', backgroundColor: 'white', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', padding: '4%' }} color="white" placement="topLeft"
+        overlayInnerStyle={{ width: '250%', maxWidth: halfWindowWidth, color: 'black', backgroundColor: 'white', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', padding: '4%', fontSize: '12px' }} color="white" placement="topLeft"
         title={(
           <List size='small'>
             <Title level={3} style={{textAlign: 'center', marginBottom: '0'}}>USAGE</Title>
@@ -609,8 +610,8 @@ function Chatbot(props: ChatbotProps) {
             style={{ marginRight: '10px', width: 'calc(100% - 20px)' }} 
         />
       </Tooltip>
-        <Button type="primary" onClick={handleSendClick} style={{ width: '100px' }}>Send</Button>
-        {undoState.value && (<Button type="primary" onClick={handleUndoClick} style={{ width: '100px' }}>Undo</Button>)}
+        <Button type="primary" onClick={handleSendClick} style={{ width: '100px', backgroundColor: colors.hardBackgroundColor }} icon={<IoMdSend size={18} style={{marginBottom: '4px'}}/>}>Send</Button>
+        {undoState.value && (<Button type="primary" onClick={handleUndoClick} style={{ width: '100px', marginLeft:'10px' }} icon={<FaUndo style={{marginBottom:'2px'}}/>}>Undo </Button>)}
       </Flex>
     </Flex>
   );
