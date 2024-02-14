@@ -185,20 +185,24 @@ function DailyAttractions(props: DailyAttractionsProps) {
                       )}
                     </div>
                   </Flex>
-                  <a
+                  
+                    <Flex align="center" className="mb-3">
+                    <a
                     href={wikipediaUrls[attraction.name]}
                     target="_blank"
                     style={{
                       color: "black",
                       textDecoration: "none",
                       textAlign: "left",
+                      display: "flex",
+                      alignItems: "center",
                     }}
                   >
-                    <Flex align="center" className="mb-3">
                       <InfoCircleOutlined />
                       <p className="ms-1 my-auto">read more...</p>
+                      </a>
                     </Flex>
-                  </a>
+                  
                   <Tag
                     icon={<EuroCircleOutlined />}
                     color="green"

@@ -508,11 +508,11 @@ function TripOverview(props: any) {
                 }
                 placement="bottom"
               >
-                <Text style={{ color: "red" }}>
-                  {" "}
-                  Total Cost : {totalCost}
-                  {" €"}{" "}
-                </Text>
+                <Text>
+                {" "}
+                <span style={{fontWeight: "bold"}}>Total Cost</span> / <span style={{fontSize: "smaller"}}>Budget</span> : <span style={{fontWeight: "bold"}}>{totalCost} €</span> / <span style={{fontSize: "smaller"}}>{trip?.budget}</span>
+                {" €"}{" "}
+              </Text>
               </Tooltip>
             </>
           ) : (
@@ -520,7 +520,7 @@ function TripOverview(props: any) {
               <TbCoinEuroFilled style={{ color: "grey" }} />
               <Text>
                 {" "}
-                Total Cost : {totalCost}
+                <span style={{fontWeight: "bold"}}>Total Cost</span> / <span style={{fontSize: "smaller"}}>Budget</span> : <span style={{fontWeight: "bold"}}>{totalCost} €</span> / <span style={{fontSize: "smaller"}}>{trip?.budget}</span>
                 {" €"}{" "}
               </Text>
             </>

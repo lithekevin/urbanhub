@@ -56,6 +56,7 @@ function AttractionForm(props: AttractionFormProps) {
       setEditingAttraction(null);
       setSelectedAttractionId(null);
       setShowParagraph(false);
+      setSelectedMarker(null);
     };
   
     const onFinish = (values: any) => {
