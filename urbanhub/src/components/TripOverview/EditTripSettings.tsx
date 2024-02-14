@@ -21,12 +21,12 @@ function EditTripSettings(props: EditTripSettingsProps) {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { form1, setDirty, setVisible, trip, visible } = props;
-  const [numKids, setNumKids] = useState(0);
+  const [numChildren, setNumChildren] = useState(0);
   const [numAdults, setNumAdults] = useState(0);
 
   useEffect(() => {
     if (trip) {
-      setNumKids(trip.nKids || 0);
+      setNumChildren(trip.nChildren || 0);
       setNumAdults(trip.nAdults || 0);
     }
   }, [trip]);
@@ -42,7 +42,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
   
       if (trip) {
           trip.nAdults = values.nAdults;
-          trip.nKids = values.nKids;
+          trip.nChildren = values.nChildren;
           trip.startDate = values.dateRange[0].format('DD-MM-YYYY');
           trip.endDate = values.dateRange[1].format('DD-MM-YYYY');
           trip.budget = values.budget; // Extract budget from form values
@@ -83,8 +83,8 @@ function EditTripSettings(props: EditTripSettingsProps) {
     const currentValue = form1.getFieldValue(fieldName);
     form1.setFieldsValue({ [fieldName]: currentValue + 1 });
   
-    if (fieldName === 'nKids') {
-      setNumKids(currentValue + 1);
+    if (fieldName === 'nChildren') {
+      setNumChildren(currentValue + 1);
     } else if (fieldName === 'nAdults') {
       setNumAdults(currentValue + 1);
     }
@@ -95,8 +95,8 @@ function EditTripSettings(props: EditTripSettingsProps) {
     if (currentValue > 0) {
       form1.setFieldsValue({ [fieldName]: currentValue - 1 });
   
-      if (fieldName === 'nKids') {
-        setNumKids(currentValue - 1);
+      if (fieldName === 'nChildren') {
+        setNumChildren(currentValue - 1);
       } else if (fieldName === 'nAdults') {
         setNumAdults(currentValue - 1 < 1 ? 1 : currentValue - 1); 
       }
@@ -148,29 +148,28 @@ function EditTripSettings(props: EditTripSettingsProps) {
               <Button type='default' shape='circle' icon={<PlusOutlined />} onClick={() => handleIncrement('nAdults')} />
             </Col>
           </Row>              
-          <Paragraph style={{color: 'red', marginTop: '3vh'}}><span>*</span><Text className='label'> How many kids are going? </Text></Paragraph>
+          <Paragraph style={{color: 'red', marginTop: '3vh'}}><Text className='label'> How many children are going? </Text></Paragraph>
           <Row gutter={8} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px', height: '50px' }}>
           <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
             <Form.Item
-                name="nKids"
-                rules={[{ required: true, message: '' }]}
-              >
-                <InputNumber
-                  min={0}
-                  keyboard={false}
-                  controls={false}
-                  style={{ width: 'auto', marginRight: '8px' }}
-                  onChange={value => setNumKids(value??0)}
-                />
-              </Form.Item>
-                <Text style={{ marginBottom: '20px' }}> {numKids <= 1 ? 'Kid' : 'Kids'} </Text>
-                <Text style={{ color: 'gray', marginLeft: '5px', marginBottom: '20px' }}>(0-12 years old)</Text>
+                name="nChildren"
+            >
+              <InputNumber
+                min={0}
+                keyboard={false}
+                controls={false}
+                style={{ width: 'auto', marginRight: '8px' }}
+                onChange={value => setNumChildren(value??0)}
+              />
+            </Form.Item>
+            <Text style={{ marginBottom: '20px' }}> {numChildren <= 1 ? 'Child' : 'Children'} </Text>
+            <Text style={{ color: 'gray', marginLeft: '5px', marginBottom: '20px' }}>(0-12 years old)</Text>
           </Col>
           <Col>
-            <Button type='default' shape='circle' icon={<MinusOutlined />} onClick={() => handleDecrement('nKids')} />
+            <Button type='default' shape='circle' icon={<MinusOutlined />} disabled={numChildren<=0} onClick={() => handleDecrement('nChildren')} />
           </Col>
           <Col>
-            <Button type='default' shape='circle' icon={<PlusOutlined />} onClick={() => handleIncrement('nKids')} />
+            <Button type='default' shape='circle' icon={<PlusOutlined />} onClick={() => handleIncrement('nChildren')} />
           </Col>
           </Row>
           <Paragraph style={{color: 'red', marginTop: '3vh'}}><span>*</span><Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>

@@ -51,7 +51,7 @@ function Main() {
     destination: string;
     dateRange: string[];
     adults: number;
-    kids: number;
+    children: number;
     budget: number;
     questions: string[];
     answers: string[];
@@ -68,7 +68,7 @@ function Main() {
           startDate: data.dateRange[0],
           endDate: data.dateRange[1],
           nAdults: data.adults,
-          nKids: data.kids,
+          nChildren: data.children,
           budget: data.budget,
           questions: data.questions,
           answers: data.answers,
@@ -88,7 +88,7 @@ function Main() {
           schedule
         ); // starting from startDate to endDate, create the dates in between in the schedule object
 
-        fillSchedule(schedule, tripCity, data.adults, data.kids, data.budget); // fill the schedule with the attractions to be visited
+        fillSchedule(schedule, tripCity, data.adults, data.children, data.budget); // fill the schedule with the attractions to be visited
 
         tripToAdd.schedule = schedule;
 

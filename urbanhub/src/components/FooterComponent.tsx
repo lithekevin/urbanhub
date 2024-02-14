@@ -6,7 +6,7 @@ const { Title, Paragraph } = Typography;
 function FooterComponent() { 
     return (
       <Footer className="footer-style">
-        <Row justify="space-between" align="middle" style={{ paddingLeft: '5%', paddingRight: '5%'}}>
+        <Row justify="space-between" align="middle" style={{ paddingLeft: '4%', paddingRight: '4%'}}>
           <Col span={8} style={{ fontStyle: 'normal'}}>
               <Col>
                 <Image src="/logo.png" alt="logo" style={{marginRight: '10px', marginBottom: '1rem', width: '30px', height: 'auto'}} preview={false}/>

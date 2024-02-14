@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Card, Empty, Space, Typography } from 'antd';
+import colors from '../../style/colors';
 
 const { Text, Title } = Typography;
 
@@ -8,7 +9,7 @@ interface Step3Props {
     destination: string;
     dateRange: string[];
     adults: number;
-    kids: number;
+    children: number;
     budget: number;
     questions: string[];
     answers: string[];
@@ -19,7 +20,7 @@ interface Step3Props {
     destination: string;
     dateRange: string[];
     adults: number;
-    kids: number;
+    children: number;
     budget: number;
     questions: string[];
     answers: string[];
@@ -37,7 +38,7 @@ function Step3 (props: Step3Props) {
   const step2Data = [
     { label: 'Date Range: ', value: formData.dateRange.join(' to ') },
     { label: 'Number of Adults: ', value: formData.adults },
-    { label: 'Number of Kids: ', value: formData.kids },
+    { label: 'Number of Children: ', value: formData.children },
     { label: 'Budget: ', value: `${formData.budget} €` }
   ];
 
@@ -100,7 +101,7 @@ function Step3 (props: Step3Props) {
         <Button type="default" onClick={prevStep} className="button">
           Previous
         </Button>
-        <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button" onClick={() => { setLoading(true); onSubmit(formData) }}>
+        <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button" onClick={() => { setLoading(true); onSubmit(formData) }} style={{backgroundColor: colors.hardBackgroundColor}}>
           Create Trip
         </Button>
       </div>

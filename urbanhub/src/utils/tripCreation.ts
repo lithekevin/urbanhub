@@ -28,14 +28,14 @@ export const createEmptyDatesInSchedule = function (
 export const initializeAvailableAttractions = function (
   cityAttractions: any,
   adults: number,
-  kids: number,
+  children: number,
   budget: number,
   isFirstCall: boolean
 ) {
   let availableAttractionsToBePicked: Attraction[] = []; // list of attractions that can be picked for the trip creation
 
   let currentExpenses = 0;
-  const nTotPersons = adults + kids;
+  const nTotPersons = adults + children;
 
   for (const attraction of cityAttractions) {
     if (attraction.perPersonCost === 0) {
@@ -260,7 +260,7 @@ export const computeTripCost = function (
   schedule: { [date: string]: any[] },
   cityAttractions: Attraction[],
   nAdults: number,
-  nKids: number
+  nChildren: number
 ) {
   let totalCost = 0;
 
@@ -269,7 +269,7 @@ export const computeTripCost = function (
       totalCost +=
         cityAttractions.find((att: Attraction) => att.id === attraction.id)!
           .perPersonCost *
-        (nAdults + nKids);
+        (nAdults + nChildren);
     }
   }
 
@@ -280,7 +280,7 @@ export const fillSchedule = function (
   schedule: { [date: string]: any[] },
   tripCity: any,
   adults: number,
-  kids: number,
+  children: number,
   budget: number
 ) {
   let availableAttractionsToBePicked: Attraction[] = []; // list of attractions that can be picked for the trip creation
@@ -289,13 +289,13 @@ export const fillSchedule = function (
     schedule,
     tripCity.attractions,
     adults,
-    kids
+    children
   );
 
   availableAttractionsToBePicked = initializeAvailableAttractions(
     tripCity!.attractions,
     adults,
-    kids,
+    children,
     budget - partialTripCost,
     true
   ); // fill the list of available attractions to be picked with free attractions and attractions that fit the budget
@@ -309,7 +309,7 @@ export const fillSchedule = function (
         availableAttractionsToBePicked = initializeAvailableAttractions(
           tripCity!.attractions,
           adults,
-          kids,
+          children,
           budget,
           false
         ); // fill the list of available attractions to be picked with free attractions

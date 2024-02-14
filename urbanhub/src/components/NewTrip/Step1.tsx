@@ -8,11 +8,11 @@ const { Paragraph, Text, Title } = Typography;
 interface Step1Props {
   adultsValue: number;
   setAdultsValue: React.Dispatch<React.SetStateAction<number>>;
-  kidsValue: number;
-  setKidsValue: React.Dispatch<React.SetStateAction<number>>;
+  childrenValue: number;
+  setChildrenValue: React.Dispatch<React.SetStateAction<number>>;
   handleDateRangeChange: (dates: [moment.Moment, moment.Moment]) => void;
   handleInputChange: (e: CustomEvent) => void;
-  formData: { dateRange: string[], budget: number, adults: number, kids: number }; 
+  formData: { dateRange: string[], budget: number, adults: number, children: number }; 
   step: number;
   prevStep: () => void;
   nextStep: () => void;
@@ -27,30 +27,29 @@ interface CustomEvent {
 
 function Step1 (props: Step1Props){
 
-  const { adultsValue, setAdultsValue, kidsValue, setKidsValue, handleDateRangeChange, handleInputChange, 
+  const { adultsValue, setAdultsValue, childrenValue, setChildrenValue, handleDateRangeChange, handleInputChange, 
           formData, step, prevStep, nextStep } = props;
 
-  const handleIncrement = (type: 'adults' | 'kids') => {
+  const handleIncrement = (type: 'adults' | 'children') => {
     if (type === 'adults') {
       setAdultsValue((prevValue) => prevValue + 1);
-    } else if (type === 'kids') {
-      setKidsValue((prevValue) => prevValue + 1);
+    } else if (type === 'children') {
+      setChildrenValue((prevValue) => prevValue + 1);
     }
   };
 
-  const handleDecrement = (type: 'adults' | 'kids') => {
+  const handleDecrement = (type: 'adults' | 'children') => {
     if (type === 'adults') {
       setAdultsValue((prevValue) => Math.max(prevValue - 1, 0));
-    } else if (type === 'kids') {
-      setKidsValue((prevValue) => Math.max(prevValue - 1, 0));
+    } else if (type === 'children') {
+      setChildrenValue((prevValue) => Math.max(prevValue - 1, 0));
     }
   };
 
   const isStepValid = () => {
     return (
       formData.dateRange[0] !== '' &&
-      ( formData.adults > 0 ||
-      formData.kids > 0 ) &&
+      formData.adults > 0  &&
       formData.budget > 0
     );
   }
@@ -91,25 +90,25 @@ function Step1 (props: Step1Props){
         </Row>
       </Form.Item>
 
-      <Paragraph style={{color: 'red'}}><Text className='label'> How many kids are going? </Text></Paragraph>
-      <Form.Item name="kids"  hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
+      <Paragraph style={{color: 'red'}}><Text className='label'> How many children are going? </Text></Paragraph>
+      <Form.Item name="children"  hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
         <Row gutter={8}>
           <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
             <InputNumber
               min={0}
-              value={kidsValue}
+              value={childrenValue}
               keyboard={false}
-              onChange={(value) => setKidsValue(value ?? 0)}
+              onChange={(value) => setChildrenValue(value ?? 0)}
               controls={false}
               style={{ textAlign: 'center', width: 'auto', marginRight: '8px' }}
             />
-            {kidsValue <= 1 ? <Text> Kid  </Text> : <Text> Kids </Text>} <Text style={{ color: 'gray', marginLeft: '5px'}}>(0-12 years old)</Text>
+            {childrenValue <= 1 ? <Text> Child  </Text> : <Text> Children </Text>} <Text style={{ color: 'gray', marginLeft: '5px'}}>(0-12 years old)</Text>
           </Col>
           <Col flex="none">
-            <Button type='default' shape='circle' icon={<MinusOutlined/>} onClick={() => handleDecrement('kids')} disabled={kidsValue===0} />
+            <Button type='default' shape='circle' icon={<MinusOutlined/>} onClick={() => handleDecrement('children')} disabled={childrenValue===0} />
           </Col>
           <Col flex="none">
-            <Button type='default' shape='circle' icon={<PlusOutlined/>} onClick={() => handleIncrement('kids')}/>
+            <Button type='default' shape='circle' icon={<PlusOutlined/>} onClick={() => handleIncrement('children')}/>
           </Col>
         </Row>
       </Form.Item>

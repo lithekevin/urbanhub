@@ -222,7 +222,7 @@ function TripOverview(props: any) {
                 sum += attraction.perPersonCost;
               });
             });
-            setTotalCost(sum * (tripData.nAdults + tripData.nKids));
+            setTotalCost(sum * (tripData.nAdults + tripData.nChildren));
           } else {
             console.log(`Trip with ID ${tripId} not found.`);
           }
@@ -444,7 +444,7 @@ function TripOverview(props: any) {
   const handleOpenModal = () => {
     form1.setFieldsValue({
       nAdults: trip?.nAdults,
-      nKids: trip?.nKids,
+      nChildren: trip?.nChildren,
       budget: trip?.budget,
       dateRange: [trip?.startDate, trip?.endDate],
     });
@@ -491,7 +491,7 @@ function TripOverview(props: any) {
         <span>
           <FaChildDress style={{ color: "grey" }} size={25} />
           <FaChild style={{ color: "grey" }} size={25} />{" "}
-          <Text> Kids : {trip?.nKids} </Text>{" "}
+          <Text> Children : {trip?.nChildren} </Text>{" "}
         </span>
         <span>
           {trip && totalCost > trip.budget ? (

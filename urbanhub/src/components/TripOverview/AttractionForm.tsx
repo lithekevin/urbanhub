@@ -7,7 +7,6 @@ import { Attraction } from '../../models/attraction';
 import { addAttractionToTrip, editAttraction } from '../../firebase/daos/dao-trips';
 import { Trip } from '../../models/trip';
 import { TripAttraction } from '../../models/tripAttraction';
-import moment from 'moment';
 import cities from "../../firebase/cities";
 import dayjs, { Dayjs } from 'dayjs';
 import { MessageInstance } from 'antd/es/message/interface';
@@ -160,7 +159,7 @@ function AttractionForm(props: AttractionFormProps) {
                   />
                 </Form.Item>
                 {selectedAttractionId && validSelection && cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId) && showParagraph &&
-                    <Paragraph style={{color: "var(--hard-background-color)", marginTop: '0', marginBottom: '10px'}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nKids)}{" € to your trip."}</Paragraph>
+                    <Paragraph style={{color: "var(--hard-background-color)", marginTop: '0', marginBottom: '10px'}}>This attraction will add a cost of {cities.find(city => city.name === trip?.city)!.attractions.find(attraction => attraction.id === selectedAttractionId)!.perPersonCost * (trip!.nAdults + trip!.nChildren)}{" € to your trip."}</Paragraph>
                 }
                 <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]} style={{ marginBottom: '10px'}}>
                 <DatePicker format="DD/MM/YYYY"

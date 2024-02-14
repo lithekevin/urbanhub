@@ -271,7 +271,7 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
                 {" "}
                 {selectedMarker.perPersonCost
                   ? selectedMarker.perPersonCost *
-                    (tripState!.value!.nAdults + tripState!.value!.nKids)
+                    (tripState!.value!.nAdults + tripState!.value!.nChildren)
                   : "free"}
               </Tag>
             </div>
