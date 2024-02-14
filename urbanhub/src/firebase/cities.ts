@@ -1125,7 +1125,7 @@ const cities: City[] = [
       },
       {
         id: "A132",
-        name: "The Guggenheim Museum",
+        name: "The Solomon R. Guggenheim Museum",
         city: "New York",
         location: { latitude: 40.7829, longitude: -73.958 },
         estimatedTime: 140,
@@ -1165,7 +1165,7 @@ const cities: City[] = [
       },
       {
         id: "A137",
-        name: "The Vessel at Hudson Yards",
+        name: "Vessel (structure)",
         city: "New York",
         location: { latitude: 40.7536, longitude: -74.0029 },
         estimatedTime: 100,
