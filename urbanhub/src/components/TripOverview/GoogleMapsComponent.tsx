@@ -109,7 +109,7 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
     ).forEach((attraction: Attraction) => {
       if (imageUrls[attraction.id]) return;
 
-      fetchImage(attraction.name + " " + tripState.value?.city).then((url) => {
+      fetchImage(attraction.name + ", " + tripState.value?.city).then((url) => {
         if (url) {
           setImageUrls((prev) => ({ ...prev, [attraction.id]: url }));
         } else {
@@ -264,7 +264,7 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
               <div className="attractionContainer">
                 <Image
                   className="attractionImage"
-                  src={imageUrls[selectedMarker.id]}
+                  src={imageUrls[selectedMarker.id] || defaultAttractionImageUrl}
                   alt={selectedMarker.name}
                   preview={false}
                 />

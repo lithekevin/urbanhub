@@ -87,16 +87,18 @@ function DailyAttractions(props: DailyAttractionsProps) {
   useEffect(() => {
     attractionsForDay.forEach((attraction) => {
       fetch(
-        `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(
-          attraction.name + " " + trip?.city
-        )}&limit=1&namespace=0&format=json`
+        `https://en.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(
+          attraction.name + ", " + trip?.city
+        )}&format=json`
       )
         .then((response) => response.json())
         .then((data) => {
-          if (data[3].length > 0) {
+          if (data.query.search.length > 0) {
+            const pageTitle = data.query.search[0].title;
+            const pageUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(pageTitle)}`;
             setWikipediaUrls((prevUrls) => ({
               ...prevUrls,
-              [attraction.name]: data[3][0],
+              [attraction.name]: pageUrl,
             }));
           }
         })
