@@ -269,6 +269,7 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
                 lng: selectedMarker.location.longitude,
               }}
               onCloseClick={() => {
+                setMarkerClicked(false);
                 setSelectedMarker(null);
               }}
             >
