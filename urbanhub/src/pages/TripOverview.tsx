@@ -94,10 +94,10 @@ function TripOverview(props: any) {
   const selAttraction: Attraction | null | undefined =
     selectedAttractionId !== null
       ? cities
-          .find((city) => city.name === trip?.city)
-          ?.attractions.find(
-            (attraction) => attraction.id === selectedAttractionId
-          )
+        .find((city) => city.name === trip?.city)
+        ?.attractions.find(
+          (attraction) => attraction.id === selectedAttractionId
+        )
       : null;
   const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
 
@@ -210,8 +210,8 @@ function TripOverview(props: any) {
               if (index !== -1) {
                 if (tripData.answers.length > 0)
                   tripData.answers[index].includes("car") ||
-                  tripData.answers[index].includes("driv") ||
-                  tripData.answers[index].includes("public")
+                    tripData.answers[index].includes("driv") ||
+                    tripData.answers[index].includes("public")
                     ? setTravelModel("DRIVING")
                     : setTravelModel("WALKING");
               }
@@ -266,7 +266,7 @@ function TripOverview(props: any) {
           renderMarkerForDay(
             dayjs(dayLabels[parseInt(activeKey[0], 10)], "DD/MM/YYYY")
           ).length -
-            1
+          1
         ) {
           //update last element and caluclate route for the day
           destination = {
@@ -669,58 +669,58 @@ function TripOverview(props: any) {
         </Container>
       </div>
 
-      {editing && (
-        <Popover
-          content={
-            <Chatbot
-              tripState={{ value: trip, setter: setTrip }}
-              dirtyState={{ value: dirty, setter: setDirty }}
-              undoState={{ value: undoVisibility, setter: setUndoVisibility }}
-              messageAIState={{
-                value: messageAI,
-                setter: setMessageAI,
-                color: "black",
-              }}
-              tripId={tripId}
-              messageApi={messageApi}
-            />
-          }
-          trigger="click"
-          open={showChatbot}
-          onOpenChange={handlePopoverVisibleChange}
-          placement="right"
-          arrow={{ pointAtCenter: true }}
-          overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px" }}
-        >
-          <Button
-            style={{
-              width: "55px",
-              height: "55px",
-              borderRadius: "50%",
-              position: "fixed",
-              right: "20px",
-              marginLeft: "2%",
-              bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              transform: `scale(${isHovered ? 1.1 : 1})`,
-              transition: "box-shadow transform 0.3s ease",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+
+      <Popover
+        content={
+          <Chatbot
+            tripState={{ value: trip, setter: setTrip }}
+            dirtyState={{ value: dirty, setter: setDirty }}
+            undoState={{ value: undoVisibility, setter: setUndoVisibility }}
+            messageAIState={{
+              value: messageAI,
+              setter: setMessageAI,
+              color: "black",
             }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <Image
-              src="https://imgur.com/ijeaJNU.png"
-              alt="UrbanHub assistant"
-              preview={false}
-              height={"auto"}
-              style={{ maxWidth: "100%", maxHeight: "100%" }}
-            />
-          </Button>
-        </Popover>
-      )}
+            tripId={tripId}
+            messageApi={messageApi}
+          />
+        }
+        trigger="click"
+        open={showChatbot}
+        onOpenChange={handlePopoverVisibleChange}
+        placement="right"
+        arrow={{ pointAtCenter: true }}
+        overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px" }}
+      >
+        <Button
+          style={{
+            width: "55px",
+            height: "55px",
+            borderRadius: "50%",
+            position: "fixed",
+            right: "20px",
+            marginLeft: "2%",
+            bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+            transform: `scale(${isHovered ? 1.1 : 1})`,
+            transition: "box-shadow transform 0.3s ease",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <Image
+            src="https://imgur.com/ijeaJNU.png"
+            alt="UrbanHub assistant"
+            preview={false}
+            height={"auto"}
+            style={{ maxWidth: "100%", maxHeight: "100%" }}
+          />
+        </Button>
+      </Popover>
+
     </>
   );
 }
