@@ -70,6 +70,7 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
   const [imageUrl, setImageUrl] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
+  const [markerClicked, setMarkerClicked] = useState<boolean>(false);
 
   const fetchImage = async (query: string) => {
     setImageLoading(true);
@@ -226,10 +227,20 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
                       labelOrigin: new google.maps.Point(19, 16),
                     }}
                     onMouseOver={() => {
-                      setSelectedMarker(attraction);
+                      if(!markerClicked){
+                        setSelectedMarker(attraction);
+                      }
                     }}
                     onMouseOut={() => {
-                      setSelectedMarker(null);
+                      if(!markerClicked){
+                        setSelectedMarker(null);
+                      }
+                    }}
+                    onClick={() => {
+                      if(!markerClicked){
+                        setMarkerClicked(true);
+                        setSelectedMarker(attraction);
+                      }
                     }}
                   />
                 );
@@ -242,6 +253,10 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
             position={{
               lat: selectedMarker.location.latitude,
               lng: selectedMarker.location.longitude,
+            }}
+            onCloseClick={() => {
+              setMarkerClicked(false);
+              setSelectedMarker(null);
             }}
           >
             <div className="attractionContainer">
