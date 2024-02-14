@@ -112,6 +112,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
         onOk={handleUpdateTrip}
         onCancel={handleCancel}
         destroyOnClose
+        centered
         style={{ top: 20 }}
       >
         <Title level={3} className='step-title'> Edit Trip Settings </Title>
