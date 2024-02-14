@@ -116,10 +116,6 @@ function TripOverview(props: any) {
     null
   );
 
-  //Chatbot - Footer interaction
-  const [footerVisible, setFooterVisible] = useState(false);
-  const [footerHeight, setFooterHeight] = useState(0);
-
   //ActiveKey is update opening the current day for ingoing trips
   useEffect(() => {
     if (!editing) {
@@ -145,49 +141,6 @@ function TripOverview(props: any) {
       }
     }
   }, [trip]);
-
-  // Add an effect to detect when the footer becomes visible
-  useEffect(() => {
-    // Function to calculate the visible height of the footer
-    const getVisibleFooterHeight = () => {
-      const footer = document.querySelector(".footer-style");
-      if (footer) {
-        const footerRect = footer.getBoundingClientRect();
-        if (footerRect.top >= 0 && footerRect.bottom <= window.innerHeight) {
-          return footerRect.height;
-        } else {
-          return window.innerHeight - footerRect.top; // Footer is partially visible
-        }
-      }
-      return 0; // Footer not found
-    };
-
-    // Update the state when the footer visibility changes
-    const handleScroll = () => {
-      const footer = document.querySelector(".footer-style");
-      if (footer) {
-        const footerBounds = footer.getBoundingClientRect();
-        // Check if any part of the footer is visible in the viewport
-        const isVisible =
-          footerBounds.top < window.innerHeight && footerBounds.bottom >= 0;
-        if (isVisible) {
-          const footerHeight = getVisibleFooterHeight();
-          setFooterHeight(footerHeight);
-          setFooterVisible(true);
-        } else {
-          setFooterVisible(false);
-        }
-      }
-    };
-
-    // Listen for scroll events to detect footer visibility changes
-    window.addEventListener("scroll", handleScroll);
-
-    // Clean up event listener
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   useEffect(() => {
     // load trip details from firebase based on tripId
@@ -461,9 +414,7 @@ function TripOverview(props: any) {
   return (
     <>
       {(loading || imageLoading) && (
-        <Spin tip="Loading" size="large" fullscreen>
-          <div> Loading </div>
-        </Spin>
+        <Spin tip="Loading" size="large" fullscreen/>
       )}
 
       {contextHolder}
@@ -682,8 +633,7 @@ function TripOverview(props: any) {
             undoState={{ value: undoVisibility, setter: setUndoVisibility }}
             messageAIState={{
               value: messageAI,
-              setter: setMessageAI,
-              color: "black",
+              setter: setMessageAI
             }}
             tripId={tripId}
             messageApi={messageApi}
@@ -694,35 +644,38 @@ function TripOverview(props: any) {
         onOpenChange={handlePopoverVisibleChange}
         placement="right"
         arrow={{ pointAtCenter: true }}
-        overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px" }}
+        overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px",  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", borderRadius: '4%' }}
       >
-        <Button
-          style={{
-            width: "55px",
-            height: "55px",
-            borderRadius: "50%",
-            position: "fixed",
-            right: "20px",
-            marginLeft: "2%",
-            bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-            transform: `scale(${isHovered ? 1.1 : 1})`,
-            transition: "box-shadow transform 0.3s ease",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <Image
-            src="https://imgur.com/ijeaJNU.png"
-            alt="UrbanHub assistant"
-            preview={false}
-            height={"auto"}
-            style={{ maxWidth: "100%", maxHeight: "100%" }}
-          />
-        </Button>
+        <Tooltip title={<Text style={{color: 'white'}}>Click me! I can help you modify the trip.</Text>} placement="topLeft">
+          <Button
+            style={{
+              width: "60px",
+              height: "60px",
+              borderRadius: "50%",
+              position: "fixed",
+              right: "17px",
+              zIndex: 999,
+              bottom: `40px`,
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              transform: `scale(${isHovered ? 1.1 : 1})`,
+              transition: "box-shadow transform 0.3s ease",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <Image
+              src="https://imgur.com/ZXfni0p.png"
+              alt="UrbanHub assistant"
+              preview={false}
+              height={"auto"}
+              style={{ width: '60px', height: '60px' }}
+              className="chatbot-button"
+            />
+          </Button>
+        </Tooltip>
       </Popover>
 
     </>
