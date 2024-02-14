@@ -6,8 +6,9 @@ import {
   FaChildDress,
   FaPerson,
   FaPersonDress,
+  FaWallet
 } from "react-icons/fa6";
-import { TbCoinEuroFilled, TbWallet } from "react-icons/tb";
+import { TbCoinEuroFilled } from "react-icons/tb";
 import {
   Button,
   Divider,
@@ -468,30 +469,35 @@ function TripOverview(props: any) {
       {contextHolder}
 
       <Flex
+        align="middle"
         justify="space-between"
-        align="center"
         style={{
           fontSize: "25px",
           position: "relative",
-          paddingLeft: "1%",
-          paddingRight: "20%",
+          margin: "0 auto", 
+          maxWidth: "1200px", 
+          height: '37px'
         }}
       >
         {/* Arrow on the left */}
         <ArrowLeftOutlined
           className="float-left"
-          style={{ fontSize: "26px", marginLeft: "10px" }}
+          style={{ fontSize: "26px" }}
           onClick={() => navigate(-1)}
         />
         <span>
           <FaPersonDress style={{ color: "grey" }} size={30} />
-          <FaPerson style={{ color: "grey" }} size={30} />{" "}
-          <Text> Adults : {trip?.nAdults} </Text>{" "}
+          <FaPerson style={{ color: "grey" }} size={30} />
+          <Text> Adults : {trip?.nAdults} </Text>
         </span>
         <span>
           <FaChildDress style={{ color: "grey" }} size={25} />
-          <FaChild style={{ color: "grey" }} size={25} />{" "}
-          <Text> Children : {trip?.nChildren} </Text>{" "}
+          <FaChild style={{ color: "grey" }} size={25} />
+          <Text> Children : {trip?.nChildren} </Text>
+        </span>
+        <span>
+        <FaWallet style={{ color: "grey", marginRight: '2px' }} size={24}/>
+          <Text> Budget : {trip?.budget} € </Text>
         </span>
         <span>
           {trip && totalCost > trip.budget ? (
@@ -518,34 +524,25 @@ function TripOverview(props: any) {
           ) : (
             <>
               <TbCoinEuroFilled style={{ color: "grey" }} />
-              <Text>
-                {" "}
-                Total Cost : {totalCost}
-                {" €"}{" "}
+              <Text> Total Cost : {totalCost} €
               </Text>
             </>
           )}
         </span>
-        <span>
-        <TbWallet  style={{ color: "grey" }} />
-              <Text>
-                {" "}
-                Budget : {trip?.budget}
-                {" €"}{" "}
-              </Text>
-        </span>
+        {/* Empty placeholder for edit button */}
+        {!editing && (
+          <span className="placeholder-edit-button"></span>
+        )}
         {editing && (
-          <Tooltip title="Edit trip settings" placement="left">
+          <Tooltip title="Edit trip settings" placement="bottomLeft">
             <Button
               size="large"
               type="primary"
-              className="button-new-trip"
               style={{
                 backgroundColor: colors.whiteBackgroundColor,
-                color: "black",
+                color: colors.primaryButtonColor,
+                borderColor: colors.primaryButtonColor,
                 textAlign: "center",
-                position: "absolute",
-                right: 30,
               }}
               onClick={() => handleOpenModal()}
             >
@@ -676,7 +673,6 @@ function TripOverview(props: any) {
           />
         </Container>
       </div>
-
 
       <Popover
         content={
