@@ -13,6 +13,7 @@ import { EuroCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { Image, Tag, Typography } from "antd";
 import cities from "../../firebase/cities";
+import { set } from "lodash";
 
 const { Title } = Typography;
 
@@ -67,13 +68,12 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
     attractionCardHoveredID,
   } = props;
 
-  const [imageUrl, setImageUrl] = useState(null);
-  const [imageLoading, setImageLoading] = useState(false);
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
+  const [imagesLoading, setImagesLoading] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState<Attraction | null>(null);
   const [markerClicked, setMarkerClicked] = useState<boolean>(false);
 
   const fetchImage = async (query: string) => {
-    setImageLoading(true);
     try {
       const response = await axios.get(
         "https://api.unsplash.com/search/photos",
@@ -89,27 +89,40 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
       );
 
       if (response.data.results.length > 0) {
-        setImageLoading(false);
         return response.data.results[0].urls.regular;
       } else {
-        setImageLoading(false);
         console.log("No results from unsplash");
         return null;
       }
     } catch (error) {
       console.error(error);
-      setImageLoading(false);
       return null;
     }
   };
 
   useEffect(() => {
-    if (selectedMarker) {
-      fetchImage(selectedMarker.name + " " + tripState.value?.city).then(
-        setImageUrl
-      );
+    if (activeKeyState.value.length === 0) {
+      return;
     }
-  }, [selectedMarker]);
+    setImagesLoading(true);
+    renderMarkerForDay(
+      dayjs(dayLabels[parseInt(activeKeyState.value[0], 10)], "DD/MM/YYYY")
+    ).forEach((attraction: Attraction) => {
+      if (imageUrls[attraction.id]) return;
+
+      fetchImage(attraction.name + " " + tripState.value?.city).then((url) => {
+        if (url) {
+          setImageUrls((prev) => ({ ...prev, [attraction.id]: url }));
+        } else {
+          setImageUrls((prev) => ({
+            ...prev,
+            [attraction.id]: defaultAttractionImageUrl,
+          }));
+        }
+      });
+    });
+    setImagesLoading(false);
+  }, [activeKeyState.value.length, activeKeyState.value[0]]);
 
   useEffect(() => {
     if (activeKeyState.value.length === 0) {
@@ -149,7 +162,6 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
   const zoomLevel = activeKeyState.value.length === 1 ? 15 : 10;
 
   useEffect(() => {
-    console.log(attractionCardHoveredID.value);
     if (attractionCardHoveredID.value) {
       const attraction = cities
         .find((city) => city.name === tripState.value?.city)
@@ -247,51 +259,52 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
               })}
             </>
           )}
-        {activeKeyState.value.length > 0 && selectedMarker && !imageLoading && (
-          <InfoWindow
-            options={{ pixelOffset: new google.maps.Size(0, -35) }}
-            position={{
-              lat: selectedMarker.location.latitude,
-              lng: selectedMarker.location.longitude,
-            }}
-            onCloseClick={() => {
-              setMarkerClicked(false);
-              setSelectedMarker(null);
-            }}
-          >
-            <div className="attractionContainer">
-              <Image
-                className="attractionImage"
-                src={imageUrl || defaultAttractionImageUrl}
-                alt={selectedMarker.name}
-                preview={false}
-              />
-              <Title
-                level={5}
-                className="attractionName"
-                style={{ fontWeight: "bold" }}
-              >
-                {selectedMarker.name}
-              </Title>
-              <Tag
-                icon={<EuroCircleOutlined />}
-                color="green"
-                style={{
-                  gridColumn: "1",
-                  gridRow: "2",
-                  display: "inline-block",
-                  maxWidth: "60px",
-                }}
-              >
-                {" "}
-                {selectedMarker.perPersonCost
-                  ? selectedMarker.perPersonCost *
-                    (tripState!.value!.nAdults + tripState!.value!.nChildren)
-                  : "free"}
-              </Tag>
-            </div>
-          </InfoWindow>
-        )}
+        {activeKeyState.value.length > 0 &&
+          selectedMarker &&
+          !imagesLoading && (
+            <InfoWindow
+              options={{ pixelOffset: new google.maps.Size(0, -35) }}
+              position={{
+                lat: selectedMarker.location.latitude,
+                lng: selectedMarker.location.longitude,
+              }}
+              onCloseClick={() => {
+                setSelectedMarker(null);
+              }}
+            >
+              <div className="attractionContainer">
+                <Image
+                  className="attractionImage"
+                  src={imageUrls[selectedMarker.id]}
+                  alt={selectedMarker.name}
+                  preview={false}
+                />
+                <Title
+                  level={5}
+                  className="attractionName"
+                  style={{ fontWeight: "bold" }}
+                >
+                  {selectedMarker.name}
+                </Title>
+                <Tag
+                  icon={<EuroCircleOutlined />}
+                  color="green"
+                  style={{
+                    gridColumn: "1",
+                    gridRow: "2",
+                    display: "inline-block",
+                    maxWidth: "60px",
+                  }}
+                >
+                  {" "}
+                  {selectedMarker.perPersonCost
+                    ? selectedMarker.perPersonCost *
+                      (tripState!.value!.nAdults + tripState!.value!.nChildren)
+                    : "free"}
+                </Tag>
+              </div>
+            </InfoWindow>
+          )}
       </GoogleMap>
     </>
   );
