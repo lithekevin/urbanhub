@@ -57,6 +57,7 @@ function AttractionForm(props: AttractionFormProps) {
       setSelectedAttractionId(null);
       setShowParagraph(false);
       setSelectedMarker(null);
+      setMarkerClicked(false);
     };
   
     const onFinish = (values: any) => {
@@ -201,6 +202,7 @@ function AttractionForm(props: AttractionFormProps) {
                                 if(!markerClicked){
                                   setSelectedMarker(attraction);
                                 }
+                                
                               }}
                               onMouseOut={() => {
                                 if(!markerClicked){

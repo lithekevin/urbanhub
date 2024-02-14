@@ -7,7 +7,7 @@ import {
   FaPerson,
   FaPersonDress,
 } from "react-icons/fa6";
-import { TbCoinEuroFilled } from "react-icons/tb";
+import { TbCoinEuroFilled, TbWallet } from "react-icons/tb";
 import {
   Button,
   Divider,
@@ -508,11 +508,11 @@ function TripOverview(props: any) {
                 }
                 placement="bottom"
               >
-                <Text>
-                {" "}
-                <span style={{fontWeight: "bold"}}>Total Cost</span> / <span style={{fontSize: "smaller"}}>Budget</span> : <span style={{fontWeight: "bold"}}>{totalCost} €</span> / <span style={{fontSize: "smaller"}}>{trip?.budget}</span>
-                {" €"}{" "}
-              </Text>
+                <Text style={{ color: "red" }}>
+                  {" "}
+                  Total Cost : {totalCost}
+                  {" €"}{" "}
+                </Text>
               </Tooltip>
             </>
           ) : (
@@ -520,11 +520,19 @@ function TripOverview(props: any) {
               <TbCoinEuroFilled style={{ color: "grey" }} />
               <Text>
                 {" "}
-                <span style={{fontWeight: "bold"}}>Total Cost</span> / <span style={{fontSize: "smaller"}}>Budget</span> : <span style={{fontWeight: "bold"}}>{totalCost} €</span> / <span style={{fontSize: "smaller"}}>{trip?.budget}</span>
+                Total Cost : {totalCost}
                 {" €"}{" "}
               </Text>
             </>
           )}
+        </span>
+        <span>
+        <TbWallet  style={{ color: "grey" }} />
+              <Text>
+                {" "}
+                Budget : {trip?.budget}
+                {" €"}{" "}
+              </Text>
         </span>
         {editing && (
           <Tooltip title="Edit trip settings" placement="left">
