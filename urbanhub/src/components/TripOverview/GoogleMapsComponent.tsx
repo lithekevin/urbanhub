@@ -193,6 +193,7 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
         }
         zoom={zoomLevel}
         onLoad={(map) => {}}
+        onClick={() => {setSelectedMarker(null); setMarkerClicked(false);}}
       >
         {cityPositionState.value.lat !== defaultCenter.lat &&
           cityPositionState.value.lng !== defaultCenter.lng &&
@@ -249,10 +250,8 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
                       }
                     }}
                     onClick={() => {
-                      if(!markerClicked){
-                        setMarkerClicked(true);
-                        setSelectedMarker(attraction);
-                      }
+                      setMarkerClicked(true);
+                      setSelectedMarker(attraction);
                     }}
                   />
                 );
@@ -263,7 +262,7 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
           selectedMarker &&
           !imagesLoading && (
             <InfoWindow
-              options={{ pixelOffset: new google.maps.Size(0, -35) }}
+              options={{ pixelOffset: new google.maps.Size(0, -35), disableAutoPan: true }}
               position={{
                 lat: selectedMarker.location.latitude,
                 lng: selectedMarker.location.longitude,

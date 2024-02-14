@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { Modal, Form, DatePicker, Image, TimePicker, Button, AutoComplete, Typography } from 'antd';
-import { CloseSquareFilled } from '@ant-design/icons';
+import { Modal, Form, DatePicker, Image, TimePicker, Button, AutoComplete, Typography, Tag } from 'antd';
+import { CloseSquareFilled, EuroCircleOutlined } from '@ant-design/icons';
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { Attraction } from '../../models/attraction';
 import { addAttractionToTrip, editAttraction } from '../../firebase/daos/dao-trips';
@@ -49,6 +49,7 @@ function AttractionForm(props: AttractionFormProps) {
     setValidSelection, tripId, validSelection, zoomLevel, messageApi } = props;
 
     const [showParagraph, setShowParagraph] = useState(false);
+    const [markerClicked, setMarkerClicked] = useState<boolean>(false);
 
     const closeForm = () => {
       setIsFormVisible(false);
@@ -185,7 +186,7 @@ function AttractionForm(props: AttractionFormProps) {
               </Col>
               <Col>
                 <Form.Item>
-                  <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '45vh', margin: 'auto', display: 'block', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={selectedAttractionId === null ? cityPosition : cityPosition } zoom={zoomLevel} onLoad={(map) => {setMap(map)}}>             
+                  <GoogleMap clickableIcons={false} mapContainerStyle={{ width: '100%', height: '45vh', margin: 'auto', display: 'block', borderRadius: '10px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)' }} center={selectedAttractionId === null ? cityPosition : cityPosition } zoom={zoomLevel} onLoad={(map) => {setMap(map)}} onClick={() => {setSelectedMarker(null); setMarkerClicked(false);}}>             
                     { !selectedAttractionId && (
                       <>
                         {cities.find(city => city.name === trip?.city)?.attractions.map((attraction: Attraction, index: number) => {
@@ -195,12 +196,23 @@ function AttractionForm(props: AttractionFormProps) {
                               position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
                               icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(30, 30) }}
                               opacity={attraction === selectedMarker ? 0.9 : 0.7}
-                              onMouseOver={() => setSelectedMarker(attraction)} 
-                              onMouseOut={() => setSelectedMarker(null)}  
+                              onMouseOver={() => {
+                                if(!markerClicked){
+                                  setSelectedMarker(attraction);
+                                }
+                              }}
+                              onMouseOut={() => {
+                                if(!markerClicked){
+                                  setSelectedMarker(null);
+                                }
+                              }} 
                               onClick={() => {
                                 setSelectedAttractionId(attraction.id);
                                 form.setFieldsValue({ attraction: attraction.name }); // Update the AutoComplete value
-                                setSelectedMarker(null);
+                                if(!markerClicked){
+                                  setMarkerClicked(true);
+                                  setSelectedMarker(attraction);
+                                }
                               }}
                             />
                           );
@@ -216,8 +228,20 @@ function AttractionForm(props: AttractionFormProps) {
                                 key={attraction.id} 
                                 position={{ lat: attraction.location.latitude, lng: attraction.location.longitude }} 
                                 icon={{ url: "https://imgur.com/HXGfoxe.png", scaledSize: new window.google.maps.Size(37, 37) }}
-                                onMouseOver={() => setSelectedMarker(attraction)} 
-                                onMouseOut={() => setSelectedMarker(null)}/>
+                                onMouseOver={() => {
+                                  if(!markerClicked){
+                                    setSelectedMarker(attraction);
+                                  }
+                                }}
+                                onMouseOut={() => {
+                                  if(!markerClicked){
+                                    setSelectedMarker(null);
+                                  }
+                                }}
+                                onClick={() => {
+                                setMarkerClicked(true);
+                                setSelectedMarker(attraction);  
+                                }}/>
                             );
                           }
                             return null; // Render nothing if the attraction is not the selected one
@@ -228,11 +252,16 @@ function AttractionForm(props: AttractionFormProps) {
                       <InfoWindow
                         options={{ pixelOffset: new google.maps.Size(0, -35), disableAutoPan: true }}
                         position={{ lat: selectedMarker.location.latitude, lng: selectedMarker.location.longitude }}
-                        onCloseClick={() => { setSelectedMarker(null) }}
+                        onCloseClick={() => { 
+                          setSelectedMarker(null);
+                          setMarkerClicked(false);
+                         }}
+                        
                       >
                         <div className="smallAttractionContainer">
                           <Image className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} preview={false}/>
                           <Title className="attractionName" style={{textAlign: 'center', fontSize: '12px'}}>{selectedMarker.name}</Title>
+                          <Tag icon={<EuroCircleOutlined />} color="green" style={{gridColumn: "1", gridRow: "2", display: "inline-block", maxWidth: "60px", }}>{" "}{selectedMarker.perPersonCost ? selectedMarker.perPersonCost * (trip!.nAdults + trip!.nChildren) : "free"}</Tag>
                         </div>
                       </InfoWindow>
                     )}
