@@ -82,6 +82,7 @@ function Chatbot(props: ChatbotProps) {
   };
 
   const handleUndoClick = () => {
+    setIsValidInput(true);
     undoState.setter(false);
     editTrip(tripState.value?.id, tripUpdates);
     dirtyState.setter(true);
