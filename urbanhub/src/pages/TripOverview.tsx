@@ -6,8 +6,9 @@ import {
   FaChildDress,
   FaPerson,
   FaPersonDress,
+  FaWallet
 } from "react-icons/fa6";
-import { TbCoinEuroFilled, TbWallet } from "react-icons/tb";
+import { TbCoinEuroFilled } from "react-icons/tb";
 import {
   Button,
   Divider,
@@ -115,10 +116,6 @@ function TripOverview(props: any) {
     null
   );
 
-  //Chatbot - Footer interaction
-  const [footerVisible, setFooterVisible] = useState(false);
-  const [footerHeight, setFooterHeight] = useState(0);
-
   //ActiveKey is update opening the current day for ingoing trips
   useEffect(() => {
     if (!editing) {
@@ -144,49 +141,6 @@ function TripOverview(props: any) {
       }
     }
   }, [trip]);
-
-  // Add an effect to detect when the footer becomes visible
-  useEffect(() => {
-    // Function to calculate the visible height of the footer
-    const getVisibleFooterHeight = () => {
-      const footer = document.querySelector(".footer-style");
-      if (footer) {
-        const footerRect = footer.getBoundingClientRect();
-        if (footerRect.top >= 0 && footerRect.bottom <= window.innerHeight) {
-          return footerRect.height;
-        } else {
-          return window.innerHeight - footerRect.top; // Footer is partially visible
-        }
-      }
-      return 0; // Footer not found
-    };
-
-    // Update the state when the footer visibility changes
-    const handleScroll = () => {
-      const footer = document.querySelector(".footer-style");
-      if (footer) {
-        const footerBounds = footer.getBoundingClientRect();
-        // Check if any part of the footer is visible in the viewport
-        const isVisible =
-          footerBounds.top < window.innerHeight && footerBounds.bottom >= 0;
-        if (isVisible) {
-          const footerHeight = getVisibleFooterHeight();
-          setFooterHeight(footerHeight);
-          setFooterVisible(true);
-        } else {
-          setFooterVisible(false);
-        }
-      }
-    };
-
-    // Listen for scroll events to detect footer visibility changes
-    window.addEventListener("scroll", handleScroll);
-
-    // Clean up event listener
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   useEffect(() => {
     // load trip details from firebase based on tripId
@@ -460,38 +414,41 @@ function TripOverview(props: any) {
   return (
     <>
       {(loading || imageLoading) && (
-        <Spin tip="Loading" size="large" fullscreen>
-          <div> Loading </div>
-        </Spin>
+        <Spin tip="Loading" size="large" fullscreen/>
       )}
 
       {contextHolder}
 
       <Flex
+        align="middle"
         justify="space-between"
-        align="center"
         style={{
           fontSize: "25px",
           position: "relative",
-          paddingLeft: "1%",
-          paddingRight: "20%",
+          margin: "0 auto", 
+          maxWidth: "1200px", 
+          height: '37px'
         }}
       >
         {/* Arrow on the left */}
         <ArrowLeftOutlined
           className="float-left"
-          style={{ fontSize: "26px", marginLeft: "10px" }}
+          style={{ fontSize: "26px" }}
           onClick={() => navigate(-1)}
         />
         <span>
           <FaPersonDress style={{ color: "grey" }} size={30} />
-          <FaPerson style={{ color: "grey" }} size={30} />{" "}
-          <Text> Adults : {trip?.nAdults} </Text>{" "}
+          <FaPerson style={{ color: "grey" }} size={30} />
+          <Text> Adults : {trip?.nAdults} </Text>
         </span>
         <span>
           <FaChildDress style={{ color: "grey" }} size={25} />
-          <FaChild style={{ color: "grey" }} size={25} />{" "}
-          <Text> Children : {trip?.nChildren} </Text>{" "}
+          <FaChild style={{ color: "grey" }} size={25} />
+          <Text> Children : {trip?.nChildren} </Text>
+        </span>
+        <span>
+        <FaWallet style={{ color: "grey", marginRight: '2px' }} size={24}/>
+          <Text> Budget : {trip?.budget} € </Text>
         </span>
         <span>
           {trip && totalCost > trip.budget ? (
@@ -518,34 +475,25 @@ function TripOverview(props: any) {
           ) : (
             <>
               <TbCoinEuroFilled style={{ color: "grey" }} />
-              <Text>
-                {" "}
-                Total Cost : {totalCost}
-                {" €"}{" "}
+              <Text> Total Cost : {totalCost} €
               </Text>
             </>
           )}
         </span>
-        <span>
-        <TbWallet  style={{ color: "grey" }} />
-              <Text>
-                {" "}
-                Budget : {trip?.budget}
-                {" €"}{" "}
-              </Text>
-        </span>
+        {/* Empty placeholder for edit button */}
+        {!editing && (
+          <span className="placeholder-edit-button"></span>
+        )}
         {editing && (
-          <Tooltip title="Edit trip settings" placement="left">
+          <Tooltip title="Edit trip settings" placement="bottomLeft">
             <Button
               size="large"
               type="primary"
-              className="button-new-trip"
               style={{
                 backgroundColor: colors.whiteBackgroundColor,
-                color: "black",
+                color: colors.primaryButtonColor,
+                borderColor: colors.primaryButtonColor,
                 textAlign: "center",
-                position: "absolute",
-                right: 30,
               }}
               onClick={() => handleOpenModal()}
             >
@@ -677,7 +625,6 @@ function TripOverview(props: any) {
         </Container>
       </div>
 
-
       <Popover
         content={
           <Chatbot
@@ -686,8 +633,7 @@ function TripOverview(props: any) {
             undoState={{ value: undoVisibility, setter: setUndoVisibility }}
             messageAIState={{
               value: messageAI,
-              setter: setMessageAI,
-              color: "black",
+              setter: setMessageAI
             }}
             tripId={tripId}
             messageApi={messageApi}
@@ -698,35 +644,37 @@ function TripOverview(props: any) {
         onOpenChange={handlePopoverVisibleChange}
         placement="right"
         arrow={{ pointAtCenter: true }}
-        overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px" }}
+        overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px",  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", borderRadius: '4%' }}
       >
-        <Button
-          style={{
-            width: "55px",
-            height: "55px",
-            borderRadius: "50%",
-            position: "fixed",
-            right: "20px",
-            marginLeft: "2%",
-            bottom: `${footerVisible ? footerHeight + 20 : 20}px`,
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-            transform: `scale(${isHovered ? 1.1 : 1})`,
-            transition: "box-shadow transform 0.3s ease",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <Image
-            src="https://imgur.com/ijeaJNU.png"
-            alt="UrbanHub assistant"
-            preview={false}
-            height={"auto"}
-            style={{ maxWidth: "100%", maxHeight: "100%" }}
-          />
-        </Button>
+        <Tooltip title={<Text style={{color: 'white'}}>Click me! I can help you modify the trip.</Text>} placement="topLeft">
+          <Button
+            style={{
+              width: "65px",
+              height: "65px",
+              borderRadius: "50%",
+              position: "fixed",
+              right: "17px",
+              zIndex: 999,
+              bottom: `40px`,
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              transform: `scale(${isHovered ? 1.1 : 1})`,
+              transition: "box-shadow transform 0.3s ease",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <Image
+              src="https://imgur.com/ijeaJNU.png"
+              alt="UrbanHub assistant"
+              preview={false}
+              height={"auto"}
+              style={{ width: '55px', height: '55px' }}
+            />
+          </Button>
+        </Tooltip>
       </Popover>
 
     </>

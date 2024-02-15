@@ -163,9 +163,7 @@ function MyTrips() {
   return (
     <>
       {loading && (
-        <Spin tip="Loading" size="large" fullscreen>
-        <div> Loading </div>
-        </Spin>
+        <Spin tip="Loading" size="large" fullscreen/>
       )}
 
       {error && (

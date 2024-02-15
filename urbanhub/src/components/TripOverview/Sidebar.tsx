@@ -128,9 +128,7 @@ function Sidebar(props: SidebarProps) {
   return (
     <>
       {loadingState.value && (
-        <Spin tip="Loading" size="large" fullscreen>
-          <div> Loading </div>
-        </Spin>
+        <Spin tip="Loading" size="large" fullscreen/>
       )}
       {errorState.value && (
         <Col>
@@ -174,6 +172,7 @@ function Sidebar(props: SidebarProps) {
                     className="button-new-trip"
                     style={{
                       backgroundColor: colors.whiteBackgroundColor,
+                      borderColor: colors.primaryButtonColor,
                       color: "black",
                       textAlign: "center",
                       fontSize: "15px",
@@ -187,7 +186,7 @@ function Sidebar(props: SidebarProps) {
                     }}
                   >
                     <span>
-                      {!editing.value ? <EditOutlined /> : <EyeOutlined />}
+                      {!editing.value ? <EditOutlined style={{ color: colors.primaryButtonColor }}/> : <EyeOutlined style={{ color: colors.primaryButtonColor }}/>}
                     </span>
                   </Button>
                 </Tooltip>
