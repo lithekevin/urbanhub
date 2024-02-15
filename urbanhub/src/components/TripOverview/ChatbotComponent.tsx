@@ -616,7 +616,9 @@ function Chatbot(props: ChatbotProps) {
     <Flex align='center' justify='space-between'>
       <Flex style={{ alignItems: 'center', display: 'flex' }}>
         <Image src={isValidInput ? "https://imgur.com/tRPWpWV.png" : "https://imgur.com/eqRKYiA.png"} alt="UrbanHub assistant" preview={false} width={65} style={{ paddingRight: '3px' }} />
-        <Text style={{ maxWidth: '250px' }}>{messageAIState.value}</Text>
+        <Text style={{ width: '210px' }}>
+          <TypingText text={messageAIState.value}/>
+        </Text>
       </Flex>
       <Flex style={{ flex: 1, display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
         <Tooltip
@@ -640,11 +642,34 @@ function Chatbot(props: ChatbotProps) {
             style={{ marginRight: '10px', width: 'calc(100% - 20px)' }}
           />
         </Tooltip>
-        <Button type="primary" onClick={handleSendClick} style={{ width: '100px' }} icon={<IoMdSend size={18} style={{ marginBottom: '4px' }} />}>Send</Button>
-        {undoState.value && (<Button type="primary" onClick={handleUndoClick} style={{ width: '100px', marginLeft: '10px' }} icon={<FaUndo style={{ marginBottom: '2px' }} />}>Undo </Button>)}
+        <Button type="primary" onClick={handleSendClick} style={{ width: '100px', backgroundColor: colors.hardBackgroundColor }} icon={<IoMdSend size={18} style={{ marginBottom: '4px' }} />}>Send</Button>
+        {undoState.value && (<Tooltip title="Undo your last operation" placement='topRight'><Button type='text' onClick={handleUndoClick} style={{ width: '100px', marginLeft: '10px', border: '1px dashed black' }} icon={<FaUndo style={{ marginBottom: '3px' }} />}>Undo </Button></Tooltip>)}
       </Flex>
     </Flex>
   );
+};
+
+const TypingText = ({ text }: { text: string }) => {
+  const [displayedText, setDisplayedText] = useState('');
+
+  useEffect(() => {
+    let index = 0;
+    const timer = setInterval(() => {
+      // Add one character at a time
+      setDisplayedText(text.substring(0, index));
+      index++;
+
+      // Clear the interval when the text is fully displayed
+      if (index > text.length) {
+        clearInterval(timer);
+      }
+    }, 50); // Adjust the timing to control the typing speed
+
+    // Cleanup function
+    return () => clearInterval(timer);
+  }, [text]);
+
+  return <span>{displayedText}</span>;
 };
 
 export default Chatbot;

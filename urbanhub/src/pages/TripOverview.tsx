@@ -392,6 +392,7 @@ function TripOverview(props: any) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
+      setMessageAI("Is there anything I can do for you?");
     }
   };
 
@@ -482,7 +483,7 @@ function TripOverview(props: any) {
         </span>
         {/* Empty placeholder for edit button */}
         {!editing && (
-          <span className="placeholder-edit-button"></span>
+          <span style={{ width: '47.5px' }}></span>
         )}
         {editing && (
           <Tooltip title="Edit trip settings" placement="bottomLeft">
@@ -648,6 +649,8 @@ function TripOverview(props: any) {
       >
         <Tooltip title={<Text style={{color: 'white'}}>Click me! I can help you modify the trip.</Text>} placement="topLeft">
           <Button
+            type="text"
+            className = "chatbot-button"
             style={{
               width: "65px",
               height: "65px",
@@ -655,6 +658,7 @@ function TripOverview(props: any) {
               position: "fixed",
               right: "17px",
               zIndex: 999,
+              backgroundColor: 'white',
               bottom: `40px`,
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               transform: `scale(${isHovered ? 1.1 : 1})`,
