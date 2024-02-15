@@ -392,6 +392,7 @@ function TripOverview(props: any) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
+      setMessageAI("Is there anything I can do for you?");
     }
   };
 
