@@ -1,10 +1,10 @@
-import { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Card, Row, Col, Container } from "react-bootstrap";
 import { Typography, Dropdown, Menu, Button, Modal, message, Skeleton, Image, Empty, Spin, Alert, Tabs, Flex, ConfigProvider } from "antd";
 import { MoreOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { MenuInfo } from "rc-menu/lib/interface";
 import colors from "../style/colors";
 import dayjs from "dayjs";
@@ -14,49 +14,56 @@ const { Text, Title, Paragraph } = Typography;
 const defaultImageURL = "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 function MyTrips() {
-
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<string>("2"); // Default to "2" (Ongoing trips)
 
   const [messageApi, contextHolder] = message.useMessage();
-
   const [enlargedCard, setEnlargedCard] = useState<string | null>(null);
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    // load trips from firebase
+    // Load trips from firebase
     async function loadTrips() {
       setLoading(true);
-      getAllTrips()
-        .then((DBtrips) => {
-          let processedTrips: Trip[] = DBtrips.map((trip) => {
-            let processedTrip: Trip = trip;
-            processedTrip.image =
-              cities.find((city) => city.name === trip.city)?.image ??
-              defaultImageURL;
-            return processedTrip;
-          }).sort((a, b) => {
-            return dayjs(a.startDate).isAfter(dayjs(b.startDate)) ? 1 : -1;
-          });
-
-          setTrips(processedTrips);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setError(true);
-          setLoading(false);
+      try {
+        const DBtrips = await getAllTrips();
+        let processedTrips: Trip[] = DBtrips.map((trip) => {
+          let processedTrip: Trip = trip;
+          processedTrip.image =
+            cities.find((city) => city.name === trip.city)?.image ??
+            defaultImageURL;
+          return processedTrip;
+        }).sort((a, b) => {
+          return dayjs(a.startDate).isAfter(dayjs(b.startDate)) ? 1 : -1;
         });
+
+        setTrips(processedTrips);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        setError(true);
+        setLoading(false);
+      }
     }
 
     loadTrips();
   }, []);
 
-  const handleDelete = (trip: Trip) => {
+  useEffect(() => {
+    // Retrieve the active tab from URL parameters when the component mounts or updates
+    const searchParams = new URLSearchParams(location.search);
+    const tabParam = searchParams.get("tab");
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [location.search]);
+
+  const handleDelete = async (trip: Trip) => {
     setEnlargedCard(trip.id);
     // Display a custom confirmation dialog
     Modal.confirm({
@@ -76,28 +83,12 @@ function MyTrips() {
       ),
       centered: true,
       onOk: async () => {
-        // Implement your logic to delete the trip with the given ID
-
         try {
           await deleteTrip(trip.id);
-          messageApi.open({
-            type: "success",
-            content: "Trip deleted successfully!",
-            duration: 3,
-            style: {
-              marginTop: "70px",
-            },
-          });
+          messageApi.success("Trip deleted successfully!");
         } catch (error) {
           console.log(error);
-          messageApi.open({
-            type: "error",
-            content: "Error while deleting trip!",
-            duration: 3,
-            style: {
-              marginTop: "70px",
-            },
-          });
+          messageApi.error("Error while deleting trip!");
         }
 
         console.log(`Deleting trip:
@@ -167,24 +158,24 @@ function MyTrips() {
       )}
 
       {error && (
-      <Col>
-        <Alert
-          message={
-            <Title level={3}>
-              Oh snap! You got an error!
-            </Title>
-          }
-          showIcon
-          description={
-            <>
-              <Paragraph> Error while loading trips. </Paragraph>
-              <Paragraph> Please refresh the page. </Paragraph>
-            </>
-          }
-          type="error"
-          style={{width: 'fit-content', margin: 'auto', marginTop: '20px'}}
-        />
-      </Col>
+        <Col>
+          <Alert
+            message={
+              <Title level={3}>
+                Oh snap! You got an error!
+              </Title>
+            }
+            showIcon
+            description={
+              <>
+                <Paragraph> Error while loading trips. </Paragraph>
+                <Paragraph> Please refresh the page. </Paragraph>
+              </>
+            }
+            type="error"
+            style={{width: 'fit-content', margin: 'auto', marginTop: '20px'}}
+          />
+        </Col>
       )}
 
       {contextHolder}
@@ -196,88 +187,94 @@ function MyTrips() {
 
       {!loading && !error && (
         <>
-        <ConfigProvider
-          theme={{
-            components: {
-              Tabs: {
-                inkBarColor: "var(--hard-background-color)"
+          <ConfigProvider
+            theme={{
+              components: {
+                Tabs: {
+                  inkBarColor: "var(--hard-background-color)"
+                },
               },
-            },
-          }}
-        >
-          
-        
-          <Tabs
-            className="custom-tabs mt-4"
-            defaultActiveKey="2"
-            centered
-            items={new Array(3).fill(null).map((_, i) => {
-              const id = String(i + 1);
-              const tabLabel = id === '1' ? 'Past Trips' : id === '2' ? 'Ongoing trips' : 'Future trips';
-              return {
-                label: <Flex align="middle" justify="center" style={{width: '130px'}}><Text style={{ fontSize: '18px' }}>{tabLabel}</Text></Flex>,
-                key: id,
-                children: (
-                  <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ marginTop: '20px' }}>
-                    <Row className="d-flex flex-row justify-content-center">
-                      {id === '2' && trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).length === 0 ? (
+            }}
+          >
+            <Tabs
+              className="custom-tabs mt-4"
+              activeKey={activeTab}
+              onChange={(key) => {
+                // Update the URL when the active tab changes
+                navigate(`.?tab=${key}`);
+                setActiveTab(key);
+              }}
+              centered
+              items={new Array(3).fill(null).map((_, i) => {
+                const id = String(i + 1);
+                const tabLabel = id === '1' ? 'Past Trips' : id === '2' ? 'Ongoing trips' : 'Future trips';
+                return {
+                  label: <Flex align="middle" justify="center" style={{width: '130px'}}><Text style={{ fontSize: '18px' }}>{tabLabel}</Text></Flex>,
+                  key: id,
+                  children: (
+                    <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ marginTop: '20px' }}>
+                      <Row className="d-flex flex-row justify-content-center">
+                        {id === '2' && trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).length === 0 ? (
+                            <div className="empty-container">
+                              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You are not currently on any trip"/>
+                            </div>
+                        ) : id === '2' ? (
+                          trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).map((trip, index) => (
+                            <TripCard
+                              key={trip.id}
+                              trip={trip}
+                              menu={menu}
+                              enlargedCard={enlargedCard}
+                              setEnlargedCard={setEnlargedCard}
+                              isMenuOpen={isMenuOpen}
+                              setIsMenuOpen={setIsMenuOpen}
+                              handleMenuHover={handleMenuHover}
+                              activeTab={activeTab}
+                            />
+                          ))
+                        ) : id === '3' && trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0 ? (
                           <div className="empty-container">
-                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You are not currently on any trip"/>
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any trip planned for the future" />
                           </div>
-                      ) : id === '2' ? (
-                        trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).map((trip, index) => (
-                          <TripCard
-                            key={trip.id}
-                            trip={trip}
-                            menu={menu}
-                            enlargedCard={enlargedCard}
-                            setEnlargedCard={setEnlargedCard}
-                            isMenuOpen={isMenuOpen}
-                            setIsMenuOpen={setIsMenuOpen}
-                            handleMenuHover={handleMenuHover}
-                          />
-                        ))
-                      ) : id === '3' && trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0 ? (
-                        <div className="empty-container">
-                          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any trip planned for the future" />
-                        </div>
-                      ) : id === '3' ? (
-                        trips.filter((t) => t.startDate.isAfter(dayjs())).map((trip, index) => (
-                          <TripCard
-                            key={trip.id}
-                            trip={trip}
-                            menu={menu}
-                            enlargedCard={enlargedCard}
-                            setEnlargedCard={setEnlargedCard}
-                            isMenuOpen={isMenuOpen}
-                            setIsMenuOpen={setIsMenuOpen}
-                            handleMenuHover={handleMenuHover}
-                          />
-                        ))
-                      ) : id === '1' && trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0 ? (
-                        <div className="empty-container">
-                          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any past trip" />
-                        </div>
-                      ) : (
-                        trips.filter((t) => t.endDate.isBefore(dayjs())).map((trip, index) => (
-                          <TripCard
-                            key={trip.id}
-                            trip={trip}
-                            menu={menu}
-                            enlargedCard={enlargedCard}
-                            setEnlargedCard={setEnlargedCard}
-                            isMenuOpen={isMenuOpen}
-                            setIsMenuOpen={setIsMenuOpen}
-                            handleMenuHover={handleMenuHover}
-                          />
-                        ))
-                      )}
-                    </Row>
-                  </Container>
-                ),
-              };
-            })}
-          />
+                        ) : id === '3' ? (
+                          trips.filter((t) => t.startDate.isAfter(dayjs())).map((trip, index) => (
+                            <TripCard
+                              key={trip.id}
+                              trip={trip}
+                              menu={menu}
+                              enlargedCard={enlargedCard}
+                              setEnlargedCard={setEnlargedCard}
+                              isMenuOpen={isMenuOpen}
+                              setIsMenuOpen={setIsMenuOpen}
+                              handleMenuHover={handleMenuHover}
+                              activeTab={activeTab}
+                            />
+                          ))
+                        ) : id === '1' && trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0 ? (
+                          <div className="empty-container">
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any past trip" />
+                          </div>
+                        ) : (
+                          trips.filter((t) => t.endDate.isBefore(dayjs())).map((trip, index) => (
+                            <TripCard
+                              key={trip.id}
+                              trip={trip}
+                              menu={menu}
+                              enlargedCard={enlargedCard}
+                              setEnlargedCard={setEnlargedCard}
+                              isMenuOpen={isMenuOpen}
+                              setIsMenuOpen={setIsMenuOpen}
+                              handleMenuHover={handleMenuHover}
+                              activeTab={activeTab}
+                            />
+                          ))
+                        )}
+                      </Row>
+                    </Container>
+                  ),
+                };
+              })}
+            />
           </ConfigProvider>
         </>
       )}
@@ -293,9 +290,10 @@ function TripCard(props: Readonly<{
   isMenuOpen: boolean;
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleMenuHover: (trip: Trip) => void;
+  activeTab: string;
 }>) {
   
-  const { trip, menu, enlargedCard, setEnlargedCard, isMenuOpen, setIsMenuOpen, handleMenuHover } = props;
+  const { trip, menu, enlargedCard, setEnlargedCard, isMenuOpen, setIsMenuOpen, handleMenuHover, activeTab } = props;
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -305,7 +303,7 @@ function TripCard(props: Readonly<{
 
   return (
     <Col key={trip.id} xs={7} md={4} lg={3} className="mb-4">
-      <Link to={`/trips/${trip.id}`} className="text-decoration-none">
+      <Link to={{ pathname: `/trips/${trip.id}`}} className="text-decoration-none" >
         <Card
           key={trip.id}
           className={`text-center tripCard ${
@@ -362,7 +360,6 @@ function TripCard(props: Readonly<{
     </Col>
   );
 }
-
 
 function AddTripButton() {
   return (
