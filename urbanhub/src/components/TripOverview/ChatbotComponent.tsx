@@ -639,8 +639,8 @@ function Chatbot(props: ChatbotProps) {
             style={{ marginRight: '10px', width: 'calc(100% - 20px)' }}
           />
         </Tooltip>
-        <Button type="primary" onClick={handleSendClick} style={{ width: '100px' }} icon={<IoMdSend size={18} style={{ marginBottom: '4px' }} />}>Send</Button>
-        {undoState.value && (<Button type="primary" onClick={handleUndoClick} style={{ width: '100px', marginLeft: '10px' }} icon={<FaUndo style={{ marginBottom: '2px' }} />}>Undo </Button>)}
+        <Button type="primary" onClick={handleSendClick} style={{ width: '100px', backgroundColor: colors.hardBackgroundColor }} icon={<IoMdSend size={18} style={{ marginBottom: '4px' }} />}>Send</Button>
+        {undoState.value && (<Button type='text' onClick={handleUndoClick} style={{ width: '100px', marginLeft: '10px', border: '1px dashed black' }} icon={<FaUndo style={{ marginBottom: '3px' }} />}>Undo </Button>)}
       </Flex>
     </Flex>
   );

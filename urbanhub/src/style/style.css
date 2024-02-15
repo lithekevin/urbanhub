@@ -121,6 +121,11 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
     transition: transform 0.3s ease;
 }
 
+.chatbot-button:hover{
+    border: 1px solid #00AA70;
+    border-color: #00AA70;
+}
+
 /************
 * TRIP OVERVIEW
 ************/

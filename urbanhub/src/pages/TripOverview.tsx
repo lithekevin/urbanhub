@@ -648,6 +648,8 @@ function TripOverview(props: any) {
       >
         <Tooltip title={<Text style={{color: 'white'}}>Click me! I can help you modify the trip.</Text>} placement="topLeft">
           <Button
+            type="text"
+            className = "chatbot-button"
             style={{
               width: "65px",
               height: "65px",
