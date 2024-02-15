@@ -482,7 +482,7 @@ function TripOverview(props: any) {
         </span>
         {/* Empty placeholder for edit button */}
         {!editing && (
-          <span className="placeholder-edit-button"></span>
+          <span style={{ width: '47.5px' }}></span>
         )}
         {editing && (
           <Tooltip title="Edit trip settings" placement="bottomLeft">
