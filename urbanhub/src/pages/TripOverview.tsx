@@ -657,6 +657,7 @@ function TripOverview(props: any) {
               position: "fixed",
               right: "17px",
               zIndex: 999,
+              backgroundColor: 'white',
               bottom: `40px`,
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               transform: `scale(${isHovered ? 1.1 : 1})`,
