@@ -667,7 +667,7 @@ function TripOverview(props: any) {
             onMouseLeave={() => setIsHovered(false)}
           >
             <Image
-              src="https://imgur.com/ijeaJNU.png"
+              src="https://imgur.com/tRPWpWV.png"
               alt="UrbanHub assistant"
               preview={false}
               height={"auto"}

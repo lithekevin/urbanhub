@@ -93,7 +93,7 @@ function Step2(props: Step2Props) {
             <div key={question}>
               <Row gutter={[16, 0]} align="middle">
                 <Col span={2}>
-                  <Image src="https://imgur.com/Yax8pdf.png" className='bot-AI' alt='bot-AI' preview={false} style={{marginBottom: '1rem', width: '120%'}} />
+                  <Image src="https://imgur.com/R1maLDV.png" className='bot-AI' alt='bot-AI' preview={false} style={{marginBottom: '1rem', width: '120%'}} />
                 </Col>
                 <Col span={22}>
                   <Row gutter={[16, 0]}>
