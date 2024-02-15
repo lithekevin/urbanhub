@@ -643,7 +643,7 @@ function Chatbot(props: ChatbotProps) {
           />
         </Tooltip>
         <Button type="primary" onClick={handleSendClick} style={{ width: '100px', backgroundColor: colors.hardBackgroundColor }} icon={<IoMdSend size={18} style={{ marginBottom: '4px' }} />}>Send</Button>
-        {undoState.value && (<Button type='text' onClick={handleUndoClick} style={{ width: '100px', marginLeft: '10px', border: '1px dashed black' }} icon={<FaUndo style={{ marginBottom: '3px' }} />}>Undo </Button>)}
+        {undoState.value && (<Tooltip title="Undo your last operation" placement='topRight'><Button type='text' onClick={handleUndoClick} style={{ width: '100px', marginLeft: '10px', border: '1px dashed black' }} icon={<FaUndo style={{ marginBottom: '3px' }} />}>Undo </Button></Tooltip>)}
       </Flex>
     </Flex>
   );
