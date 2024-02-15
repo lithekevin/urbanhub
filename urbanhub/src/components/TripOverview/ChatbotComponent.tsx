@@ -585,7 +585,7 @@ function Chatbot(props: ChatbotProps) {
   return (
     <Flex align='center' justify='space-between'>
       <Flex style={{ alignItems: 'center', display: 'flex'}}>
-        <Image src={"https://imgur.com/VjTAdBj.png"} alt="UrbanHub assistant" preview={false} width={60} style={{ paddingRight: '10px'}}/>
+        <Image src={"https://imgur.com/ijeaJNU.png"} alt="UrbanHub assistant" preview={false} width={65} style={{ paddingRight: '3px'}}/>
         <Text style={{ maxWidth: '250px'}}>{messageAIState.value}</Text>
       </Flex>
       <Flex style={{ flex: 1, display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
@@ -610,7 +610,7 @@ function Chatbot(props: ChatbotProps) {
             style={{ marginRight: '10px', width: 'calc(100% - 20px)' }} 
         />
       </Tooltip>
-        <Button type="primary" onClick={handleSendClick} style={{ width: '100px', backgroundColor: colors.hardBackgroundColor }} icon={<IoMdSend size={18} style={{marginBottom: '4px'}}/>}>Send</Button>
+        <Button type="primary" onClick={handleSendClick} style={{ width: '100px' }} icon={<IoMdSend size={18} style={{marginBottom: '4px'}}/>}>Send</Button>
         {undoState.value && (<Button type="primary" onClick={handleUndoClick} style={{ width: '100px', marginLeft:'10px' }} icon={<FaUndo style={{marginBottom:'2px'}}/>}>Undo </Button>)}
       </Flex>
     </Flex>

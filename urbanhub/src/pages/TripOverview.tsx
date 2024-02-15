@@ -649,8 +649,8 @@ function TripOverview(props: any) {
         <Tooltip title={<Text style={{color: 'white'}}>Click me! I can help you modify the trip.</Text>} placement="topLeft">
           <Button
             style={{
-              width: "60px",
-              height: "60px",
+              width: "65px",
+              height: "65px",
               borderRadius: "50%",
               position: "fixed",
               right: "17px",
@@ -667,12 +667,11 @@ function TripOverview(props: any) {
             onMouseLeave={() => setIsHovered(false)}
           >
             <Image
-              src="https://imgur.com/ZXfni0p.png"
+              src="https://imgur.com/ijeaJNU.png"
               alt="UrbanHub assistant"
               preview={false}
               height={"auto"}
-              style={{ width: '60px', height: '60px' }}
-              className="chatbot-button"
+              style={{ width: '55px', height: '55px' }}
             />
           </Button>
         </Tooltip>
