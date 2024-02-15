@@ -14,7 +14,7 @@ import colors from "../../style/colors";
 import dayjs from "dayjs";
 import { MessageInstance } from "antd/es/message/interface";
 
-const { Title } = Typography;
+const { Link, Text, Title } = Typography;
 
 interface DailyAttractionsProps {
   attractionDistances: string[];
@@ -187,20 +187,20 @@ function DailyAttractions(props: DailyAttractionsProps) {
                   </Flex>
                   
                     <Flex align="center" className="mb-3">
-                    <a
-                    href={wikipediaUrls[attraction.name]}
-                    target="_blank"
-                    style={{
-                      color: "black",
-                      textDecoration: "none",
-                      textAlign: "left",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                      <InfoCircleOutlined />
-                      <p className="ms-1 my-auto">read more...</p>
-                      </a>
+                      <Link
+                      href={wikipediaUrls[attraction.name]}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        color: "black",
+                        textAlign: "left",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                      >
+                        <InfoCircleOutlined />
+                        <Text className="ms-1 my-auto">Read more...</Text>
+                      </Link>
                     </Flex>
                   
                   <Tag
