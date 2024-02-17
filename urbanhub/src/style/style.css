@@ -400,3 +400,27 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
     aspect-ratio: 3/2;
     border-radius: 4%;
 }
+
+
+.morequestions-button{
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--hard-background-color);
+    color: var(--white-background-color);
+    border-color: var(--hard-background-color);
+}
+.morequestions-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    color: #1f1f1f;
+}
+
+.morequestions-button:disabled{
+    background-color: rgb(233, 233, 233);
+    border-color: #d9d9d9;
+    color: #1f1f1f;
+}
+
+

@@ -1579,11 +1579,11 @@ const cities: City[] = [
       },
       {
         id: "A186",
-        name: "Basilica di Santa Croce",
+        name: "Campanile di Giotto",
         city: "Florence",
-        location: { latitude: 43.7684, longitude: 11.2624 },
-        estimatedTime: 130,
-        perPersonCost: 20,
+        location: { latitude: 43.7730, longitude: 11.2550 },
+        estimatedTime: 60,
+        perPersonCost: 0,
       },
       {
         id: "A187",

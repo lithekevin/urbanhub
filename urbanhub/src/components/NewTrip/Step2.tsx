@@ -3,6 +3,7 @@ import { Button, Col, Form, Image, Input, Modal, Progress, Row, Typography } fro
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import questions from '../../firebase/questions'; 
 import shuffle from 'lodash/shuffle';
+import colors from '../../style/colors';
 
 const { Title, Paragraph } = Typography;
 
@@ -127,11 +128,12 @@ function Step2(props: Step2Props) {
                 setQuestionsPageNumber((number) => number-1)
               }} 
               disabled={questionsPageNumber === 0}>
+              
                 <LeftOutlined />
+                Previous questions
             </Button>
             { questionsPageNumber < 2 &&
             <Button 
-              style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               onClick={() => {
                 if(allDisplayedQuestions.length === questionsPageNumber*3+3){
                   loadMoreQuestions();
@@ -142,7 +144,9 @@ function Step2(props: Step2Props) {
                 setQuestionsPageNumber((number) => number+1)
               }} 
               disabled={questionsPageNumber === 2 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).length < 3 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).some((ans) => ans.length === 0)}
+              className='morequestions-button'
             >
+              More questions
               <RightOutlined />
             </Button>
             }
@@ -153,7 +157,7 @@ function Step2(props: Step2Props) {
           <Button type="default" onClick={prevStep} className="button">
             Previous
           </Button>
-          <Button type='primary' onClick={handleClickNextStep} className="button" htmlType="submit">
+          <Button type='primary' onClick={handleClickNextStep} style={{backgroundColor: (userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "white" : colors.hardBackgroundColor}} className={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "button nextUncompletedButton" : "button nextCompletedButton"} htmlType="submit">
             Next
           </Button>
         </div>
