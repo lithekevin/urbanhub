@@ -4,6 +4,7 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import questions from '../../firebase/questions'; 
 import shuffle from 'lodash/shuffle';
 import colors from '../../style/colors';
+import { max } from 'lodash';
 
 const { Title, Paragraph } = Typography;
 
@@ -16,6 +17,8 @@ interface Step2Props {
   setUserAnswers: React.Dispatch<React.SetStateAction<string[]>>;
   questionsPageNumber: number;
   setQuestionsPageNumber: React.Dispatch<React.SetStateAction<number>>;
+  maxPageNumber: number;
+  setMaxPageNumber: React.Dispatch<React.SetStateAction<number>>;
   step: number;
   prevStep: () => void;
   nextStep: () => void;
@@ -23,7 +26,7 @@ interface Step2Props {
 
 function Step2(props: Step2Props) {
   const { displayedQuestions, setDisplayedQuestions, allDisplayedQuestions, setAllDisplayedQuestions, 
-          userAnswers, setUserAnswers, questionsPageNumber, setQuestionsPageNumber, 
+          userAnswers, setUserAnswers, questionsPageNumber, setQuestionsPageNumber, maxPageNumber, setMaxPageNumber,
           step, prevStep, nextStep } = props;
           
   // Handle user's answers to questions
@@ -142,11 +145,16 @@ function Step2(props: Step2Props) {
                   setDisplayedQuestions(allDisplayedQuestions.slice((questionsPageNumber+1)*3, (questionsPageNumber+1)*3+3))
                 }
                 setQuestionsPageNumber((number) => number+1)
+                
+                if(questionsPageNumber === maxPageNumber){
+                  setMaxPageNumber((number) => number+1)
+                }
+
               }} 
-              disabled={questionsPageNumber === 2 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).length < 3 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).some((ans) => ans.length === 0)}
+              disabled={questionsPageNumber === 2 || (userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).length < 3 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).some((ans) => ans.length === 0) && maxPageNumber <= questionsPageNumber)}
               className='morequestions-button'
             >
-              More questions
+              {questionsPageNumber === (maxPageNumber) ?  "More questions" : "Next questions"}
               <RightOutlined />
             </Button>
             }
@@ -157,7 +165,7 @@ function Step2(props: Step2Props) {
           <Button type="default" onClick={prevStep} className="button">
             Previous
           </Button>
-          <Button type='primary' onClick={handleClickNextStep} style={{backgroundColor: (userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "white" : colors.hardBackgroundColor}} className={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "button nextUncompletedButton" : "button nextCompletedButton"} htmlType="submit">
+          <Button type='primary' onClick={handleClickNextStep} style={{backgroundColor: (userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "white" : colors.hardBackgroundColor, color: (userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? 'black' : colors.whiteBackgroundColor}} className={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "button nextUncompletedButton" : "button nextCompletedButton"} htmlType="submit">
             Next
           </Button>
         </div>

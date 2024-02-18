@@ -408,19 +408,20 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
     align-items: center;
     justify-content: center;
     background-color: var(--hard-background-color);
-    color: var(--white-background-color);
+    color: white;
     border-color: var(--hard-background-color);
 }
-.morequestions-button:hover {
+.morequestions-button:not(:disabled):hover {
     transform: scale(1.05);
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    color: #1f1f1f;
+    color: white !important;
+    border-color: var(--hard-background-color) !important;
 }
 
 .morequestions-button:disabled{
     background-color: rgb(233, 233, 233);
     border-color: #d9d9d9;
-    color: #1f1f1f;
+    color: #c8c8c8;
 }
 
 

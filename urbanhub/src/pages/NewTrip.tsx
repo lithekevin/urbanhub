@@ -84,6 +84,9 @@ function NewTrip (props: TripFormProps) {
   // State to store all displayed questions (including previous ones)
   const [allDisplayedQuestions, setAllDisplayedQuestions] = React.useState<string[]>([]);
 
+  // State to store the max page number
+  const [maxPageNumber, setMaxPageNumber] = React.useState(0);
+
   // New state to store user answers to questions
   const [userAnswers, setUserAnswers] = React.useState<string[]>(
     Array(allDisplayedQuestions.length).fill("")
@@ -263,6 +266,8 @@ function NewTrip (props: TripFormProps) {
                 setUserAnswers={setUserAnswers}
                 questionsPageNumber={questionsPageNumber}
                 setQuestionsPageNumber={setQuestionsPageNumber}
+                maxPageNumber={maxPageNumber}
+                setMaxPageNumber={setMaxPageNumber}
                 prevStep={prevStep}
                 nextStep={nextStep}
               />
