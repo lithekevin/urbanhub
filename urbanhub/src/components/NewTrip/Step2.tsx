@@ -124,6 +124,7 @@ function Step2(props: Step2Props) {
         <Row className='w-100'>
           <Col span={24} className='d-flex flex-row justify-content-between'>
             <Button 
+              type = 'default'
               style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               className='nextButtonSecondary'
               onClick={() => {
@@ -137,6 +138,8 @@ function Step2(props: Step2Props) {
             </Button>
             { questionsPageNumber < 2 &&
             <Button 
+              type = 'primary'
+              style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               onClick={() => {
                 if(allDisplayedQuestions.length === questionsPageNumber*3+3){
                   loadMoreQuestions();
@@ -152,7 +155,6 @@ function Step2(props: Step2Props) {
 
               }} 
               disabled={questionsPageNumber === 2 || (userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).length < 3 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).some((ans) => ans.length === 0) && maxPageNumber <= questionsPageNumber)}
-              className='morequestions-button'
             >
               {questionsPageNumber === (maxPageNumber) ?  "More questions" : "Next questions"}
               <RightOutlined />
@@ -165,7 +167,7 @@ function Step2(props: Step2Props) {
           <Button type="default" onClick={prevStep} className="button nextButtonSecondary">
             Previous
           </Button>
-          <Button type='primary' onClick={handleClickNextStep} className={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "button nextButtonSecondary" : "button nextButtonPrimary"} htmlType="submit">
+          <Button type={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "default" : "primary"} onClick={handleClickNextStep} className="button" htmlType="submit">
             Next
           </Button>
         </div>

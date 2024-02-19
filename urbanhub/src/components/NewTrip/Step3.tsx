@@ -98,10 +98,10 @@ function Step3 (props: Step3Props) {
       }
 
       <div className="mb-2 d-flex align-items-center justify-content-center">
-        <Button type="default" onClick={prevStep} className="button nextButtonSecondary">
+        <Button type="default" onClick={prevStep} className="button">
           Previous
         </Button>
-        <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button nextButtonPrimary" onClick={() => { setLoading(true); onSubmit(formData) }} style={{backgroundColor: colors.hardBackgroundColor}}>
+        <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button createTripButton" onClick={() => { setLoading(true); onSubmit(formData) }}>
           Create Trip
         </Button>
       </div>

@@ -55,6 +55,8 @@ function Chatbot(props: ChatbotProps) {
 
   const [isValidInput, setIsValidInput] = useState(true); // New state for input validity
 
+  const [reloadText, setReloadText] = useState(0);
+
   useEffect(() => {
     const calculateHalfWindowWidth = () => {
       const windowWidth = window.innerWidth;
@@ -593,6 +595,7 @@ function Chatbot(props: ChatbotProps) {
       }
     } else {
       updateMessage("Invalid input format, please try again");
+      setReloadText((prev) => prev + 1); // Reload the typing text
       setIsValidInput(false);
       return;
     }
@@ -602,7 +605,8 @@ function Chatbot(props: ChatbotProps) {
     if (inputValue !== '') {
       const text: string = inputValue;
       parseInput(text);
-      if (messageAIState.value !== "Invalid input format, please try again") {
+      if (isValidInput) {
+        console.log('Input is valid');
         setInputValue('');
       }
     }
@@ -617,7 +621,7 @@ function Chatbot(props: ChatbotProps) {
       <Flex style={{ alignItems: 'center', display: 'flex' }}>
         <Image src={isValidInput ? "https://imgur.com/tRPWpWV.png" : "https://imgur.com/eqRKYiA.png"} alt="UrbanHub assistant" preview={false} width={65} style={{ paddingRight: '3px' }} />
         <Text style={{ width: '210px' }}>
-          <TypingText text={messageAIState.value}/>
+          <TypingText text={messageAIState.value} reloadText={reloadText}/>
         </Text>
       </Flex>
       <Flex style={{ flex: 1, display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
@@ -649,7 +653,7 @@ function Chatbot(props: ChatbotProps) {
   );
 };
 
-const TypingText = ({ text }: { text: string }) => {
+const TypingText = ({ text, reloadText }: { text: string, reloadText: number }) => {
   const [displayedText, setDisplayedText] = useState('');
 
   useEffect(() => {
@@ -667,7 +671,7 @@ const TypingText = ({ text }: { text: string }) => {
 
     // Cleanup function
     return () => clearInterval(timer);
-  }, [text]);
+  }, [text, reloadText]);
 
   return <span>{displayedText}</span>;
 };
