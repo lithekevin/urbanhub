@@ -186,7 +186,7 @@ function Sidebar(props: SidebarProps) {
                     }}
                   >
                     <span>
-                      {!editing.value ? <EditOutlined style={{ color: colors.hardBackgroundColor }}/> : <EyeOutlined style={{ color: colors.hardBackgroundColor }}/>}
+                      {!editing.value ? <EditOutlined style={{ color: colors.primaryButtonColor }}/> : <EyeOutlined style={{ color: colors.primaryButtonColor }}/>}
                     </span>
                   </Button>
                 </Tooltip>

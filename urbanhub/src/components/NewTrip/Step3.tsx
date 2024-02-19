@@ -82,7 +82,7 @@ function Step3 (props: Step3Props) {
             {step3Data.map((item, index) => (
               <>
               {index!==0 && <hr/>}
-              <Space>
+              <Space key={index} align="baseline">
                 <Text strong>{item?.label}</Text>
               </Space>
               <span>
