@@ -186,20 +186,21 @@ function DailyAttractions(props: DailyAttractionsProps) {
                     </div>
                   </Flex>
                   
-                    <Flex align="center" className="mb-3">
+                    <Flex align="center" style={{marginBottom: '4%'}}>
                       <Link
-                      href={wikipediaUrls[attraction.name]}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        color: "black",
-                        textAlign: "left",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
+                        href={wikipediaUrls[attraction.name]}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          color: "black",
+                          textAlign: "left",
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: 'pointer'
+                        }}
                       >
-                        <InfoCircleOutlined />
-                        <Text className="ms-1 my-auto">Read more...</Text>
+                        <InfoCircleOutlined size={25} style={{marginRight: '2px'}}/>
+                        <Text underline>Read more...</Text>
                       </Link>
                     </Flex>
                   
