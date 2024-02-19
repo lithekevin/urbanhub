@@ -155,6 +155,18 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
     height: 100%;
 }
 
+.span-container{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.back-link{
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+}
+
 .main-div {
     min-height: calc(78vh - 30px);
     position: relative;

@@ -11,12 +11,14 @@ import {
 import { TbCoinEuroFilled } from "react-icons/tb";
 import {
   Button,
+  Col,
   Divider,
   Flex,
   Form,
   Image,
   message,
   Popover,
+  Row,
   Spin,
   Tooltip,
   Typography,
@@ -420,41 +422,51 @@ function TripOverview(props: any) {
 
       {contextHolder}
 
-      <Flex
+      <Row
         align="middle"
         justify="space-between"
         style={{
           fontSize: "25px",
           position: "relative",
           margin: "0 auto", 
-          maxWidth: "1200px", 
-          height: '37px'
+          maxWidth: "1200px",
+          height: '37px',     
         }}
       >
         {/* Arrow on the left */}
-        <ArrowLeftOutlined
-          className="float-left"
-          style={{ fontSize: "26px" }}
-          onClick={() => navigate(-1)}
-        />
-        <span>
+        <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4}>
+          <span onClick={() => navigate(-1)} className="back-link">
+          <ArrowLeftOutlined
+            className="float-left"
+            style={{ marginRight: '4px', fontSize: '25px' }}
+          /> <Text>Back</Text>
+          </span>
+        </Col>
+        <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
+        <span className="span-container">
           <FaPersonDress style={{ color: "grey" }} size={30} />
           <FaPerson style={{ color: "grey" }} size={30} />
-          <Text> Adults : {trip?.nAdults} </Text>
+          <Text> Adults: {trip?.nAdults} </Text>
         </span>
-        <span>
-          <FaChildDress style={{ color: "grey" }} size={25} />
-          <FaChild style={{ color: "grey" }} size={25} />
-          <Text> Children : {trip?.nChildren} </Text>
-        </span>
-        <span>
-        <FaWallet style={{ color: "grey", marginRight: '2px' }} size={24}/>
-          <Text> Budget : {trip?.budget} € </Text>
-        </span>
-        <span>
+        </Col>
+        <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
+          <span className="span-container">
+            <FaChildDress style={{ color: "grey" }} size={25} />
+            <FaChild style={{ color: "grey" }} size={25} />
+            <Text> Children: {trip?.nChildren} </Text>
+          </span>
+        </Col>
+        <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
+          <span className="span-container">
+          <FaWallet style={{ color: "grey", marginRight: '6px' }} size={24}/>
+            <Text> Budget: {trip?.budget} € </Text>
+          </span>
+          </Col>
+        <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
+        <span className="span-container">
           {trip && totalCost > trip.budget ? (
             <>
-              <TbCoinEuroFilled style={{ color: "red" }} />
+              <TbCoinEuroFilled style={{ color: "red", marginRight: '4px'}} size={24}/>
               <Tooltip
                 title={
                   <Paragraph
@@ -468,41 +480,47 @@ function TripOverview(props: any) {
               >
                 <Text style={{ color: "red" }}>
                   {" "}
-                  Total Cost : {totalCost}
+                  Total Cost: {totalCost}
                   {" €"}{" "}
                 </Text>
               </Tooltip>
             </>
           ) : (
             <>
-              <TbCoinEuroFilled style={{ color: "grey" }} />
-              <Text> Total Cost : {totalCost} €
+              <TbCoinEuroFilled style={{ color: "grey", marginRight: '4px' }} size={24} />
+              <Text> Total Cost: {totalCost} €
               </Text>
             </>
           )}
         </span>
+        </Col>
         {/* Empty placeholder for edit button */}
         {!editing && (
-          <span style={{ width: '47.5px' }}></span>
+          <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4}>
+            <span></span>
+          </Col>
         )}
         {editing && (
+          <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{textAlign: 'end'}}>
           <Tooltip title="Edit trip settings" placement="bottomLeft">
             <Button
-              size="large"
+              size="middle"
               type="primary"
               style={{
                 backgroundColor: colors.whiteBackgroundColor,
                 color: colors.primaryButtonColor,
                 borderColor: colors.primaryButtonColor,
                 textAlign: "center",
+                fontSize: '15px'
               }}
               onClick={() => handleOpenModal()}
             >
               <span>{<SettingOutlined />}</span>
             </Button>
           </Tooltip>
+          </Col>
         )}
-      </Flex>
+      </Row>
 
       <Divider style={{ marginTop: "10px" }} />
 
