@@ -488,6 +488,7 @@ function TripOverview(props: any) {
         {editing && (
           <Tooltip title="Edit trip settings" placement="bottomLeft">
             <Button
+              className="enterEditModeButton"
               size="large"
               type="primary"
               style={{
@@ -498,7 +499,7 @@ function TripOverview(props: any) {
               }}
               onClick={() => handleOpenModal()}
             >
-              <span>{<SettingOutlined />}</span>
+              <span>{<SettingOutlined style={{ color: colors.hardBackgroundColor }} />}</span>
             </Button>
           </Tooltip>
         )}

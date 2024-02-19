@@ -169,7 +169,7 @@ function Sidebar(props: SidebarProps) {
                   <Button
                     size="middle"
                     type="primary"
-                    className="button-new-trip"
+                    className="enterEditModeButton"
                     style={{
                       backgroundColor: colors.whiteBackgroundColor,
                       borderColor: colors.primaryButtonColor,
@@ -186,7 +186,7 @@ function Sidebar(props: SidebarProps) {
                     }}
                   >
                     <span>
-                      {!editing.value ? <EditOutlined style={{ color: colors.primaryButtonColor }}/> : <EyeOutlined style={{ color: colors.primaryButtonColor }}/>}
+                      {!editing.value ? <EditOutlined style={{ color: colors.hardBackgroundColor }}/> : <EyeOutlined style={{ color: colors.hardBackgroundColor }}/>}
                     </span>
                   </Button>
                 </Tooltip>
