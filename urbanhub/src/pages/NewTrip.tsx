@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Steps, Row, Col, ConfigProvider } from "antd";
+import { Form, Steps, Row, Col, ConfigProvider, Typography } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import Step1 from "../components/NewTrip/Step1";
 import Step2 from "../components/NewTrip/Step2";
 import Step3 from "../components/NewTrip/Step3";
 const { Step } = Steps;
+const { Text } = Typography;
 
 export const DEFAULT_LOCATION = { lat: 45.95941, lng: -50.66127 };
 
@@ -197,15 +198,17 @@ function NewTrip (props: TripFormProps) {
         >
           <Row className="w-100 d-flex flex-row align-items-center">
             {/* Arrow on the left */}
-            <Col xs={{ span: 2 }} sm={{ span: 2 }} md={{ span: 2 }} lg={{ span: 3 }} xl={{ span: 4 }}>
-              <ArrowLeftOutlined
-                className="float-left"
-                style={{ fontSize: "26px", marginLeft: "10px" }}
-                onClick={() => prevStep()}
-              />
+            <Col xs={{ span: 4 }} sm={{ span: 3 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+              <span  onClick={() => prevStep()} className="span-container link">
+                <ArrowLeftOutlined
+                  className="float-left"
+                  style={{ marginRight: '4px', fontSize: '25px', marginLeft: '4%' }}
+                /> 
+                <Text style={{ fontSize: '14px'}}>Back</Text>
+              </span>
             </Col>
             {/* Stepper centered */}
-            <Col xs={{ span: 24 }} sm={{ span: 20 }} md={{ span: 20 }} lg={{ span: 18 }} xl={{ span: 16 }}>
+            <Col xs={{ span: 24 }} sm={{ span: 18 }} md={{ span: 16 }} lg={{ span: 16 }} xl={{ span: 16 }}>
               <div className="mb-3 center text-center">
                 <Steps current={step} size="small" style={{ paddingTop: '15px' }}>
                   {steps.map((s, index) => (
