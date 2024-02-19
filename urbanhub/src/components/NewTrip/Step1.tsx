@@ -132,11 +132,11 @@ function Step1 (props: Step1Props){
           <small>* This field is mandatory</small>
         </Row>
       <div className="mb-2 d-flex align-items-center justify-content-center">
-        <Button type="default" onClick={prevStep} className="button">
+        <Button type="default" onClick={prevStep} className="button nextButtonSecondary">
           Previous
         </Button>
         <Tooltip title={!isStepValid() ? 'Please fill correctly all the required fields' : ''} placement='right' overlayInnerStyle={{textAlign: 'center', fontSize: '13px'}}>
-          <Button type='primary' onClick={nextStep} className="button" htmlType="submit" disabled={!isStepValid()}>
+          <Button type='primary' onClick={nextStep} className="button nextButtonPrimary" htmlType="submit" disabled={!isStepValid()}>
             Next
           </Button>
         </Tooltip>

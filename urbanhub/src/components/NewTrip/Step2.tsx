@@ -83,7 +83,6 @@ function Step2(props: Step2Props) {
     }
   };   
  
- 
   return (
     <div className='form-container'>
       <Title level={2} className='step-title'> Set your trip preferences </Title>
@@ -126,6 +125,7 @@ function Step2(props: Step2Props) {
           <Col span={24} className='d-flex flex-row justify-content-between'>
             <Button 
               style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              className='nextButtonSecondary'
               onClick={() => {
                 setDisplayedQuestions(allDisplayedQuestions.slice((questionsPageNumber-1)*3, (questionsPageNumber-1)*3+3))
                 setQuestionsPageNumber((number) => number-1)
@@ -162,10 +162,10 @@ function Step2(props: Step2Props) {
         </Row>
         </Row>
         <div className="mb-2 d-flex align-items-center justify-content-center">
-          <Button type="default" onClick={prevStep} className="button">
+          <Button type="default" onClick={prevStep} className="button nextButtonSecondary">
             Previous
           </Button>
-          <Button type='primary' onClick={handleClickNextStep} style={{backgroundColor: (userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "white" : colors.hardBackgroundColor, color: (userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? 'black' : colors.whiteBackgroundColor}} className={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "button nextUncompletedButton" : "button nextCompletedButton"} htmlType="submit">
+          <Button type='primary' onClick={handleClickNextStep} className={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "button nextButtonSecondary" : "button nextButtonPrimary"} htmlType="submit">
             Next
           </Button>
         </div>
