@@ -113,7 +113,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!attractionDate.isValid()) {
         //Date not valid
-        updateMessage("Invalid date format, please try again");
+        updateMessage("Oops! It seems like the date you provided is not quite right. Could you please try entering it again with a correct value and format?");
         setIsValidInput(false);
         return;
       }
@@ -123,7 +123,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!((attractionDate.isAfter(startDate) || attractionDate.isSame(startDate)) && (attractionDate.isBefore(endDate) || attractionDate.isSame(endDate)))) {
         //Date not in range
-        updateMessage("Date is not in range of the current trip, please try again");
+        updateMessage("Sorry, but it looks like the date you entered isn't within the timeframe of the current trip. Could you please try entering a date that falls within the trip's specified range?");
         setIsValidInput(false);
         return;
       }
@@ -156,7 +156,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (attractionId === "") {
         //Attraction has not been found in specified day
-        updateMessage("Attraction not found in the specified date, please try again");
+        updateMessage("It seems the attraction you mentioned isn't scheduled on that date. Could you please provide a different date or attraction?");
         setIsValidInput(false);
         return;
       }
@@ -167,7 +167,8 @@ function Chatbot(props: ChatbotProps) {
             setIsValidInput(true);
             await deleteAttraction(tripId, attractionDate, attractionId);
             dirtyState.setter(true);
-            updateMessage(inputAttraction + " deleted successfully. Is there anything else I can do for you?");
+            updateMessage("Got it! "+inputAttraction+" has been successfully deleted from "+attractionDate+". Is there anything else I can do for you?");
+            setInputValue('');
             undoState.setter(true);
             setTripUpdates(tempTrip);
 
@@ -203,7 +204,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!attractionDate.isValid()) {
         //Date not valid
-        updateMessage("Invalid date format, please try again");
+        updateMessage("Oops! It seems like the date you provided is not quite right. Could you please try entering it again with a correct value and format?");
         setIsValidInput(false);
         return;
       }
@@ -213,7 +214,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!((attractionDate.isAfter(startDate) || attractionDate.isSame(startDate)) && (attractionDate.isBefore(endDate) || attractionDate.isSame(endDate)))) {
         //Date not in range
-        updateMessage("Date is not in range of the current trip, please try again");
+        updateMessage("Sorry, but it looks like the date you entered isn't within the timeframe of the current trip. Could you please try entering a date that falls within the trip's specified range?");
         setIsValidInput(false);
         return;
       }
@@ -227,13 +228,13 @@ function Chatbot(props: ChatbotProps) {
       }
 
       if (!(isValidHourAndMinute(startTimeHH, startTimeMM) && isValidHourAndMinute(endTimeHH, endTimeMM))) {
-        updateMessage("Time slot invalid, please try again");
+        updateMessage("It seems the timeslot you wrote isn't valid. Could you please provide a correct one?");
         setIsValidInput(false);
         return;
       }
 
       if (startTimeHH > endTimeHH || (startTimeHH === endTimeHH && startTimeMM >= endTimeMM)) {
-        updateMessage("Start time must be before end time, please try again");
+        updateMessage("Please ensure that the start time occurs before the end time. Let's try again with the correct time range.");
         setIsValidInput(false);
         return;
       }
@@ -251,7 +252,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (attractionId === "") {
         //Attraction has not been found in current trip
-        updateMessage("Attraction not found in the current trip, please try again");
+        updateMessage("Apologies, but I couldn't locate an attraction with that name. Would you mind trying again with a different name?");
         setIsValidInput(false);
         return;
       }
@@ -296,7 +297,7 @@ function Chatbot(props: ChatbotProps) {
       });
 
       if (!slotAvailable) {
-        updateMessage("Selected time slot overlap with the one of an existent attraction, please try again");
+        updateMessage("It seems like the selected time slot overlaps with one of the existing attractions. Please choose another time slot and try again.");
         setIsValidInput(false);
         return;
       }
@@ -310,7 +311,8 @@ function Chatbot(props: ChatbotProps) {
         };
         setIsValidInput(true);
         addAttractionToTrip(tripId, attractionDate.format('DD/MM/YYYY'), attraction);
-        updateMessage(attractionName + " added successfully in date " + date + " with time: " + startTime + " - " + endTime);
+        updateMessage("Got it! "+attractionName+" has been successfully added on "+date+" from "+startTime+" to "+endTime+". Is there anything else I can do for you?");
+        setInputValue('');
         dirtyState.setter(true);
         undoState.setter(true);
         setTripUpdates(tempTrip);
@@ -323,7 +325,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!attractionDate.isValid()) {
         //Date not valid
-        updateMessage("Invalid date format, please try again");
+        updateMessage("Oops! It seems like the date you provided is not quite right. Could you please try entering it again with a correct value and format?");
         setIsValidInput(false);
         return;
       }
@@ -333,7 +335,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!((attractionDate.isAfter(startDate) || attractionDate.isSame(startDate)) && (attractionDate.isBefore(endDate) || attractionDate.isSame(endDate)))) {
         //Date not in range
-        updateMessage("Date is not in range of the current trip, please try again");
+        updateMessage("Sorry, but it looks like the date you entered isn't within the timeframe of the current trip. Could you please try entering a date that falls within the trip's specified range?");
         setIsValidInput(false);
         return;
       }
@@ -347,13 +349,13 @@ function Chatbot(props: ChatbotProps) {
       }
 
       if (!(isValidHourAndMinute(startTimeHH, startTimeMM) && isValidHourAndMinute(endTimeHH, endTimeMM))) {
-        updateMessage("Time slot invalid, please try again");
+        updateMessage("It seems the timeslot you wrote isn't valid. Could you please provide a correct one?");
         setIsValidInput(false);
         return;
       }
 
       if (startTimeHH > endTimeHH || (startTimeHH === endTimeHH && startTimeMM >= endTimeMM)) {
-        updateMessage("Start time must be before end time, please try again");
+        updateMessage("Please ensure that the start time occurs before the end time. Let's try again with the correct time range.");
         setIsValidInput(false);
         return;
       }
@@ -386,7 +388,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (attractionId === "") {
         //Attraction has not been found in specified day
-        updateMessage("Attraction not found in the specified date, please try again");
+        updateMessage("It seems the attraction you mentioned isn't scheduled on that date. Could you please provide a different date or attraction?");
         setIsValidInput(false);
         return;
       }
@@ -415,7 +417,7 @@ function Chatbot(props: ChatbotProps) {
       });
 
       if (!slotAvailable) {
-        updateMessage("Selected time slot overlap with the one of an other attraction, please try again");
+        updateMessage("It seems like the time slot you wrote overlaps with one of the existing attractions. Please choose another time slot and try again.");
         setIsValidInput(false);
         return;
       }
@@ -430,7 +432,8 @@ function Chatbot(props: ChatbotProps) {
 
         setIsValidInput(true);
         editAttraction(tripId, attractionId, attractionDate, attractionDate.format('DD/MM/YYYY'), attraction);
-        updateMessage(attractionName + " edited successfully, new time scheduling is " + startTime + " - " + endTime);
+        updateMessage("Got it! The visit to '"+attractionName+"' is now scheduled on "+attractionDate.format('DD/MM/YYYY')+" from "+startTime+" to "+endTime+". Is there anything else I can do for you?");
+        setInputValue('');
         dirtyState.setter(true);
         undoState.setter(true);
         setTripUpdates(tempTrip);
@@ -443,7 +446,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!attractionDateOld.isValid()) {
         //Date not valid
-        updateMessage("Invalid date format, please try again");
+        updateMessage("Oops! It seems like the first date you provided is not quite right. Could you please try entering it again with a correct value and format?");
         setIsValidInput(false);
         return;
       }
@@ -453,7 +456,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!((attractionDateOld.isAfter(startDateOld) || attractionDateOld.isSame(startDateOld)) && (attractionDateOld.isBefore(endDateOld) || attractionDateOld.isSame(endDateOld)))) {
         //Date not in range
-        updateMessage("Date is not in range of the current trip, please try again");
+        updateMessage("Sorry, but it looks like the first date you entered isn't within the timeframe of the current trip. Could you please try entering a date that falls within the trip's specified range?");
         setIsValidInput(false);
         return;
       }
@@ -463,7 +466,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!attractionDateNew.isValid()) {
         //Date not valid
-        updateMessage("Invalid date format, please try again");
+        updateMessage("Oops! It seems like the second date you provided is not quite right. Could you please try entering it again with a correct value and format?");
         setIsValidInput(false);
         return;
       }
@@ -473,7 +476,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (!((attractionDateNew.isAfter(startDateNew) || attractionDateNew.isSame(startDateNew)) && (attractionDateNew.isBefore(endDateNew) || attractionDateNew.isSame(endDateNew)))) {
         //Date not in range
-        updateMessage("Date is not in range of the current trip, please try again");
+        updateMessage("Sorry, but it looks like the second date you entered isn't within the timeframe of the current trip. Could you please try entering a date that falls within the trip's specified range?");
         setIsValidInput(false);
         return;
       }
@@ -487,13 +490,13 @@ function Chatbot(props: ChatbotProps) {
       }
 
       if (!(isValidHourAndMinute(startTimeHH, startTimeMM) && isValidHourAndMinute(endTimeHH, endTimeMM))) {
-        updateMessage("Time slot invalid, please try again");
+        updateMessage("It seems the timeslot you wrote isn't valid. Could you please provide a correct one?");
         setIsValidInput(false);
         return;
       }
 
       if (startTimeHH > endTimeHH || (startTimeHH === endTimeHH && startTimeMM >= endTimeMM)) {
-        updateMessage("Start time must be before end time, please try again");
+        updateMessage("Please ensure that the start time occurs before the end time. Let's try again with the correct time range.");
         setIsValidInput(false);
         return;
       }
@@ -526,7 +529,7 @@ function Chatbot(props: ChatbotProps) {
 
       if (attractionId === "") {
         //Attraction has not been found in specified day
-        updateMessage("Attraction not found in the specified date, please try again");
+        updateMessage("It seems the attraction you mentioned isn't scheduled on that date. Could you please provide a different date or attraction?");
         setIsValidInput(false);
         return;
       }
@@ -573,7 +576,7 @@ function Chatbot(props: ChatbotProps) {
       });
 
       if (!slotAvailable) {
-        updateMessage("Selected time slot overlap with the one of an other attraction, please try again");
+        updateMessage("It seems like the time slot you wrote overlaps with one of the existing attractions. Please choose another time slot and try again.");
         setIsValidInput(false);
         return;
       }
@@ -588,13 +591,14 @@ function Chatbot(props: ChatbotProps) {
 
         setIsValidInput(true);
         editAttraction(tripId, attractionId, attractionDateOld, newDate, attraction);
-        updateMessage(attractionName + " edited succesfully, new day is " + attractionDateNew.format('DD/MM/YYYY') + " with time " + startTime + " - " + endTime);
+        updateMessage("Got it! The visit to '"+attractionName+"' is now scheduled on "+attractionDateNew.format('DD/MM/YYYY')+" from "+startTime+" to "+endTime+". Is there anything else I can do for you?");
+        setInputValue('');
         dirtyState.setter(true);
         undoState.setter(true);
         setTripUpdates(tempTrip);
       }
     } else {
-      updateMessage("Invalid input format, please try again");
+      updateMessage("It seems you wrote something that I can't understand, could you please follow the rules I gave you?");
       setReloadText((prev) => prev + 1); // Reload the typing text
       setIsValidInput(false);
       return;
@@ -607,7 +611,6 @@ function Chatbot(props: ChatbotProps) {
       parseInput(text);
       if (isValidInput) {
         console.log('Input is valid');
-        setInputValue('');
       }
     }
   };
@@ -620,7 +623,7 @@ function Chatbot(props: ChatbotProps) {
     <Flex align='center' justify='space-between'>
       <Flex style={{ alignItems: 'center', display: 'flex' }}>
         <Image src={isValidInput ? "https://imgur.com/tRPWpWV.png" : "https://imgur.com/eqRKYiA.png"} alt="UrbanHub assistant" preview={false} width={65} style={{ paddingRight: '3px' }} />
-        <Text style={{ width: '210px' }}>
+        <Text style={{ width: '300px' }}>
           <TypingText text={messageAIState.value} reloadText={reloadText}/>
         </Text>
       </Flex>
