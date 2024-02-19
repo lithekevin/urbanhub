@@ -88,7 +88,7 @@ function Step2(props: Step2Props) {
       <Title level={2} className='step-title'> Set your trip preferences </Title>
         <Row className='w-100 d-flex justify-content-center'>
           <Col xs={{span:24}} className='w-100 d-flex flex-column justify-content-center align-items-center mb-4'>
-            <Progress className='w-75' percent={userAnswers.filter(a => a.length !== 0).length * 100/9}  showInfo={false}/>
+            <Progress className='w-75' percent={userAnswers.filter(a => a.length !== 0).length * 100/9}  showInfo={false} strokeColor={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? colors.softBackgroundColor : colors.hardBackgroundColor}/>
             <Paragraph style={{ fontSize: '13px', textAlign: 'center'}}>{(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "Keep answering questions until UrbanHub understands the perfect vacation style for you!" : "UrbanHub has understood your ideal vacation style. Click on next to confirm your choices and take a look at the results!"}</Paragraph>
           </Col>
           <Row className='w-100 d-flex justify-content-center'>
@@ -124,6 +124,7 @@ function Step2(props: Step2Props) {
         <Row className='w-100'>
           <Col span={24} className='d-flex flex-row justify-content-between'>
             <Button 
+              type = 'default'
               style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               className='nextButtonSecondary'
               onClick={() => {
@@ -137,6 +138,8 @@ function Step2(props: Step2Props) {
             </Button>
             { questionsPageNumber < 2 &&
             <Button 
+              type = 'primary'
+              style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               onClick={() => {
                 if(allDisplayedQuestions.length === questionsPageNumber*3+3){
                   loadMoreQuestions();
@@ -152,7 +155,6 @@ function Step2(props: Step2Props) {
 
               }} 
               disabled={questionsPageNumber === 2 || (userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).length < 3 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).some((ans) => ans.length === 0) && maxPageNumber <= questionsPageNumber)}
-              className='morequestions-button'
             >
               {questionsPageNumber === (maxPageNumber) ?  "More questions" : "Next questions"}
               <RightOutlined />
@@ -165,7 +167,7 @@ function Step2(props: Step2Props) {
           <Button type="default" onClick={prevStep} className="button nextButtonSecondary">
             Previous
           </Button>
-          <Button type='primary' onClick={handleClickNextStep} className={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "button nextButtonSecondary" : "button nextButtonPrimary"} htmlType="submit">
+          <Button type={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "default" : "primary"} onClick={handleClickNextStep} className="button" htmlType="submit">
             Next
           </Button>
         </div>

@@ -222,7 +222,7 @@ function Step0(props: Step0Props) {
           <Button
             type="primary"
             onClick={nextStep}
-            className="button nextButtonPrimary"
+            className="button"
             htmlType="submit"
             disabled={!isStepValid()}
           >

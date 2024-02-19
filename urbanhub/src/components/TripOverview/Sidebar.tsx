@@ -169,7 +169,7 @@ function Sidebar(props: SidebarProps) {
                   <Button
                     size="middle"
                     type="primary"
-                    className="button-new-trip"
+                    className="enterEditModeButton"
                     style={{
                       backgroundColor: colors.whiteBackgroundColor,
                       borderColor: colors.primaryButtonColor,
