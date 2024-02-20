@@ -57,7 +57,7 @@ function TripOverview(props: any) {
   const [error, setError] = useState<boolean>(false);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [dirty, setDirty] = useState<boolean>(true);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi, contextHolder] = [props.messageApi, props.contextHolder];
   const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
   const [editing, setEdit] = useState<boolean>(location.state && location.state.mode === true);
@@ -418,7 +418,6 @@ function TripOverview(props: any) {
         try {
           if (tripId) {
             await deleteTrip(tripId);
-            navigate(-1);
 
             // Show success message
             messageApi.open({
@@ -429,6 +428,12 @@ function TripOverview(props: any) {
                 marginTop: "70px",
               },
             });
+
+            setLoading(true);
+            
+            setTimeout(() => {
+              navigate(-1);
+          }, 1000); // Adjust the delay time as needed      
             
           }
         } catch (error) {
@@ -468,7 +473,7 @@ function TripOverview(props: any) {
         <Spin tip="Loading" size="large" fullscreen />
       )}
 
-      {contextHolder}
+      {/*contextHolder*/}
 
       <Row
         align="middle"
@@ -625,7 +630,7 @@ function TripOverview(props: any) {
             <Container
               fluid
               className="position-relative d-flex flex-column align-items-center"
-              style={{ height: "100%", marginTop: '53px' }}
+              style={{ height: "100%", marginTop: '43px' }}
             >
               <div className="map-space">
                 <GoogleMapsComponent
