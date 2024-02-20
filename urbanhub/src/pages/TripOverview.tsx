@@ -17,14 +17,15 @@ import {
   Form,
   Image,
   message,
+  Modal,
   Popover,
   Row,
   Spin,
   Tooltip,
   Typography,
 } from "antd";
-import { ArrowLeftOutlined, SettingOutlined } from "@ant-design/icons";
-import { getTripById } from "../firebase/daos/dao-trips";
+import { ArrowLeftOutlined, SettingOutlined, DeleteOutlined } from "@ant-design/icons";
+import { deleteTrip, getTripById } from "../firebase/daos/dao-trips";
 import { Attraction } from "../models/attraction";
 import { TripAttraction } from "../models/tripAttraction";
 import { Trip } from "../models/trip";
@@ -60,7 +61,7 @@ function TripOverview(props: any) {
   const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
   const [editing, setEdit] = useState<boolean>(
-    location.state && location.state.mode === "edit"
+    location.state && location.state.mode === true
   );
   const [cityPosition, setCityPosition] = useState({
     lat: defaultCenter.lat,
@@ -120,27 +121,25 @@ function TripOverview(props: any) {
 
   //ActiveKey is update opening the current day for ingoing trips
   useEffect(() => {
-    if (!editing) {
-      const currentDay = dayjs().startOf("day");
-      var closestIndex = null;
+    const currentDay = dayjs().startOf("day");
+    var closestIndex = null;
 
-      let index = -1;
+    let index = -1;
 
-      // Iterate through the schedule
-      trip?.schedule.forEach((attractions, scheduledDay) => {
-        index++;
+    // Iterate through the schedule
+    trip?.schedule.forEach((attractions, scheduledDay) => {
+      index++;
 
-        // Check if the current day matches any scheduled day
-        if (dayjs(scheduledDay).startOf("day").isSame(currentDay)) {
-          closestIndex = index;
-        }
-      });
-
-      if (closestIndex !== null) {
-        setActiveKey([closestIndex]);
-      } else {
-        setActiveKey([]);
+      // Check if the current day matches any scheduled day
+      if (dayjs(scheduledDay).startOf("day").isSame(currentDay)) {
+        closestIndex = index;
       }
+    });
+
+    if (closestIndex !== null) {
+      setActiveKey([closestIndex]);
+    } else {
+      setActiveKey([]);
     }
   }, [trip]);
 
@@ -414,10 +413,54 @@ function TripOverview(props: any) {
     setIsFormVisible(true);
   };
 
+  function handleDeleteTrip() {
+    Modal.confirm({
+      title: "Delete Trip",
+      content: (
+        <div>
+          <p>Are you sure you want to delete the trip to {trip?.city}?</p>
+        </div>
+      ),
+      centered: true,
+      onOk: async () => {
+        try {
+          if (tripId) {
+            await deleteTrip(tripId);
+
+            navigate(-1);
+
+            // Show success message
+            messageApi.open({
+              type: "success",
+              content: "Trip deleted successfully!",
+              duration: 3,
+              style: {
+                marginTop: "70px",
+              },
+            });
+            
+          }
+        } catch (error) {
+          console.error("Error deleting trip:", error);
+
+          // Show error message
+          messageApi.open({
+            type: "error",
+            content: "Error while deleting trip!",
+            duration: 3,
+            style: {
+              marginTop: "70px",
+            },
+          });
+        }
+      },
+    });
+  }
+
   return (
     <>
       {(loading || imageLoading) && (
-        <Spin tip="Loading" size="large" fullscreen/>
+        <Spin tip="Loading" size="large" fullscreen />
       )}
 
       {contextHolder}
@@ -428,26 +471,26 @@ function TripOverview(props: any) {
         style={{
           fontSize: "25px",
           position: "relative",
-          margin: "0 auto", 
-          maxWidth: "1200px",
-          height: '37px',     
+          margin: "0 auto",
+          maxWidth: "1300px",
+          height: '37px',
         }}
       >
         {/* Arrow on the left */}
         <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4}>
           <span onClick={() => navigate(-1)} className="back-link">
-          <ArrowLeftOutlined
-            className="float-left"
-            style={{ marginRight: '4px', fontSize: '25px' }}
-          /> <Text>Back</Text>
+            <ArrowLeftOutlined
+              className="float-left"
+              style={{ marginRight: '4px', fontSize: '25px' }}
+            /> <Text>Back</Text>
           </span>
         </Col>
         <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
-        <span className="span-container">
-          <FaPersonDress style={{ color: "grey" }} size={30} />
-          <FaPerson style={{ color: "grey" }} size={30} />
-          <Text> Adults: {trip?.nAdults} </Text>
-        </span>
+          <span className="span-container">
+            <FaPersonDress style={{ color: "grey" }} size={30} />
+            <FaPerson style={{ color: "grey" }} size={30} />
+            <Text> Adults: {trip?.nAdults} </Text>
+          </span>
         </Col>
         <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
           <span className="span-container">
@@ -458,68 +501,79 @@ function TripOverview(props: any) {
         </Col>
         <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
           <span className="span-container">
-          <FaWallet style={{ color: "grey", marginRight: '6px' }} size={24}/>
+            <FaWallet style={{ color: "grey", marginRight: '6px' }} size={24} />
             <Text> Budget: {trip?.budget} € </Text>
           </span>
-          </Col>
-        <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
-        <span className="span-container">
-          {trip && totalCost > trip.budget ? (
-            <>
-              <TbCoinEuroFilled style={{ color: "red", marginRight: '4px'}} size={24}/>
-              <Tooltip
-                title={
-                  <Paragraph
-                    style={{ textAlign: "center", color: "white", margin: "0" }}
-                  >
-                    The initial budget you set has been exceeded by{" "}
-                    {totalCost - trip.budget} €
-                  </Paragraph>
-                }
-                placement="bottom"
-              >
-                <Text style={{ color: "red" }}>
-                  {" "}
-                  Total Cost: {totalCost}
-                  {" €"}{" "}
-                </Text>
-              </Tooltip>
-            </>
-          ) : (
-            <>
-              <TbCoinEuroFilled style={{ color: "grey", marginRight: '4px' }} size={24} />
-              <Text> Total Cost: {totalCost} €
-              </Text>
-            </>
-          )}
-        </span>
         </Col>
-        {/* Empty placeholder for edit button */}
-        {!editing && (
-          <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4}>
-            <span></span>
-          </Col>
-        )}
+        <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
+          <span className="span-container">
+            {trip && totalCost > trip.budget ? (
+              <>
+                <TbCoinEuroFilled style={{ color: "red", marginRight: '4px' }} size={24} />
+                <Tooltip
+                  title={
+                    <Paragraph
+                      style={{ textAlign: "center", color: "white", margin: "0" }}
+                    >
+                      The initial budget you set has been exceeded by{" "}
+                      {totalCost - trip.budget} €
+                    </Paragraph>
+                  }
+                  placement="bottom"
+                >
+                  <Text style={{ color: "red" }}>
+                    {" "}
+                    Total Cost: {totalCost}
+                    {" €"}{" "}
+                  </Text>
+                </Tooltip>
+              </>
+            ) : (
+              <>
+                <TbCoinEuroFilled style={{ color: "grey", marginRight: '4px' }} size={24} />
+                <Text> Total Cost: {totalCost} €
+                </Text>
+              </>
+            )}
+          </span>
+        </Col>
         {editing && (
-          <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{textAlign: 'end'}}>
-          <Tooltip title="Edit trip settings" placement="bottomLeft">
-            <Button
-              size="middle"
-              className="enterEditModeButton"
-              type="primary"
-              style={{
-                backgroundColor: colors.whiteBackgroundColor,
-                color: colors.primaryButtonColor,
-                borderColor: colors.primaryButtonColor,
-                textAlign: "center",
-                fontSize: '15px'
-              }}
-              onClick={() => handleOpenModal()}
-            >
-              <span>{<SettingOutlined/>}</span>
-            </Button>
-          </Tooltip>
+          <><Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ textAlign: 'end' }}>
+            <Tooltip title="Edit trip settings" placement="bottomLeft">
+              <Button
+                size="middle"
+                className="enterEditModeButton"
+                type="primary"
+                style={{
+                  backgroundColor: colors.hardBackgroundColor,
+                  textAlign: "center",
+                  fontSize: '15px',
+                  marginRight: '5px'
+                }}
+                onClick={() => handleOpenModal()}
+              >
+                <span>{<SettingOutlined />}</span>
+              </Button>
+            </Tooltip>
+            {tripId && ( // Check if tripId exists
+              <Tooltip title="Delete Trip" placement="bottomLeft">
+                <Button
+                  size="middle"
+                  className="enterEditModeButton"
+                  type="primary"
+                  style={{
+                    backgroundColor: colors.deleteButtonColor,
+                    textAlign: "center",
+                    fontSize: '15px'
+                  }}
+                  onClick={() => handleDeleteTrip()}
+                >
+                  <span>{<DeleteOutlined />}</span>
+                </Button>
+              </Tooltip>
+            )}
           </Col>
+          </>
         )}
       </Row>
 
@@ -560,52 +614,31 @@ function TripOverview(props: any) {
             />
           </div>
           <div className="body-space">
-            <Flex
-              style={{
-                height: "53px",
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingRight: "10px",
-              }}
+            <Container
+              fluid
+              className="position-relative d-flex flex-column align-items-center"
+              style={{ height: "100%", marginTop: '53px' }}
             >
-              {editing && (
-                <Button
-                  type="primary"
-                  style={{ backgroundColor: colors.hardBackgroundColor }}
-                  onClick={() => openForm()}
-                  className="button-new-trip"
-                >
-                  Add Attraction
-                </Button>
-              )}
-            </Flex>
-            <Flex style={{ height: "calc(100% - 53px)" }}>
-              <Container
-                fluid
-                className="position-relative d-flex flex-column align-items-center"
-                style={{ height: "100%" }}
-              >
-                <div className="map-space">
-                  <GoogleMapsComponent
-                    activeKeyState={{ value: activeKey, setter: setActiveKey }}
-                    cityPositionState={{
-                      value: cityPosition,
-                      setter: setCityPosition,
-                    }}
-                    defaultCenter={defaultCenter}
-                    directionsState={{
-                      value: directions,
-                      setter: setDirections,
-                    }}
-                    tripState={{ value: trip, setter: setTrip }}
-                    attractionCardHoveredID={{
-                      value: attractionCardHoveredID,
-                      setter: setAttractionCardHoveredID,
-                    }}
-                  />
-                </div>
-              </Container>
-            </Flex>
+              <div className="map-space">
+                <GoogleMapsComponent
+                  activeKeyState={{ value: activeKey, setter: setActiveKey }}
+                  cityPositionState={{
+                    value: cityPosition,
+                    setter: setCityPosition,
+                  }}
+                  defaultCenter={defaultCenter}
+                  directionsState={{
+                    value: directions,
+                    setter: setDirections,
+                  }}
+                  tripState={{ value: trip, setter: setTrip }}
+                  attractionCardHoveredID={{
+                    value: attractionCardHoveredID,
+                    setter: setAttractionCardHoveredID,
+                  }}
+                />
+              </div>
+            </Container>
           </div>
 
           <AttractionForm
@@ -664,12 +697,12 @@ function TripOverview(props: any) {
         onOpenChange={handlePopoverVisibleChange}
         placement="right"
         arrow={{ pointAtCenter: true }}
-        overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px",  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", borderRadius: '4%' }}
+        overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", borderRadius: '4%' }}
       >
-        <Tooltip title={<Text style={{color: 'white'}}>Click me! I can help you modify the trip.</Text>} placement="topLeft">
+        <Tooltip title={<Text style={{ color: 'white' }}>Click me! I can help you modify the trip.</Text>} placement="topLeft">
           <Button
             type="text"
-            className = "chatbot-button"
+            className="chatbot-button"
             style={{
               width: "65px",
               height: "65px",

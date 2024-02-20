@@ -125,6 +125,12 @@ function Sidebar(props: SidebarProps) {
     })
   );
 
+  const openForm = () => {
+    form.resetFields();
+    setEditingAttraction(null);
+    setIsFormVisible(true);
+  };
+
   return (
     <>
       {loadingState.value && (
@@ -157,40 +163,14 @@ function Sidebar(props: SidebarProps) {
               >
                 {tripState.value.city}
               </Title>
-              {!dayjs(tripState.value.endDate).isBefore(dayjs()) && (
-                <Tooltip
-                  title={
-                    editing.value === true
-                      ? "Exit edit mode"
-                      : "Enter edit mode"
-                  }
-                  placement="right"
-                >
-                  <Button
-                    size="middle"
-                    type="primary"
-                    className="enterEditModeButton"
-                    style={{
-                      backgroundColor: colors.whiteBackgroundColor,
-                      borderColor: colors.primaryButtonColor,
-                      color: "black",
-                      textAlign: "center",
-                      fontSize: "15px",
-                      marginBottom: "10px",
-                      marginRight: "1vw",
-                    }}
-                    onClick={() => {
-                      !editing.value
-                        ? editing.setter(true)
-                        : editing.setter(false);
-                    }}
-                  >
-                    <span>
-                      {!editing.value ? <EditOutlined style={{ color: colors.primaryButtonColor }}/> : <EyeOutlined style={{ color: colors.primaryButtonColor }}/>}
-                    </span>
-                  </Button>
-                </Tooltip>
-              )}
+              <Button
+                type="primary"
+                style={{ backgroundColor: colors.hardBackgroundColor, marginBottom: '8px' }}
+                onClick={() => openForm()}
+                className="button-new-trip"
+              >
+                Add Attraction
+              </Button>
             </Flex>
           </div>
           <div className="sidebar-div">
