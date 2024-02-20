@@ -27,6 +27,12 @@ function Step2(props: Step2Props) {
   const { displayedQuestions, setDisplayedQuestions, allDisplayedQuestions, setAllDisplayedQuestions, 
           userAnswers, setUserAnswers, questionsPageNumber, setQuestionsPageNumber, maxPageNumber, setMaxPageNumber,
           step, prevStep, nextStep } = props;
+
+  let questionsPercentage = userAnswers.filter(a => (a && a.length !== 0)).length * 100/9;
+  let questionStartingIndex = questionsPageNumber*3;
+  let questionEndingIndex = questionsPageNumber*3+2;
+  let previousPageQuestionStartingIndex = (questionsPageNumber-1)*3;
+  let previousPageQuestionEndingIndex = (questionsPageNumber-1)*3+2;
           
   // Handle user's answers to questions
   const handleAnswerChange = (index: number, value: string) => {
@@ -87,8 +93,8 @@ function Step2(props: Step2Props) {
       <Title level={3} className='step-title'> Set your trip preferences </Title>
         <Row className='w-100 d-flex justify-content-center'>
           <Col xs={{span:24}} className='w-100 d-flex flex-column justify-content-center align-items-center mb-4'>
-            <Progress className='w-75' percent={userAnswers.filter(a => a.length !== 0).length * 100/9}  showInfo={false} strokeColor={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? colors.softBackgroundColor : colors.hardBackgroundColor}/>
-            <Paragraph style={{ fontSize: '13px', textAlign: 'center'}}>{(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "Keep answering questions until UrbanHub understands the perfect vacation style for you!" : "UrbanHub has understood your ideal vacation style. Click on next to confirm your choices and take a look at the results!"}</Paragraph>
+            <Progress className='w-75' percent={questionsPercentage}  showInfo={false} strokeColor={(questionsPercentage < 100) ? colors.softBackgroundColor : colors.hardBackgroundColor}/>
+            <Paragraph style={{ fontSize: '13px', textAlign: 'center'}}>{(questionsPercentage < 100) ? "Keep answering questions until UrbanHub understands the perfect vacation style for you!" : "UrbanHub has understood your ideal vacation style. Click on next to confirm your choices and take a look at the results!"}</Paragraph>
           </Col>
           <Row className='w-100 d-flex justify-content-center'>
           {displayedQuestions.map((question, index) => (
@@ -106,12 +112,12 @@ function Step2(props: Step2Props) {
                 </Col>
                 <Col span={24}>
                   <Form.Item
-                    name={`answer${index + questionsPageNumber * 3}`}
+                    name={`answer${questionStartingIndex + index}`}
                     hidden={step !== 2}
                   >
                     <Input.TextArea
-                      value={userAnswers[index + questionsPageNumber * 3]}
-                      onChange={(e) => handleAnswerChange(index + questionsPageNumber * 3, e.target.value)}
+                      value={userAnswers[questionStartingIndex + index]}
+                      onChange={(e) => handleAnswerChange(questionStartingIndex + index, e.target.value)}
                       autoSize={{ minRows: 3, maxRows: 5 }}
                     />
                   </Form.Item>
@@ -127,7 +133,7 @@ function Step2(props: Step2Props) {
               style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               className='nextButtonSecondary'
               onClick={() => {
-                setDisplayedQuestions(allDisplayedQuestions.slice((questionsPageNumber-1)*3, (questionsPageNumber-1)*3+3))
+                setDisplayedQuestions(allDisplayedQuestions.slice(previousPageQuestionStartingIndex, previousPageQuestionEndingIndex+1))
                 setQuestionsPageNumber((number) => number-1)
               }} 
               disabled={questionsPageNumber === 0}>
@@ -140,11 +146,11 @@ function Step2(props: Step2Props) {
               type = 'primary'
               style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               onClick={() => {
-                if(allDisplayedQuestions.length === questionsPageNumber*3+3){
+                if(allDisplayedQuestions.length === questionEndingIndex+1){
                   loadMoreQuestions();
                 }
                 else{
-                  setDisplayedQuestions(allDisplayedQuestions.slice((questionsPageNumber+1)*3, (questionsPageNumber+1)*3+3))
+                  setDisplayedQuestions(allDisplayedQuestions.slice(previousPageQuestionStartingIndex, previousPageQuestionEndingIndex+1))
                 }
                 setQuestionsPageNumber((number) => number+1)
                 
@@ -153,7 +159,7 @@ function Step2(props: Step2Props) {
                 }
 
               }} 
-              disabled={questionsPageNumber === 2 || (userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).length < 3 || userAnswers.slice(questionsPageNumber*3, questionsPageNumber*3+3).some((ans) => ans.length === 0) && maxPageNumber <= questionsPageNumber)}
+              disabled={questionsPageNumber === 2 || (userAnswers.slice(questionStartingIndex, questionEndingIndex+1).length < 3 || userAnswers.slice(questionStartingIndex, questionEndingIndex+1).some((ans) => !ans) && maxPageNumber <= questionsPageNumber)}
             >
               {questionsPageNumber === (maxPageNumber) ?  "More questions" : "Next questions"}
               <RightOutlined />
@@ -166,7 +172,7 @@ function Step2(props: Step2Props) {
           <Button type="default" onClick={prevStep} className="button nextButtonSecondary">
             Previous
           </Button>
-          <Button type={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? "default" : "primary"} onClick={handleClickNextStep} className="button" htmlType="submit">
+          <Button type={(questionsPercentage < 100) ? "default" : "primary"} onClick={handleClickNextStep} className="button" htmlType="submit">
             Next
           </Button>
         </div>
