@@ -1,7 +1,5 @@
 import React from 'react';
 import { Button, Card, Empty, Space, Typography } from 'antd';
-import colors from '../../style/colors';
-
 const { Text, Title } = Typography;
 
 interface Step3Props {
@@ -52,9 +50,9 @@ function Step3 (props: Step3Props) {
 
   return (
     <div className='form-container'>
-      <Title className='step-title'> Trip summary </Title>
+      <Title className='step-title' level={3}> Trip summary </Title>
 
-      <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="1. Trip Destination" className='summary-card' headStyle={{ fontSize: '24px' }}>
+      <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="1. Trip Destination" className='summary-card' headStyle={{ fontSize: '18px' }}>
         <Space direction="vertical">
           {step1Data.map((item, index) => (
             <Space key={item.value} align="baseline">
@@ -65,7 +63,7 @@ function Step3 (props: Step3Props) {
         </Space>
       </Card>
 
-      <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="2. Trip settings" className='summary-card' headStyle={{ fontSize: '24px' }}>
+      <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="2. Trip settings" className='summary-card' headStyle={{ fontSize: '18px' }}>
         <Space direction="vertical" align="center">
           {step2Data.map((item, index) => (
             <Space key={item.value} direction="horizontal" align="baseline">
@@ -77,7 +75,7 @@ function Step3 (props: Step3Props) {
       </Card>
 
       {step === 3 &&
-        <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="3. Trip preferences" className='summary-card' headStyle={{ fontSize: '24px' }}>
+        <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="3. Trip preferences" className='summary-card' headStyle={{ fontSize: '18px' }}>
           <Space direction="vertical">
             {step3Data.map((item, index) => (
               <>

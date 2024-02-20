@@ -632,7 +632,7 @@ function Chatbot(props: ChatbotProps) {
           overlayInnerStyle={{ width: '250%', maxWidth: halfWindowWidth, color: 'black', backgroundColor: 'white', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', padding: '4%', fontSize: '12px' }} color="white" placement="topLeft"
           title={(
             <List size='small'>
-              <Title level={3} style={{ textAlign: 'center', marginBottom: '0' }}>USAGE</Title>
+              <Title level={4} style={{ textAlign: 'center', marginBottom: '0' }}>USAGE</Title>
               <List.Item><strong>DELETE</strong>: Delete "Attraction name" from DD/MM/AAAA</List.Item>
               <List.Item><strong>ADD</strong>: Add "Attraction name" to DD/MM/AAAA with time: hh:mm - hh:mm</List.Item>
               <List.Item><strong>EDIT</strong>: Edit "Attraction name" from DD/MM/AAAA to have time: hh:mm - hh:mm</List.Item>

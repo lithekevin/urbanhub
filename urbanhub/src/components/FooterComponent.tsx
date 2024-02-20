@@ -9,7 +9,7 @@ function FooterComponent() {
         <Row justify="space-between" align="middle" style={{ paddingLeft: '4%', paddingRight: '4%'}}>
           <Col span={8} style={{ fontStyle: 'normal'}}>
               <Col>
-                <Image src="/logo.png" alt="logo" style={{marginRight: '10px', marginBottom: '1rem', width: '30px', height: 'auto'}} preview={false}/>
+                <Image src="/logo.png" alt="logo" style={{ marginBottom: '1rem', width: '30px', height: 'auto'}} preview={false}/>
               </Col>
               <Col>
                 <Title level={4}>UrbanHUB</Title>

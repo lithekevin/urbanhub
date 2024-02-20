@@ -13,8 +13,7 @@ function NavigationBar() {
         <Link to="/" style={{ textDecoration: 'none', color: 'black', display: "flex", alignItems: "center" }}>
           <Image src="/logo(1).png" alt="logo" style={{ width: '50px', marginRight: '5px', marginBottom: '4px' }} preview={false}/>
           <Title 
-            level={1} 
-            style={{ marginBottom: 0, marginTop: '6px', position: 'relative', top: '-3px', fontWeight: '600', backgroundImage: 'radial-gradient(circle, #00AA70, #00987e, #008483, #00707e, #185b6f, #2f4858)', color: 'transparent', backgroundClip: 'text' }}
+            style={{ marginBottom: 0, marginTop: '6px', position: 'relative', top: '-3px', fontWeight: '600', fontSize: '36px', backgroundImage: 'radial-gradient(circle, #00AA70, #00987e, #008483, #00707e, #185b6f, #2f4858)', color: 'transparent', backgroundClip: 'text' }}
           >UrbanHUB</Title>
         </Link>
       </Col>

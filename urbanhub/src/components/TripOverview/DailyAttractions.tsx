@@ -152,7 +152,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
                         textAlign: "left",
                         fontSize: "18px",
                         color: "#185b6f",
-                        fontWeight: "bold",
+                        fontWeight: "500",
                       }}
                     >
                       {attraction.name}

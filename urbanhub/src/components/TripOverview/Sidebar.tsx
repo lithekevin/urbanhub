@@ -151,7 +151,7 @@ function Sidebar(props: SidebarProps) {
           <div>
             <Flex style={{ display: "flex", alignItems: "center" }}>
               <Title
-                level={2}
+                level={3}
                 className="text-left"
                 style={{ marginRight: "1vw" }}
               >

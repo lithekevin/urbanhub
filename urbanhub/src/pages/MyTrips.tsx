@@ -181,7 +181,7 @@ function MyTrips() {
       {contextHolder}
 
       <Flex align="middle" justify="space-around" className="mt-4">
-        <Title level={1} style={{marginBottom: '0'}}>MY TRIPS</Title>
+        <Title level={2} style={{marginBottom: '0'}}>MY TRIPS</Title>
         <AddTripButton />
       </Flex>
 
@@ -229,7 +229,6 @@ function MyTrips() {
                               isMenuOpen={isMenuOpen}
                               setIsMenuOpen={setIsMenuOpen}
                               handleMenuHover={handleMenuHover}
-                              activeTab={activeTab}
                             />
                           ))
                         ) : id === '3' && trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0 ? (
@@ -247,7 +246,6 @@ function MyTrips() {
                               isMenuOpen={isMenuOpen}
                               setIsMenuOpen={setIsMenuOpen}
                               handleMenuHover={handleMenuHover}
-                              activeTab={activeTab}
                             />
                           ))
                         ) : id === '1' && trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0 ? (
@@ -265,7 +263,6 @@ function MyTrips() {
                               isMenuOpen={isMenuOpen}
                               setIsMenuOpen={setIsMenuOpen}
                               handleMenuHover={handleMenuHover}
-                              activeTab={activeTab}
                             />
                           ))
                         )}
@@ -290,10 +287,9 @@ function TripCard(props: Readonly<{
   isMenuOpen: boolean;
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleMenuHover: (trip: Trip) => void;
-  activeTab: string;
 }>) {
   
-  const { trip, menu, enlargedCard, setEnlargedCard, isMenuOpen, setIsMenuOpen, handleMenuHover, activeTab } = props;
+  const { trip, menu, enlargedCard, setEnlargedCard, isMenuOpen, setIsMenuOpen, handleMenuHover } = props;
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -346,7 +342,7 @@ function TripCard(props: Readonly<{
           </div>
           <Card.Body>
             <Card.Title
-              style={{ position: "relative", top: -40, fontSize: 30 }}
+              style={{ position: "relative", top: -35, fontSize: 26 }}
             >
               {trip.city}
             </Card.Title>
@@ -370,9 +366,7 @@ function AddTripButton() {
       style={{
         backgroundColor: colors.hardBackgroundColor,
         color: colors.whiteBackgroundColor,
-        paddingBottom: "38px",
         textAlign: "center",
-        fontSize: "20px",
       }}
       href="/newTrip"
     >

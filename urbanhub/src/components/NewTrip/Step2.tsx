@@ -4,7 +4,6 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import questions from '../../firebase/questions'; 
 import shuffle from 'lodash/shuffle';
 import colors from '../../style/colors';
-import { max } from 'lodash';
 
 const { Title, Paragraph } = Typography;
 
@@ -85,7 +84,7 @@ function Step2(props: Step2Props) {
  
   return (
     <div className='form-container'>
-      <Title level={2} className='step-title'> Set your trip preferences </Title>
+      <Title level={3} className='step-title'> Set your trip preferences </Title>
         <Row className='w-100 d-flex justify-content-center'>
           <Col xs={{span:24}} className='w-100 d-flex flex-column justify-content-center align-items-center mb-4'>
             <Progress className='w-75' percent={userAnswers.filter(a => a.length !== 0).length * 100/9}  showInfo={false} strokeColor={(userAnswers.filter(a => a.length !== 0).length * 100/9 < 100) ? colors.softBackgroundColor : colors.hardBackgroundColor}/>

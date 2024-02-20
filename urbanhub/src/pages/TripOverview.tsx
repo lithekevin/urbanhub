@@ -541,7 +541,7 @@ function TripOverview(props: any) {
 
       <Divider style={{ marginTop: "10px" }} />
 
-      <Title level={1} style={{ textAlign: "center" }}>
+      <Title level={2} style={{ textAlign: "center" }}>
         TRIP OVERVIEW
       </Title>
 

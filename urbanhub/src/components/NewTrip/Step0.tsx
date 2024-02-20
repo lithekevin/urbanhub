@@ -82,7 +82,7 @@ function Step0(props: Step0Props) {
 
   return (
     <div className="form-container">
-      <Title level={2} className="step-title">
+      <Title level={3} className="step-title">
         {" "}
         Choose your trip destination{" "}
       </Title>

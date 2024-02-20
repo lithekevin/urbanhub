@@ -13,7 +13,6 @@ import { EuroCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { Image, Tag, Typography } from "antd";
 import cities from "../../firebase/cities";
-import { set } from "lodash";
 
 const { Title } = Typography;
 

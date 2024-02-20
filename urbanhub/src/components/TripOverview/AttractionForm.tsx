@@ -125,7 +125,7 @@ function AttractionForm(props: AttractionFormProps) {
         {contextHolder}
         <Modal open={isFormVisible} onCancel={closeForm} footer={null} centered width={1000}>
           <Form form={form} name={"formName"} layout= "vertical" onFinish={(values) => onFinish(values)}>
-            <Title level={2} className='step-title'> {editingAttraction ? "Edit Attraction" : "Add Attraction"} </Title>
+            <Title level={3} className='step-title'> {editingAttraction ? "Edit Attraction" : "Add Attraction"} </Title>
             <Row>
               <Col>
                 <Form.Item name="attraction" label="Attraction" rules={[{ required: true, message: 'Please select one of the attractions in the map, or type the name!' }]} style={{ marginBottom: '10px'}}>

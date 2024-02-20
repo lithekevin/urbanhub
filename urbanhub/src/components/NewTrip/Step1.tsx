@@ -56,7 +56,7 @@ function Step1 (props: Step1Props){
 
   return (
     <div className='form-container'>
-      <Title level={2} className='step-title'> Select your trip settings </Title>
+      <Title level={3} className='step-title'> Select your trip settings </Title>
       
       <Paragraph style={{color: 'red'}}>*<Text className='label'> When would you like to go? </Text></Paragraph>
       <Form.Item name="dateRange" hidden={step !== 1}>
