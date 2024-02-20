@@ -1,10 +1,11 @@
 import React, { FC, useEffect, useState } from "react";
 import { Card, Row, Col, Container } from "react-bootstrap";
-import { Typography, Button, Modal, message, Skeleton, Image, Empty, Spin, Alert, Tabs, Flex, ConfigProvider, Tooltip } from "antd";
-import { PlusOutlined, DeleteOutlined, } from "@ant-design/icons";
+import { Typography, Button, Modal, Skeleton, Image, Empty, Spin, Alert, Tabs, Flex, ConfigProvider, Dropdown, Menu } from "antd";
+import { PlusOutlined, DeleteOutlined, MoreOutlined } from "@ant-design/icons";
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { MenuInfo } from "rc-menu/lib/interface";
 import colors from "../style/colors";
 import dayjs from "dayjs";
 import cities from "../firebase/cities";
@@ -23,6 +24,7 @@ function MyTrips(props: any) {
 
   const [messageApi, contextHolder] = [props.messageApi, props.contextHolder];
   const [enlargedCard, setEnlargedCard] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // Load trips from firebase
@@ -107,6 +109,36 @@ function MyTrips(props: any) {
     });
   };
 
+  const handleMenuHover = (trip: Trip) => {
+    setEnlargedCard(trip.id);
+  };
+
+  const menu = (trip: Trip) => {
+    const isPastTrip = dayjs().isAfter(dayjs(trip.endDate));
+    return (
+      <Menu
+        items={[
+          ...(!isPastTrip ? [] : []), // Remove the edit option for past trips
+          {
+            key: "delete",
+            label: (
+              <>
+                <DeleteOutlined style={{ marginRight: "2px", color: colors.deleteButtonColor }} />
+                <Text style={{ color: colors.deleteButtonColor }}>Delete</Text>
+              </>
+            ),
+            onMouseEnter: () => handleMenuHover(trip),
+            onClick: (info: MenuInfo) => {
+              info.domEvent.preventDefault();
+              info.domEvent.stopPropagation();
+              handleDelete(trip);
+            },
+          }
+        ]}
+      />
+    );
+  };
+
   return (
     <>
       {loading && (
@@ -134,7 +166,7 @@ function MyTrips(props: any) {
         </Col>
       )}
 
-      {/*contextHolder*/}
+      {contextHolder}
 
       <Flex align="middle" justify="space-around" className="mt-4">
         <Title level={2} style={{ marginBottom: '0' }}>MY TRIPS</Title>
@@ -179,9 +211,12 @@ function MyTrips(props: any) {
                             <TripCard
                               key={trip.id}
                               trip={trip}
+                              menu={menu}
                               enlargedCard={enlargedCard}
-                              activeTab={activeTab}
-                              handleDelete={handleDelete}
+                              setEnlargedCard={setEnlargedCard}
+                              isMenuOpen={isMenuOpen}
+                              setIsMenuOpen={setIsMenuOpen}
+                              handleMenuHover={handleMenuHover}
                             />
                           ))
                         ) : id === '3' && trips.filter((t) => t.startDate.isAfter(dayjs())).length === 0 ? (
@@ -193,9 +228,12 @@ function MyTrips(props: any) {
                             <TripCard
                               key={trip.id}
                               trip={trip}
+                              menu={menu}
                               enlargedCard={enlargedCard}
-                              activeTab={activeTab}
-                              handleDelete={handleDelete}
+                              setEnlargedCard={setEnlargedCard}
+                              isMenuOpen={isMenuOpen}
+                              setIsMenuOpen={setIsMenuOpen}
+                              handleMenuHover={handleMenuHover}
                             />
                           ))
                         ) : id === '1' && trips.filter((t) => t.endDate.isBefore(dayjs())).length === 0 ? (
@@ -207,9 +245,12 @@ function MyTrips(props: any) {
                             <TripCard
                               key={trip.id}
                               trip={trip}
+                              menu={menu}
                               enlargedCard={enlargedCard}
-                              activeTab={activeTab}
-                              handleDelete={handleDelete}
+                              setEnlargedCard={setEnlargedCard}
+                              isMenuOpen={isMenuOpen}
+                              setIsMenuOpen={setIsMenuOpen}
+                              handleMenuHover={handleMenuHover}
                             />
                           ))
                         )}
@@ -228,12 +269,21 @@ function MyTrips(props: any) {
 
 function TripCard(props: Readonly<{
   trip: Trip;
+  menu: (trip: Trip) => React.ReactNode;
   enlargedCard: string | null;
-  activeTab: string;
-  handleDelete: (trip: Trip) => void;
+  setEnlargedCard: React.Dispatch<React.SetStateAction<string | null>>;
+  isMenuOpen: boolean;
+  setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleMenuHover: (trip: Trip) => void;
 }>) {
 
-  const { trip, enlargedCard, handleDelete } = props;
+  const { trip, menu, enlargedCard, setEnlargedCard, isMenuOpen, setIsMenuOpen, handleMenuHover } = props;
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      setEnlargedCard(null);
+    }
+  }, [isMenuOpen, setEnlargedCard]);
 
   const isPastTrip = dayjs().isAfter(dayjs(trip.endDate));
 
@@ -242,35 +292,40 @@ function TripCard(props: Readonly<{
       <Link to={{ pathname: `/trips/${trip.id}` }} state={{ mode: !isPastTrip }} className="text-decoration-none" >
         <Card
           key={trip.id}
-          className={`text-center tripCard ${enlargedCard === trip.id ? "enlarged" : ""}`}
+          className={`text-center tripCard ${enlargedCard === trip.id ? "enlarged" : ""} ${isMenuOpen ? "enlarged-card" : ""}`}
           style={{ backgroundColor: colors.whiteBackgroundColor }}
         >
           <div className="city-image-container">
             <TripImage src={trip.image} alt={`City: ${trip.city}`} />
             <div className="gradient-overlay-bottom"></div>
             <div className="custom-dropdown">
-                <Tooltip title="Delete trip" placement="right">
-                  <Button
-                    type="text"
-                    icon={
-                      <DeleteOutlined
-                        style={{ fontSize: "20px", color: "#e04646" }}
-                      />
-                    }
-                    style={{
-                      background: "rgba(0, 0, 0, 0.7)",
-                      borderRadius: "50%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center"
-                    }}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      handleDelete(trip);
-                    }}
-                  />
-                </Tooltip>
+              <Dropdown
+                dropdownRender={() => menu(trip)}
+                trigger={["click"]}
+                placement="bottomRight"
+                arrow={{ pointAtCenter: true }}
+                onOpenChange={(visible) => {
+                  setIsMenuOpen(visible);
+                  visible ? handleMenuHover(trip) : setEnlargedCard(null);
+                }}
+              >
+                <Button
+                  type="text"
+                  icon={
+                    <MoreOutlined
+                      style={{ fontSize: "24px", color: "white" }}
+                    />
+                  }
+                  style={{
+                    background: "rgba(0, 0, 0, 0.7)",
+                    borderRadius: "50%",
+                  }}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }}
+                />
+              </Dropdown>
             </div>
           </div>
           <Card.Body>
