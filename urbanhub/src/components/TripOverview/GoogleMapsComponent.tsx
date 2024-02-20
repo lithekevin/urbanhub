@@ -281,7 +281,7 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
                 <Title
                   level={5}
                   className="attractionName"
-                  style={{ fontWeight: "bold" }}
+                  style={{ fontWeight: "bold", textAlign: 'center' }}
                 >
                   {selectedMarker.name}
                 </Title>
