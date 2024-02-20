@@ -18,7 +18,7 @@ function FooterComponent() {
           </Col>
           <Col span={8} style={{ fontStyle: 'italic'}}>
             <Title level={5} style={{ marginBottom: 0 }}>Creators:</Title>
-            <Paragraph style={{ marginBottom: 0 }}><a href="" title='Alessandro Bianco'>Alessandro Bianco</a></Paragraph>
+            <Paragraph style={{ marginBottom: 0 }}><a href="https://github.com/alewhite11" title='Alessandro Bianco'>Alessandro Bianco</a></Paragraph>
             <Paragraph style={{ marginBottom: 0 }}><a href="https://github.com/0-Elia-0" title='Elia Ferraro'>Elia Ferraro</a></Paragraph>
             <Paragraph style={{ marginBottom: 0 }}><a href="https://github.com/lithekevin" title='Kevin Gjeka'>Kevin Gjeka</a></Paragraph>
             <Paragraph style={{ marginBottom: 0 }}><a href="https://github.com/Sylvie-Molinatto" title="Sylvie Molinatto">Sylvie Molinatto</a></Paragraph>
