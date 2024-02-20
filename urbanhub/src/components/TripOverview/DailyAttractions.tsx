@@ -308,7 +308,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
 
   return (
     <>
-      {contextHolder}
+      {/*contextHolder*/}
       <Timeline mode="alternate" items={timelineItems} />
     </>
   );

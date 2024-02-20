@@ -57,7 +57,7 @@ function TripOverview(props: any) {
   const [error, setError] = useState<boolean>(false);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [dirty, setDirty] = useState<boolean>(true);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi, contextHolder] = [props.messageApi, props.contextHolder];
   const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
   const [editing, setEdit] = useState<boolean>(
@@ -427,8 +427,6 @@ function TripOverview(props: any) {
           if (tripId) {
             await deleteTrip(tripId);
 
-            navigate(-1);
-
             // Show success message
             messageApi.open({
               type: "success",
@@ -438,6 +436,12 @@ function TripOverview(props: any) {
                 marginTop: "70px",
               },
             });
+
+            setLoading(true);
+            
+            setTimeout(() => {
+              navigate(-1);
+          }, 1000); // Adjust the delay time as needed      
             
           }
         } catch (error) {
@@ -463,7 +467,7 @@ function TripOverview(props: any) {
         <Spin tip="Loading" size="large" fullscreen />
       )}
 
-      {contextHolder}
+      {/*contextHolder*/}
 
       <Row
         align="middle"

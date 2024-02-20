@@ -598,6 +598,7 @@ function Chatbot(props: ChatbotProps) {
         setTripUpdates(tempTrip);
       }
     } else {
+      //Add here the logic for the AI commands
       updateMessage("It seems you wrote something that I can't understand, could you please follow the rules I gave you?");
       setReloadText((prev) => prev + 1); // Reload the typing text
       setIsValidInput(false);

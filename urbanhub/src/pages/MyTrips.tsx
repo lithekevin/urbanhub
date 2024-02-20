@@ -12,7 +12,7 @@ import cities from "../firebase/cities";
 const { Text, Title, Paragraph } = Typography;
 const defaultImageURL = "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
-function MyTrips() {
+function MyTrips(props: any) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,7 +21,7 @@ function MyTrips() {
   const [error, setError] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("2"); // Default to "2" (Ongoing trips)
 
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi, contextHolder] = [props.messageApi, props.contextHolder];
   const [enlargedCard, setEnlargedCard] = useState<string | null>(null);
 
   useEffect(() => {
@@ -134,7 +134,7 @@ function MyTrips() {
         </Col>
       )}
 
-      {contextHolder}
+      {/*contextHolder*/}
 
       <Flex align="middle" justify="space-around" className="mt-4">
         <Title level={1} style={{ marginBottom: '0' }}>MY TRIPS</Title>

@@ -137,9 +137,9 @@ function Main() {
       {contextHolder}
       <Routes>
         <Route path="/" element={<PageLayout />}>
-          <Route index path="/" element={<MyTrips />} />
+          <Route index path="/" element={<MyTrips messageApi={messageApi} contextHolder={contextHolder}/>} />
           <Route path="/newtrip"element={<NewTrip onSubmit={handleTripSubmission} />}/>
-          <Route path="/trips/:tripId" element={<TripOverview />} />
+          <Route path="/trips/:tripId" element={<TripOverview messageApi={messageApi} contextHolder={contextHolder}/>} />
           <Route path="/*" element={<Error />} />
         </Route>
       </Routes>
