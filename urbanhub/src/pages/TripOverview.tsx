@@ -585,6 +585,10 @@ function TripOverview(props: any) {
             )}
           </Col>
         )}
+        {!editing && (
+          <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ textAlign: 'end', paddingRight: '1%' }}>
+          </Col>
+        )}
       </Row>
 
       <Divider style={{ marginTop: "10px" }} />
