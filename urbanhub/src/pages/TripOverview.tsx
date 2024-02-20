@@ -546,7 +546,7 @@ function TripOverview(props: any) {
       </Title>
 
       <div className="main-div">
-        <Container className="d-flex align-items-stretch height-full">
+        <Container className="d-flex align-items-stretch height-full" style={{maxWidth: '1100px'}}>
           <div className="sidebar-space">
             <Sidebar
               activeKeyState={{ value: activeKey, setter: setActiveKey }}
@@ -578,7 +578,7 @@ function TripOverview(props: any) {
           <div className="body-space">
             <Flex
               style={{
-                height: "53px",
+                height: "43px",
                 display: "flex",
                 justifyContent: "flex-end",
                 paddingRight: "10px",
@@ -686,7 +686,7 @@ function TripOverview(props: any) {
           title={<Text style={{color: 'white'}}><TypingText text="Click me! I can help you modify the trip." reloadText={0}/></Text>} 
           placement="top"
           open={showTooltip}
-          overlayStyle={{ width: '80px', height: 'auto'}}
+          overlayStyle={{ width: '90px', height: 'auto'}}
         >
           <Button
             type="text"
@@ -696,10 +696,10 @@ function TripOverview(props: any) {
               height: "65px",
               borderRadius: "50%",
               position: "fixed",
-              right: "17px",
+              right: "22px",
               zIndex: 999,
               backgroundColor: 'white',
-              bottom: `40px`,
+              bottom: `30px`,
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               transform: `scale(${isHovered ? 1.1 : 1})`,
               transition: "box-shadow transform 0.3s ease",

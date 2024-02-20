@@ -149,11 +149,11 @@ function Sidebar(props: SidebarProps) {
       {!loadingState.value && !errorState.value && tripState.value && (
         <>
           <div>
-            <Flex style={{ display: "flex", alignItems: "center" }}>
+            <Flex style={{ display: "flex", alignItems: "center", marginBottom: '10px' }} align="middle">
               <Title
                 level={3}
                 className="text-left"
-                style={{ marginRight: "1vw" }}
+                style={{ marginRight: "1vw", marginBottom: 0 }}
               >
                 {tripState.value.city}
               </Title>
@@ -176,7 +176,6 @@ function Sidebar(props: SidebarProps) {
                       color: "black",
                       textAlign: "center",
                       fontSize: "15px",
-                      marginBottom: "10px",
                       marginRight: "1vw",
                     }}
                     onClick={() => {
