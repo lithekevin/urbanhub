@@ -199,7 +199,7 @@ function NewTrip (props: TripFormProps) {
           <Row className="w-100 d-flex flex-row align-items-center">
             {/* Arrow on the left */}
             <Col xs={{ span: 4 }} sm={{ span: 3 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
-              <span  onClick={() => prevStep()} className="span-container link">
+              <span  onClick={() => prevStep()} className="span-container back-link">
                 <ArrowLeftOutlined
                   className="float-left"
                   style={{ marginRight: '4px', fontSize: '25px', marginLeft: '4%' }}
