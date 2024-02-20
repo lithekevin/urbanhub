@@ -1,5 +1,5 @@
 import { PiUserCircleFill } from "react-icons/pi";
-import { Col, Flex, Image, Layout, Row, Typography } from 'antd';
+import { Col, Image, Layout, Row, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 
 const { Header } = Layout;
