@@ -95,9 +95,7 @@ function Main() {
         addTrip(tripToAdd)
           .then(() => {
             console.log("Trip created successfully");
-
-            navigate("/trips/" + tripToAdd.id);
-
+            navigate("/trips/" + tripToAdd.id,  { state: { mode: true }});
             messageApi.open({
               type: "success",
               content: "Trip created successfully!",

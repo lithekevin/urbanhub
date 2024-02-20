@@ -160,14 +160,16 @@ function Sidebar(props: SidebarProps) {
               >
                 {tripState.value.city}
               </Title>
-              <Button
-                type="primary"
-                style={{ backgroundColor: colors.hardBackgroundColor, marginLeft:'2%' }}
-                onClick={() => openForm()}
-                className="button-new-trip"
-              >
-                Add Attraction
-              </Button>
+              { editing.value && (
+                <Button
+                  type="primary"
+                  style={{ backgroundColor: colors.hardBackgroundColor, marginLeft:'2%' }}
+                  onClick={() => openForm()}
+                  className="button-new-trip"
+                >
+                  Add Attraction
+                </Button>
+              )}
             </Flex>
           </div>
           <div className="sidebar-div">
