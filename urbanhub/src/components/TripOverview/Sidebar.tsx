@@ -8,9 +8,7 @@ import {
   Button,
   Flex,
   Spin,
-  Tooltip,
 } from "antd";
-import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Trip } from "../../models/trip";
 import colors from "../../style/colors";
 import DailyAttractions from "./DailyAttractions";
@@ -155,17 +153,16 @@ function Sidebar(props: SidebarProps) {
       {!loadingState.value && !errorState.value && tripState.value && (
         <>
           <div>
-            <Flex style={{ display: "flex", alignItems: "center", marginBottom: '10px' }} align="middle">
+            <Flex style={{ display: "flex", alignItems: "center", marginBottom: '10px' }} align="middle" justify="flex-start">
               <Title
                 level={3}
-                className="text-left"
                 style={{ marginRight: "1vw", marginBottom: 0 }}
               >
                 {tripState.value.city}
               </Title>
               <Button
                 type="primary"
-                style={{ backgroundColor: colors.hardBackgroundColor, marginBottom: '8px' }}
+                style={{ backgroundColor: colors.hardBackgroundColor, marginLeft:'2%' }}
                 onClick={() => openForm()}
                 className="button-new-trip"
               >

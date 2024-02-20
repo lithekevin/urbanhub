@@ -13,7 +13,6 @@ import {
   Button,
   Col,
   Divider,
-  Flex,
   Form,
   Image,
   message,
@@ -24,7 +23,7 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-import { ArrowLeftOutlined, SettingOutlined, DeleteOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { deleteTrip, getTripById } from "../firebase/daos/dao-trips";
 import { Attraction } from "../models/attraction";
 import { TripAttraction } from "../models/tripAttraction";
@@ -408,12 +407,6 @@ function TripOverview(props: any) {
     setVisible(true);
   };
 
-  const openForm = () => {
-    form.resetFields();
-    setEditingAttraction(null);
-    setIsFormVisible(true);
-  };
-
   function handleDeleteTrip() {
     Modal.confirm({
       title: "Delete Trip",
@@ -427,7 +420,6 @@ function TripOverview(props: any) {
         try {
           if (tripId) {
             await deleteTrip(tripId);
-
             navigate(-1);
 
             // Show success message
@@ -443,7 +435,6 @@ function TripOverview(props: any) {
           }
         } catch (error) {
           console.error("Error deleting trip:", error);
-
           // Show error message
           messageApi.open({
             type: "error",
@@ -493,7 +484,7 @@ function TripOverview(props: any) {
         }}
       >
         {/* Arrow on the left */}
-        <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4}>
+        <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ paddingLeft: '1%'}}>
           <span onClick={() => navigate(-1)} className="back-link">
             <ArrowLeftOutlined
               className="float-left"
@@ -554,21 +545,23 @@ function TripOverview(props: any) {
           </span>
         </Col>
         {editing && (
-          <><Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ textAlign: 'end' }}>
-            <Tooltip title="Edit trip settings" placement="bottomLeft">
+          <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ textAlign: 'end', paddingRight: '1%' }}>
+            <Tooltip title="Edit trip settings" placement="bottomRight">
               <Button
                 size="middle"
                 className="enterEditModeButton"
-                type="primary"
+                type="text"
                 style={{
-                  backgroundColor: colors.hardBackgroundColor,
+                  backgroundColor: 'white',
+                  color: colors.primaryButtonColor,
+                  borderColor: colors.primaryButtonColor,
                   textAlign: "center",
                   fontSize: '15px',
                   marginRight: '5px'
                 }}
                 onClick={() => handleOpenModal()}
               >
-                <span>{<SettingOutlined />}</span>
+                <span>{<EditOutlined/>}</span>
               </Button>
             </Tooltip>
             {tripId && ( // Check if tripId exists
@@ -576,9 +569,11 @@ function TripOverview(props: any) {
                 <Button
                   size="middle"
                   className="enterEditModeButton"
-                  type="primary"
+                  type="text"
                   style={{
-                    backgroundColor: colors.deleteButtonColor,
+                    backgroundColor: 'white',
+                    color: colors.deleteButtonColor,
+                    borderColor: colors.deleteButtonColor,
                     textAlign: "center",
                     fontSize: '15px'
                   }}
@@ -589,7 +584,6 @@ function TripOverview(props: any) {
               </Tooltip>
             )}
           </Col>
-          </>
         )}
       </Row>
 
