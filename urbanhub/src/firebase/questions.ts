@@ -14,7 +14,6 @@ const questions: string[] = [
     "What are some hobbies or interests you'd like to pursue during the trip?",
     "What inspired you to travel to this destination?",
     "What unique or adventurous activities would you like to try during your trip?",
-    "What are some specific health or dietary considerations that we should take into account?",
     "What kind of music or performances would you like to experience during your trip?",
     "What aspects of the local culture are you most interested in exploring?",
     "Are there any specific themes or topics you're interested in learning more about during your trip?",

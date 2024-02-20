@@ -140,8 +140,8 @@ function NewTrip (props: TripFormProps) {
 
   React.useEffect(() => {
     // Load the initial set of questions when the component mounts
-    let initialQuestions = ["Describe me your ideal trip."];
-    initialQuestions = [...initialQuestions, ...shuffle(questions).slice(0, 2)];
+    let initialQuestions = ["Describe me your ideal trip.", "Do you have any specific health or dietary considerations that I should take into account?"];
+    initialQuestions = [...initialQuestions, ...shuffle(questions).slice(0, 1)];
     setDisplayedQuestions(initialQuestions);
     setAllDisplayedQuestions(initialQuestions);
   }, []);

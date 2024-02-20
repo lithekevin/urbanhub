@@ -34,6 +34,8 @@ function Step2(props: Step2Props) {
   let questionEndingIndex = questionsPageNumber*3+2;
   let previousPageQuestionStartingIndex = (questionsPageNumber-1)*3;
   let previousPageQuestionEndingIndex = (questionsPageNumber-1)*3+2;
+  let nextPageQuestionStartingIndex = (questionsPageNumber+1)*3;
+  let nextPageQuestionEndingIndex = (questionsPageNumber+1)*3+2;
           
   // Handle user's answers to questions
   const handleAnswerChange = (index: number, value: string) => {
@@ -154,7 +156,7 @@ function Step2(props: Step2Props) {
                       loadMoreQuestions();
                     }
                     else{
-                      setDisplayedQuestions(allDisplayedQuestions.slice(previousPageQuestionStartingIndex, previousPageQuestionEndingIndex+1))
+                      setDisplayedQuestions(allDisplayedQuestions.slice(nextPageQuestionStartingIndex, nextPageQuestionEndingIndex+1))
                     }
                     setQuestionsPageNumber((number) => number+1)
                     
