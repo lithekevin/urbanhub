@@ -116,21 +116,7 @@ function MyTrips() {
     return (
       <Menu
         items={[
-          ...(!isPastTrip ? [{
-            key: "edit",
-            label: (
-              <>
-                <EditOutlined style={{ marginRight: "2px", color: colors.primaryButtonColor }} />
-                <Text style={{ color: colors.primaryButtonColor }}>Edit</Text>
-              </>
-            ),
-            onMouseEnter: () => handleMenuHover(trip),
-            onClick: (info: MenuInfo) => {
-              info.domEvent.preventDefault();
-              info.domEvent.stopPropagation();
-              navigate(`/trips/${trip.id}`, { state: { mode: "edit" } });
-            },
-          }] : []),
+          ...(!isPastTrip ? [] : []), // Remove the edit option for past trips
           {
             key: "delete",
             label: (
@@ -154,7 +140,7 @@ function MyTrips() {
   return (
     <>
       {loading && (
-        <Spin tip="Loading" size="large" fullscreen/>
+        <Spin tip="Loading" size="large" fullscreen />
       )}
 
       {error && (
@@ -173,7 +159,7 @@ function MyTrips() {
               </>
             }
             type="error"
-            style={{width: 'fit-content', margin: 'auto', marginTop: '20px'}}
+            style={{ width: 'fit-content', margin: 'auto', marginTop: '20px' }}
           />
         </Col>
       )}
@@ -181,7 +167,7 @@ function MyTrips() {
       {contextHolder}
 
       <Flex align="middle" justify="space-around" className="mt-4">
-        <Title level={2} style={{marginBottom: '0'}}>MY TRIPS</Title>
+        <Title level={2} style={{ marginBottom: '0' }}>MY TRIPS</Title>
         <AddTripButton />
       </Flex>
 
@@ -209,15 +195,15 @@ function MyTrips() {
                 const id = String(i + 1);
                 const tabLabel = id === '1' ? 'Past Trips' : id === '2' ? 'Ongoing trips' : 'Future trips';
                 return {
-                  label: <Flex align="middle" justify="center" style={{width: '130px'}}><Text style={{ fontSize: '18px' }}>{tabLabel}</Text></Flex>,
+                  label: <Flex align="middle" justify="center" style={{ width: '130px' }}><Text style={{ fontSize: '18px' }}>{tabLabel}</Text></Flex>,
                   key: id,
                   children: (
                     <Container fluid className="position-relative d-flex flex-column align-items-center" style={{ marginTop: '20px' }}>
                       <Row className="d-flex flex-row justify-content-center">
                         {id === '2' && trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).length === 0 ? (
-                            <div className="empty-container">
-                              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You are not currently on any trip"/>
-                            </div>
+                          <div className="empty-container">
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You are not currently on any trip" />
+                          </div>
                         ) : id === '2' ? (
                           trips.filter((t) => t.startDate.isBefore(dayjs()) && t.endDate.isAfter(dayjs())).map((trip, index) => (
                             <TripCard
@@ -297,14 +283,15 @@ function TripCard(props: Readonly<{
     }
   }, [isMenuOpen, setEnlargedCard]);
 
+  const isPastTrip = dayjs().isAfter(dayjs(trip.endDate));
+
   return (
     <Col key={trip.id} xs={7} md={4} lg={3} className="mb-4">
-      <Link to={{ pathname: `/trips/${trip.id}`}} className="text-decoration-none" >
+      <Link to={{ pathname: `/trips/${trip.id}` }} state={{ mode: !isPastTrip }} className="text-decoration-none" >
         <Card
           key={trip.id}
-          className={`text-center tripCard ${
-            enlargedCard === trip.id ? "enlarged" : ""
-          } ${isMenuOpen ? "enlarged-card" : ""}`}
+          className={`text-center tripCard ${enlargedCard === trip.id ? "enlarged" : ""
+            } ${isMenuOpen ? "enlarged-card" : ""}`}
           style={{ backgroundColor: colors.whiteBackgroundColor }}
         >
           <div className="city-image-container">
