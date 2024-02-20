@@ -679,4 +679,4 @@ const TypingText = ({ text, reloadText }: { text: string, reloadText: number }) 
   return <span>{displayedText}</span>;
 };
 
-export default Chatbot;
+export { Chatbot, TypingText };

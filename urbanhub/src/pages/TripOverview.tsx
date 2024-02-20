@@ -29,7 +29,8 @@ import { Attraction } from "../models/attraction";
 import { TripAttraction } from "../models/tripAttraction";
 import { Trip } from "../models/trip";
 import AttractionForm from "../components/TripOverview/AttractionForm";
-import Chatbot from "../components/TripOverview/ChatbotComponent";
+import { Chatbot } from "../components/TripOverview/ChatbotComponent";
+import { TypingText } from "../components/TripOverview/ChatbotComponent";
 import EditTripSettings from "../components/TripOverview/EditTripSettings";
 import GoogleMapsComponent from "../components/TripOverview/GoogleMapsComponent";
 import Sidebar from "../components/TripOverview/Sidebar";
@@ -414,6 +415,21 @@ function TripOverview(props: any) {
     setIsFormVisible(true);
   };
 
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  // Imposta lo stato del tooltip su true quando il componente viene montato
+  useEffect(() => {
+    setShowTooltip(true);
+
+    // Imposta un timeout per nascondere il tooltip dopo 10 secondi
+    const timeout = setTimeout(() => {
+      setShowTooltip(false);
+    }, 10000); // 10 secondi in millisecondi
+
+    // Cancella il timeout quando il componente viene smontato o quando lo stato del tooltip cambia
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <>
       {(loading || imageLoading) && (
@@ -666,7 +682,12 @@ function TripOverview(props: any) {
         arrow={{ pointAtCenter: true }}
         overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px",  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", borderRadius: '4%' }}
       >
-        <Tooltip title={<Text style={{color: 'white'}}>Click me! I can help you modify the trip.</Text>} placement="topLeft">
+        <Tooltip 
+          title={<Text style={{color: 'white'}}><TypingText text="Click me! I can help you modify the trip." reloadText={0}/></Text>} 
+          placement="top"
+          open={showTooltip}
+          overlayStyle={{ width: '80px', height: 'auto'}}
+        >
           <Button
             type="text"
             className = "chatbot-button"
@@ -686,8 +707,14 @@ function TripOverview(props: any) {
               justifyContent: "center",
               alignItems: "center",
             }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            onMouseEnter={() => {
+              setIsHovered(true);
+              setShowTooltip(true);
+            }}
+            onMouseLeave={() => {
+              setIsHovered(false)
+              setShowTooltip(false);
+            }}
           >
             <Image
               src="https://imgur.com/tRPWpWV.png"
