@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, Empty, Space, Typography } from 'antd';
+import { Button, Card, Col, Empty, Row, Space, Typography } from 'antd';
 const { Text, Title } = Typography;
 
 interface Step3Props {
@@ -49,61 +49,67 @@ function Step3 (props: Step3Props) {
   const [loading, setLoading] = React.useState(false);
 
   return (
-    <div className='form-container'>
-      <Title className='step-title' level={3}> Trip summary </Title>
+    <Row>
+      <Col span={5}></Col>
+      <Col span={14}>
+        <div className='form-container'>
+          <Title className='step-title' level={3} style={{ paddingBottom: '20px'}}> Trip summary </Title>
 
-      <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="1. Trip Destination" className='summary-card' headStyle={{ fontSize: '18px' }}>
-        <Space direction="vertical">
-          {step1Data.map((item, index) => (
-            <Space key={item.value} align="baseline">
-              <Text strong>{item?.label}</Text>
-              <span>{item?.value}</span>
+          <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="1. Trip Destination" className='summary-card' headStyle={{ fontSize: '18px' }}>
+            <Space direction="vertical">
+              {step1Data.map((item, index) => (
+                <Space key={item.value} align="baseline">
+                  <Text strong>{item?.label}</Text>
+                  <span>{item?.value}</span>
+                </Space>
+              ))}
             </Space>
-          ))}
-        </Space>
-      </Card>
+          </Card>
 
-      <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="2. Trip settings" className='summary-card' headStyle={{ fontSize: '18px' }}>
-        <Space direction="vertical" align="center">
-          {step2Data.map((item, index) => (
-            <Space key={item.value} direction="horizontal" align="baseline">
-              <Text strong>{item?.label}</Text>
-              <span>{item?.value}</span>
+          <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="2. Trip settings" className='summary-card' headStyle={{ fontSize: '18px' }}>
+            <Space direction="vertical" align="center">
+              {step2Data.map((item, index) => (
+                <Space key={item.value} direction="horizontal" align="baseline">
+                  <Text strong>{item?.label}</Text>
+                  <span>{item?.value}</span>
+                </Space>
+              ))}
             </Space>
-          ))}
-        </Space>
-      </Card>
+          </Card>
 
-      {step === 3 &&
-        <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="3. Trip preferences" className='summary-card' headStyle={{ fontSize: '18px' }}>
-          <Space direction="vertical">
-            {step3Data.map((item, index) => (
-              <>
-              {index!==0 && <hr/>}
-              <Space key={index} align="baseline">
-                <Text strong>{item?.label}</Text>
+          {step === 3 &&
+            <Card style={{ marginBottom: '10px', textAlign: 'center' }} title="3. Trip preferences" className='summary-card' headStyle={{ fontSize: '18px' }}>
+              <Space direction="vertical">
+                {step3Data.map((item, index) => (
+                  <>
+                  {index!==0 && <hr/>}
+                  <Space key={index} align="baseline">
+                    <Text strong>{item?.label}</Text>
+                  </Space>
+                  <span>
+                    {item?.value}
+                  </span>
+                  </>
+                ))}
+                {step3Data.length === 0 &&
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You didn't answer any question" style={{width: '80%'}}/>
+                }
               </Space>
-              <span>
-                 {item?.value}
-              </span>
-              </>
-            ))}
-            {step3Data.length === 0 &&
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="You didn't answer any question" style={{width: '80%'}}/>
-            }
-          </Space>
-        </Card>
-      }
+            </Card>
+          }
 
-      <div className="mb-2 d-flex align-items-center justify-content-center">
-        <Button type="default" onClick={prevStep} className="button">
-          Previous
-        </Button>
-        <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button createTripButton" onClick={() => { setLoading(true); onSubmit(formData) }}>
-          Create Trip
-        </Button>
-      </div>
-    </div>
+          <div className="mb-2 d-flex align-items-center justify-content-center">
+            <Button type="default" onClick={prevStep} className="button">
+              Previous
+            </Button>
+            <Button loading={loading} disabled={loading} type="primary" htmlType="submit" className="button createTripButton" onClick={() => { setLoading(true); onSubmit(formData) }}>
+              Create Trip
+            </Button>
+          </div>
+        </div>
+      </Col>
+      <Col span={5}></Col>
+    </Row>
   );
 };
 
