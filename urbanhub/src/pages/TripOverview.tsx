@@ -410,7 +410,15 @@ function TripOverview(props: any) {
       title: "Delete Trip",
       content: (
         <div>
-          <p>Are you sure you want to delete the trip to {trip?.city}?</p>
+          <p>Are you sure you want to delete this trip?</p>
+          <p>
+            <strong>Destination:</strong> {trip?.city}
+            <br />
+            <strong>Start Date:</strong> {trip?.startDate.format("DD/MM/YYYY")}
+            <br />
+            <strong>End Date:</strong> {trip?.endDate.format("DD/MM/YYYY")}
+            <br />
+          </p>
         </div>
       ),
       centered: true,
