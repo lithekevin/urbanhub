@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Steps, Row, Col, ConfigProvider, Typography } from "antd";
+import { Form, Steps, Row, Col, ConfigProvider, Typography, Flex } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -196,19 +196,18 @@ function NewTrip (props: TripFormProps) {
             },
           }}
         >
-          <Row className="w-100 d-flex flex-row align-items-center">
+          <Row align={"middle"}>
             {/* Arrow on the left */}
-            <Col xs={{ span: 4 }} sm={{ span: 3 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
-              <span  onClick={() => prevStep()} className="span-container back-link">
-                <ArrowLeftOutlined
-                  className="float-left"
-                  style={{ marginRight: '4px', fontSize: '25px', marginLeft: '4%' }}
-                /> 
-                <Text style={{ fontSize: '14px'}}>Back</Text>
-              </span>
+            <Col span={4}>
+            <Flex onClick={() => prevStep()} style={{ display: 'flex', alignItems: 'center' }} className="back-link">
+              <ArrowLeftOutlined
+                style={{ marginRight: '4px', marginLeft: '4%', fontSize: '24px', cursor: 'pointer' }}
+              />
+              <Text style={{ cursor: 'pointer'}}>Back</Text>
+            </Flex>
             </Col>
             {/* Stepper centered */}
-            <Col xs={{ span: 24 }} sm={{ span: 18 }} md={{ span: 16 }} lg={{ span: 16 }} xl={{ span: 16 }}>
+            <Col span={16}>
               <div className="mb-3 center text-center">
                 <Steps current={step} size="small" style={{ paddingTop: '15px' }}>
                   {steps.map((s, index) => (
@@ -217,75 +216,68 @@ function NewTrip (props: TripFormProps) {
                 </Steps>
               </div>
             </Col>
+            <Col span={4}> </Col>
           </Row>
         </ConfigProvider>
       
-      <Row justify={"center"} align={"top"} style={{ minHeight: "66vh" }}>
-        <Col
-          sm={{ span: 24 }}
-          md={{ span: 20 }}
-          lg={{ span: 18 }}
-          xl={{ span: 14 }}
-        >
-          <Form layout="vertical">
-            {step === 0 && (
-              <Step0
-                isDestinationSelected={isDestinationSelected}
-                setIsDestinationSelected={setIsDestinationSelected}
-                isDestinationValid={isDestinationValid}
-                setIsDestinationValid={setIsDestinationValid}
-                cityPosition={cityPosition}
-                setCityPosition={setCityPosition}
-                mapZoom={mapZoom}
-                setMapZoom={setMapZoom}
-                formData={formData}
-                handleInputChange={handleInputChange}
-                step={step}
-                nextStep={nextStep}
-              />
-            )}
-            {step === 1 && (
-              <Step1
-                step={step}
-                handleDateRangeChange={handleDateRangeChange}
-                adultsValue={adultsValue}
-                setAdultsValue={setAdultsValue}
-                childrenValue={childrenValue}
-                setChildrenValue={setChildrenValue}
-                handleInputChange={handleInputChange}
-                formData={formData}
-                prevStep={prevStep}
-                nextStep={nextStep}
-              />
-            )}
-            {step === 2 && (
-              <Step2
-                step={step}
-                displayedQuestions={displayedQuestions}
-                setDisplayedQuestions={setDisplayedQuestions}
-                allDisplayedQuestions={allDisplayedQuestions}
-                setAllDisplayedQuestions={setAllDisplayedQuestions}
-                userAnswers={userAnswers}
-                setUserAnswers={setUserAnswers}
-                questionsPageNumber={questionsPageNumber}
-                setQuestionsPageNumber={setQuestionsPageNumber}
-                maxPageNumber={maxPageNumber}
-                setMaxPageNumber={setMaxPageNumber}
-                prevStep={prevStep}
-                nextStep={nextStep}
-              />
-            )}
-            {step === 3 && (
-              <Step3
-                step={step}
-                formData={formData}
-                prevStep={prevStep}
-                onSubmit={onSubmit}
-              />
-            )}
-          </Form>
-        </Col>
-      </Row>
+        <Form layout="vertical">
+          {step === 0 && (
+            <Step0
+              isDestinationSelected={isDestinationSelected}
+              setIsDestinationSelected={setIsDestinationSelected}
+              isDestinationValid={isDestinationValid}
+              setIsDestinationValid={setIsDestinationValid}
+              cityPosition={cityPosition}
+              setCityPosition={setCityPosition}
+              mapZoom={mapZoom}
+              setMapZoom={setMapZoom}
+              formData={formData}
+              handleInputChange={handleInputChange}
+              step={step}
+              nextStep={nextStep}
+            />
+          )}
+          {step === 1 && (
+            <Step1
+              step={step}
+              handleDateRangeChange={handleDateRangeChange}
+              adultsValue={adultsValue}
+              setAdultsValue={setAdultsValue}
+              childrenValue={childrenValue}
+              setChildrenValue={setChildrenValue}
+              handleInputChange={handleInputChange}
+              formData={formData}
+              prevStep={prevStep}
+              nextStep={nextStep}
+            />
+          )}
+          {step === 2 && (
+            <Step2
+              step={step}
+              displayedQuestions={displayedQuestions}
+              formData={formData}
+              setDisplayedQuestions={setDisplayedQuestions}
+              allDisplayedQuestions={allDisplayedQuestions}
+              setAllDisplayedQuestions={setAllDisplayedQuestions}
+              userAnswers={userAnswers}
+              setUserAnswers={setUserAnswers}
+              questionsPageNumber={questionsPageNumber}
+              setQuestionsPageNumber={setQuestionsPageNumber}
+              maxPageNumber={maxPageNumber}
+              setMaxPageNumber={setMaxPageNumber}
+              prevStep={prevStep}
+              nextStep={nextStep}
+            />
+          )}
+          {step === 3 && (
+            <Step3
+              step={step}
+              formData={formData}
+              prevStep={prevStep}
+              onSubmit={onSubmit}
+            />
+          )}
+        </Form>
     </>
   );
 };
