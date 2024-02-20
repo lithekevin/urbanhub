@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Col, Form, Image, Input, Modal, Progress, Row, Tag, Typography } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import questions from '../../firebase/questions'; 
@@ -36,6 +36,10 @@ function Step2(props: Step2Props) {
   let previousPageQuestionEndingIndex = (questionsPageNumber-1)*3+2;
   let nextPageQuestionStartingIndex = (questionsPageNumber+1)*3;
   let nextPageQuestionEndingIndex = (questionsPageNumber+1)*3+2;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
           
   // Handle user's answers to questions
   const handleAnswerChange = (index: number, value: string) => {

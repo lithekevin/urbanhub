@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Col, DatePicker, Form, InputNumber, Row, Tag, Tooltip, Typography } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -29,6 +29,10 @@ function Step1 (props: Step1Props){
 
   const { adultsValue, setAdultsValue, childrenValue, setChildrenValue, handleDateRangeChange, handleInputChange, 
           formData, step, prevStep, nextStep } = props;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleIncrement = (type: 'adults' | 'children') => {
     if (type === 'adults') {

@@ -37,6 +37,10 @@ function Step0(props: Step0Props) {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (mapLoaded && cityPosition) {
       const timer = setTimeout(() => {
         setShowMarker(true);

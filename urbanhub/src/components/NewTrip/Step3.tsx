@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Card, Col, Empty, Row, Space, Typography } from 'antd';
 const { Text, Title } = Typography;
 
@@ -28,6 +28,10 @@ interface Step3Props {
 function Step3 (props: Step3Props) {
 
   const { formData, step, prevStep, onSubmit } = props;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const step1Data = [
     { label: 'Destination: ', value: formData.destination }
