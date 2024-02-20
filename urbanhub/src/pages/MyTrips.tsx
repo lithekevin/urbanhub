@@ -124,7 +124,7 @@ function MyTrips(props: any) {
             label: (
               <>
                 <DeleteOutlined style={{ marginRight: "2px", color: colors.deleteButtonColor }} />
-                <Text style={{ color: colors.deleteButtonColor }}>Delete</Text>
+                <Text style={{ color: colors.deleteButtonColor }}>Delete Trip</Text>
               </>
             ),
             onMouseEnter: () => handleMenuHover(trip),
