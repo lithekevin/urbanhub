@@ -158,7 +158,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
                       {attraction.name}
                     </Title>
                     <div className="button-container">
-                      {editing && (
+                      {editing && !attraction.startDate.isBefore(dayjs().startOf('day')) && (
                         <Button
                           onClick={() => handleEditClick(attraction)}
                           icon={
@@ -171,7 +171,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
                           type="text"
                         />
                       )}
-                      {editing && (
+                      {editing && !attraction.startDate.isBefore(dayjs().startOf('day')) &&(
                         <Button
                           onClick={() => handleDeleteClick(attraction)}
                           icon={
@@ -185,25 +185,25 @@ function DailyAttractions(props: DailyAttractionsProps) {
                       )}
                     </div>
                   </Flex>
-                  
-                    <Flex align="center" style={{marginBottom: '4%'}}>
-                      <Link
-                        href={wikipediaUrls[attraction.name]}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          color: "black",
-                          textAlign: "left",
-                          display: "flex",
-                          alignItems: "center",
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <InfoCircleOutlined size={25} style={{marginRight: '2px'}}/>
-                        <Text underline>Read more...</Text>
-                      </Link>
-                    </Flex>
-                  
+
+                  <Flex align="center" style={{ marginBottom: '4%' }}>
+                    <Link
+                      href={wikipediaUrls[attraction.name]}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        color: "black",
+                        textAlign: "left",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <InfoCircleOutlined size={25} style={{ marginRight: '2px' }} />
+                      <Text underline>Read more...</Text>
+                    </Link>
+                  </Flex>
+
                   <Tag
                     icon={<EuroCircleOutlined />}
                     color="green"
