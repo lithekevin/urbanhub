@@ -17,6 +17,7 @@ function MyTrips(props: any) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [message] = useState<boolean>(location.state && location.state.mode === true);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -53,6 +54,14 @@ function MyTrips(props: any) {
 
     loadTrips();
   }, []);
+
+  useEffect(() => {
+    if (location.state && location.state.mode) {
+      messageApi.success("Trip deleted successfully!");
+    }
+  }, [location]);
+
+  
 
   useEffect(() => {
     // Retrieve the active tab from URL parameters when the component mounts or updates

@@ -426,23 +426,8 @@ function TripOverview(props: any) {
         try {
           if (tripId) {
             await deleteTrip(tripId);
+            navigate("/",  { state: { mode: true }});
 
-            // Show success message
-            messageApi.open({
-              type: "success",
-              content: "Trip deleted successfully!",
-              duration: 3,
-              style: {
-                marginTop: "70px",
-              },
-            });
-
-            setLoading(true);
-            
-            setTimeout(() => {
-              navigate(-1);
-          }, 1000); // Adjust the delay time as needed      
-            
           }
         } catch (error) {
           console.error("Error deleting trip:", error);
@@ -496,7 +481,7 @@ function TripOverview(props: any) {
       >
         {/* Arrow on the left */}
         <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ paddingLeft: '1%'}}>
-          <span onClick={() => navigate(-1)} className="back-link">
+          <span onClick={() => navigate("/")} className="back-link">
             <ArrowLeftOutlined
               className="float-left"
               style={{ marginRight: '4px', fontSize: '25px' }}
