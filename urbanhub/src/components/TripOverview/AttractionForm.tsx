@@ -173,7 +173,7 @@ function AttractionForm(props: AttractionFormProps) {
                 <Form.Item name="date" label= "Date" rules={[{ required: true, message: 'Please choose the date!' }]} style={{ marginBottom: '10px'}}>
                 <DatePicker format="DD/MM/YYYY"
                   disabledDate={(current) => 
-                    (current && current.isBefore(dayjs())) || 
+                    (current.isBefore(dayjs().startOf('day'))) || 
                     (current && ((current.isBefore(dayjs(trip?.startDate))  || current.isAfter(dayjs(trip?.endDate).add(1, 'day').subtract(1, 'second')))))
                   }
                   defaultPickerValue={trip?.startDate ? dayjs(trip?.startDate).isAfter(dayjs()) ? dayjs(trip?.startDate) : dayjs() : dayjs()}

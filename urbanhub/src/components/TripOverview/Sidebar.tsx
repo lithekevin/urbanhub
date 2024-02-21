@@ -9,6 +9,7 @@ import {
   Flex,
   Spin,
 } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { Trip } from "../../models/trip";
 import colors from "../../style/colors";
 import DailyAttractions from "./DailyAttractions";
@@ -132,7 +133,7 @@ function Sidebar(props: SidebarProps) {
   return (
     <>
       {loadingState.value && (
-        <Spin tip="Loading" size="large" fullscreen/>
+        <Spin tip="Loading" size="large" fullscreen />
       )}
       {errorState.value && (
         <Col>
@@ -160,14 +161,16 @@ function Sidebar(props: SidebarProps) {
               >
                 {tripState.value.city}
               </Title>
-              { editing.value && (
+              {editing.value && (
                 <Button
                   type="primary"
-                  style={{ backgroundColor: colors.hardBackgroundColor, marginLeft:'2%' }}
+                  style={{ backgroundColor: colors.hardBackgroundColor, marginLeft: '2%' }}
                   onClick={() => openForm()}
                   className="button-new-trip"
                 >
-                  Add Attraction
+                  <span>
+                    <PlusOutlined style={{ marginRight: "8px" }} /> Add Attraction
+                  </span>
                 </Button>
               )}
             </Flex>
