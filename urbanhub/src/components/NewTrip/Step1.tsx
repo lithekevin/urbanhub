@@ -139,9 +139,9 @@ function Step1 (props: Step1Props){
               style={{ width: 'auto' }}
             />
           </Form.Item>
-          <Row className="d-flex justify-content-end mt-2" style={{color: "red"}}>
+          <Row className="d-flex justify-content-start mt-2" style={{color: "red"}}>
               <small>* This field is mandatory</small>
-            </Row>
+          </Row>
           <div className="mb-2 d-flex align-items-center justify-content-center">
             <Button type="default" onClick={prevStep} className="button nextButtonSecondary">
               Previous

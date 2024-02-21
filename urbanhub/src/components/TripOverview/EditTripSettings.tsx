@@ -188,8 +188,8 @@ function EditTripSettings(props: EditTripSettingsProps) {
         </Form.Item>
         </Row>
       </Form>
-      <Row className='d-flex justify-content-end mt-3'>
-        <small style={{color: "red"}}>* This field is mandatory</small>
+      <Row className='d-flex justify-content-start mt-3' style={{color: "red"}}>
+        <small>* This field is mandatory</small>
       </Row>
       
       </Modal>

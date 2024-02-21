@@ -95,7 +95,6 @@ function Step0(props: Step0Props) {
           </Title>
           <Paragraph style={{color: 'red'}}>*<Text className='label'> Where would you want to go? </Text></Paragraph>
           <Form.Item
-            hidden={step !== 0}
             validateStatus={isDestinationValid ? "success" : "error"}
             help={
               (!isDestinationValid || !isDestinationSelected) &&
@@ -124,7 +123,7 @@ function Step0(props: Step0Props) {
             />
           </Form.Item>
           <Form.Item>
-            <Row className="mt-5">
+            <Row className="mt-3">
               <Col span={24}>
                 <GoogleMap
                   key={step}
@@ -220,7 +219,7 @@ function Step0(props: Step0Props) {
                 </GoogleMap>
               </Col>
             </Row>
-            <Row className="d-flex justify-content-end mt-2" style={{color: "red"}}>
+            <Row className="d-flex justify-content-start mt-2" style={{color: "red"}}>
               <small>* This field is mandatory</small>
             </Row>
           </Form.Item>

@@ -235,6 +235,9 @@ function AttractionForm(props: AttractionFormProps) {
                     {(editingAttraction ? "Editing" : "Adding") + " an attraction to this trip will shift and/or delete other attractions in the same day if they overlap."}
                   </small>
                 </Row>
+                <Row style={{color: "red"}}>
+                  <small className='text-start mt-3'>* This field is mandatory</small>
+                </Row>
               </Col>
               <Col>
                 <Form.Item>
@@ -321,9 +324,6 @@ function AttractionForm(props: AttractionFormProps) {
                   </GoogleMap>
                 </Form.Item>
               </Col>
-            </Row>
-            <Row style={{color: "red"}}>
-                  <small className='text-end mb-2'>* This field is mandatory</small>
             </Row>
             <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button onClick={closeForm} style={{ marginRight: '10px' }}>
