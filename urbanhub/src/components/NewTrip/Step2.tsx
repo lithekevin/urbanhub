@@ -5,7 +5,7 @@ import questions from '../../firebase/questions';
 import shuffle from 'lodash/shuffle';
 import colors from '../../style/colors';
 
-const { Text, Title, Paragraph } = Typography;
+const { Title, Paragraph } = Typography;
 
 interface Step2Props {
   displayedQuestions: string[];
@@ -123,7 +123,6 @@ function Step2(props: Step2Props) {
                     <Col span={24}>
                       <Form.Item
                         name={`answer${questionStartingIndex + index}`}
-                        hidden={step !== 2}
                       >
                         <Input.TextArea
                           value={userAnswers[questionStartingIndex + index]}

@@ -50,6 +50,11 @@ function AttractionForm(props: AttractionFormProps) {
 
     const [showParagraph, setShowParagraph] = useState(false);
     const [markerClicked, setMarkerClicked] = useState<boolean>(false);
+    const [startTime, setStartTime] = useState(null); // State variable to store the selected start time
+
+    const handleStartTimeChange = (value: any) => {
+      setStartTime(value); // Update the selected start time
+    };
 
     const closeForm = () => {
       setIsFormVisible(false);
@@ -58,6 +63,7 @@ function AttractionForm(props: AttractionFormProps) {
       setShowParagraph(false);
       setSelectedMarker(null);
       setMarkerClicked(false);
+      setStartTime(null);
     };
   
     const onFinish = (values: any) => {
@@ -170,20 +176,67 @@ function AttractionForm(props: AttractionFormProps) {
                     (current && current.isBefore(dayjs())) || 
                     (current && ((current.isBefore(dayjs(trip?.startDate))  || current.isAfter(dayjs(trip?.endDate).add(1, 'day').subtract(1, 'second')))))
                   }
+                  defaultPickerValue={trip?.startDate ? dayjs(trip?.startDate).isAfter(dayjs()) ? dayjs(trip?.startDate) : dayjs() : dayjs()}
                   style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item style={{ marginBottom: '10px'}}>
-                  <Form.Item label = "Start Time " name="startTime" style={{ display: 'inline-block', marginRight: "2vw"}} rules={[{ required: true, message: 'Please choose the start time!' }]}>
-                    <TimePicker format="HH:mm" minuteStep={5} />
+                  <Form.Item 
+                    label="Start Time" 
+                    name="startTime" 
+                    style={{ display: 'inline-block', marginRight: "2vw"}} 
+                    validateTrigger={['onChange', 'onBlur']}
+                    rules={[{ required: true, message: 'Please choose the start time!' }]}
+                  >
+                    <TimePicker 
+                      format="HH:mm" 
+                      minuteStep={5} 
+                      defaultOpenValue={dayjs().set('hour', 8).set('minute', 0)}
+                      allowClear={false} 
+                      changeOnBlur={true} 
+                      onChange={handleStartTimeChange}
+                      popupClassName="time-picker-hide-footer"
+                    />
                   </Form.Item>
-                  <Form.Item label= "End Time" name="endTime" style={{ display: 'inline-block' }} rules={[{ required: true, message: 'Please choose the end time!' }]}>
-                    <TimePicker format="HH:mm" minuteStep={5} />
+                  <Form.Item 
+                    label="End Time" 
+                    name="endTime" 
+                    style={{ display: 'inline-block' }}
+                    validateTrigger={['onChange', 'onBlur']}
+                    rules={[{ required: true, message: 'Please choose the end time!' }, ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        const startTime = getFieldValue('startTime');
+                        if (!value || !startTime) {
+                          // If either field is not set, don't perform validation
+                          return Promise.resolve();
+                        }
+                      
+                        const timeDifference = value.diff(startTime, 'minutes');
+                      
+                        if (timeDifference >= 15) {
+                          // If end time is at least 15 minutes after start time, validation passes
+                          return Promise.resolve();
+                        }
+                      
+                        return Promise.reject(new Error('End time must be at least 15 minutes after start time!'));
+                      },
+                    })]}
+                  >
+                    <TimePicker 
+                      format="HH:mm" 
+                      minuteStep={5} 
+                      changeOnBlur={true} 
+                      defaultOpenValue={startTime ? dayjs().set('hour', dayjs(startTime).hour()).set('minute', dayjs(startTime).minute()+15 ) : dayjs().set('hour', 0).set('minute', 0)} 
+                      popupClassName="time-picker-hide-footer"
+                    />
                   </Form.Item>
                 </Form.Item>
                 <Row>
                   <small>
                     {(editingAttraction ? "Editing" : "Adding") + " an attraction to this trip will shift and/or delete other attractions in the same day if they overlap."}
                   </small>
+                </Row>
+                <Row style={{color: "red"}}>
+                  <small className='text-start mt-3'>* This field is mandatory</small>
                 </Row>
               </Col>
               <Col>
@@ -271,9 +324,6 @@ function AttractionForm(props: AttractionFormProps) {
                   </GoogleMap>
                 </Form.Item>
               </Col>
-            </Row>
-            <Row style={{color: "red"}}>
-                  <small className='text-end mb-2'>* This field is mandatory</small>
             </Row>
             <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button onClick={closeForm} style={{ marginRight: '10px' }}>

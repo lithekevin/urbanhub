@@ -74,7 +74,7 @@ function NewTrip (props: TripFormProps) {
   });
   const [mapZoom, setMapZoom] = React.useState(3);
 
-  const [adultsValue, setAdultsValue] = React.useState<number>(0);
+  const [adultsValue, setAdultsValue] = React.useState<number>(1);
   const [childrenValue, setChildrenValue] = React.useState<number>(0);
 
   const [questionsPageNumber, setQuestionsPageNumber] = React.useState(0);
