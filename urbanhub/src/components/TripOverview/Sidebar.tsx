@@ -93,7 +93,7 @@ function Sidebar(props: SidebarProps) {
   const dailyActivities: CollapseProps["items"] = dayLabels.map(
     (dayLabel, index) => ({
       key: `${index}`,
-      label: dayLabel,
+      label: dayjs(dayLabel, "DD/MM/YYYY").format("dddd, DD MMMM YYYY"),
       children: (
         <div>
           <DailyAttractions
