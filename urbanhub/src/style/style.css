@@ -288,6 +288,11 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
     font-size: small;
 }
 
+.read-more-link:hover a,
+.read-more-link:hover span{
+    color: #1a7aff !important;
+}
+
 /************
  * MYTRIPS
  ************/

@@ -96,7 +96,7 @@ function Sidebar(props: SidebarProps) {
       key: `${index}`,
       label: (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span>{dayjs(dayLabel, "DD/MM/YYYY").format("dddd, DD MMMM YYYY")}</span>
+          <span>{dayjs(dayLabel, "DD/MM/YYYY").format("dddd, DD/MM/YYYY")}</span>
           <span>
             {dayjs(dayLabel, "DD/MM/YYYY").isBefore(dayjs().startOf('day')) && (
               <>

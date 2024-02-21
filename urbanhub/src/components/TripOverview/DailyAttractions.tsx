@@ -187,7 +187,9 @@ function DailyAttractions(props: DailyAttractionsProps) {
                   </Flex>
 
                   <Flex justify="space-between" align="center" style={{marginTop: '3vh'}}>
-                    <div>
+                    <div
+                    className="read-more-link"
+                    >
                       <Link
                         href={wikipediaUrls[attraction.name]}
                         target="_blank"
@@ -199,6 +201,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
                           alignItems: "center",
                           cursor: 'pointer'
                         }}
+                        
                       >
                         <InfoCircleOutlined size={25} style={{ marginRight: '2px' }} />
                         <Text underline>Read more...</Text>
