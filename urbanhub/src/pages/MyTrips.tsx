@@ -57,7 +57,14 @@ function MyTrips(props: any) {
 
   useEffect(() => {
     if (location.state && location.state.mode) {
-      messageApi.success("Trip deleted successfully!");
+      messageApi.open({
+        type: "success",
+        content: "Trip deleted successfully!",
+        duration: 3,
+        style: {
+          marginTop: "70px",
+        },
+      });
     }
   }, [location]);
 
