@@ -200,7 +200,7 @@ function AttractionForm(props: AttractionFormProps) {
                   <Form.Item 
                     label="End Time" 
                     name="endTime" 
-                    style={{ display: 'inline-block' }}
+                    style={{ display: 'inline-block', maxWidth: '200px', wordWrap: 'break-word' }}
                     validateTrigger={['onChange', 'onBlur']}
                     rules={[{ required: true, message: 'Please choose the end time!' }, ({ getFieldValue }) => ({
                       validator(_, value) {
@@ -210,6 +210,13 @@ function AttractionForm(props: AttractionFormProps) {
                           return Promise.resolve();
                         }
                       
+                        if(value < startTime){
+                          //Probably the day is wrong, put the correct one
+                          const selectedDate = form.getFieldValue('date'); // Get the selected date from the date picker
+                          const newEndTime = dayjs(selectedDate).set('hour', value.hour()).set('minute', value.minute()); // Set the same date with end time
+                          value = newEndTime;
+                        }
+
                         const timeDifference = value.diff(startTime, 'minutes');
                       
                         if (timeDifference >= 15) {
