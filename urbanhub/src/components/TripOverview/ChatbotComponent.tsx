@@ -93,6 +93,9 @@ function Chatbot(props: ChatbotProps) {
   };
 
   function parseInput(input: string) {
+
+    input = input.trim();
+
     const regexDelete = /^(delete|Delete) "(.+)" from (\d{2}\/\d{2}\/\d{4})$/;  //Ex: 'Delete "Attraction to delete" from 12/01/2024'
     const matchDelete = input.match(regexDelete);
     const regexAdd = /^(add|Add) "(.+)" to (\d{2}\/\d{2}\/\d{4}) with time: (\d{2}:\d{2}) - (\d{2}:\d{2})$/; //Ex: 'Add "Attraction to add" to 12/01/2024 with time: 00:00 - 04:00'
