@@ -343,7 +343,7 @@ function AttractionForm(props: AttractionFormProps) {
               Cancel
             </Button>
             <Button type="primary" htmlType="submit">
-              Submit
+              {editingAttraction ? "Save modifications" : "Save and add attraction"}
             </Button>
           </Form.Item>
         </Form>
