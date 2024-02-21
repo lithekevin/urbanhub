@@ -170,7 +170,7 @@ function Chatbot(props: ChatbotProps) {
             setIsValidInput(true);
             await deleteAttraction(tripId, attractionDate, attractionId);
             dirtyState.setter(true);
-            updateMessage("Got it! "+inputAttraction+" has been successfully deleted from "+attractionDate+". Is there anything else I can do for you?");
+            updateMessage("Got it! "+inputAttraction+" has been successfully deleted from "+attractionDate.format('DD/MM/YYYY')+". Is there anything else I can do for you?");
             setInputValue('');
             undoState.setter(true);
             setTripUpdates(tempTrip);
@@ -288,14 +288,14 @@ function Chatbot(props: ChatbotProps) {
         };
         setIsValidInput(true);
         addAttractionToTrip(tripId, attractionDate.format('DD/MM/YYYY'), attraction);
-        updateMessage("Got it! "+attractionName+" has been successfully added on "+date+" from "+startTime+" to "+endTime+". Is there anything else I can do for you?");
+        updateMessage("Got it! "+attractionName+" has been successfully added on "+attractionDate.format('DD/MM/YYYY')+" from "+startTime+" to "+endTime+". Is there anything else I can do for you?");
         setInputValue('');
         dirtyState.setter(true);
         undoState.setter(true);
         setTripUpdates(tempTrip);
       }
     } else if (matchEdit) {
-      const [, , attractionName, date, startTime, endTime] = matchEdit;
+      const [attractionName, date, startTime, endTime] = matchEdit;
 
       //Check if date is valid and if it is in the range of the trip
       const attractionDate = dayjs(date, 'DD/MM/YYYY', true);
