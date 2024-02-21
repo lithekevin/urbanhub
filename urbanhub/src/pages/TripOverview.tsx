@@ -442,6 +442,8 @@ function TripOverview(props: any) {
           });
         }
       },
+      okText: "Yes, delete it",
+      cancelText: "No, Cancel"
     });
   }
 

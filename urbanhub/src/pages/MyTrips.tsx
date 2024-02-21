@@ -115,6 +115,8 @@ function MyTrips(props: any) {
         // Handle cancel if needed
         setEnlargedCard(null);
       },
+      okText: "Yes, delete it",
+      cancelText: "No, Cancel"
     });
   };
 

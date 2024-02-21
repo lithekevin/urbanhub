@@ -171,7 +171,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
                           type="text"
                         />
                       )}
-                      {editing && !attraction.startDate.isBefore(dayjs().startOf('day')) &&(
+                      {editing && !attraction.startDate.isBefore(dayjs().startOf('day')) && (
                         <Button
                           onClick={() => handleDeleteClick(attraction)}
                           icon={
@@ -186,34 +186,36 @@ function DailyAttractions(props: DailyAttractionsProps) {
                     </div>
                   </Flex>
 
-                  <Flex align="center" style={{ marginBottom: '4%' }}>
-                    <Link
-                      href={wikipediaUrls[attraction.name]}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        color: "black",
-                        textAlign: "left",
-                        display: "flex",
-                        alignItems: "center",
-                        cursor: 'pointer'
-                      }}
+                  <Flex justify="space-between" align="center" style={{marginTop: '3vh'}}>
+                    <div>
+                      <Link
+                        href={wikipediaUrls[attraction.name]}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          color: "black",
+                          textAlign: "left",
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <InfoCircleOutlined size={25} style={{ marginRight: '2px' }} />
+                        <Text underline>Read more...</Text>
+                      </Link>
+                    </div>
+                    <Tag
+                      icon={<EuroCircleOutlined />}
+                      color="green"
+                      style={{ textAlign: "right", display: "table" }}
                     >
-                      <InfoCircleOutlined size={25} style={{ marginRight: '2px' }} />
-                      <Text underline>Read more...</Text>
-                    </Link>
+                      {" "}
+                      {attraction.perPersonCost
+                        ? attraction.perPersonCost * (trip!.nAdults + trip!.nChildren)
+                        : "free"}
+                    </Tag>
                   </Flex>
 
-                  <Tag
-                    icon={<EuroCircleOutlined />}
-                    color="green"
-                    style={{ textAlign: "left", display: "table" }}
-                  >
-                    {" "}
-                    {attraction.perPersonCost
-                      ? attraction.perPersonCost * (trip!.nAdults + trip!.nChildren)
-                      : "free"}
-                  </Tag>
                 </div>
               </div>
             </Badge.Ribbon>

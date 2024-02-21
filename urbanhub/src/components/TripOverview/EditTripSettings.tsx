@@ -114,6 +114,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
         destroyOnClose
         centered
         style={{ top: 20 }}
+        okText="Submit"
       >
         <Title level={3} className='step-title'> Edit Trip Settings </Title>
         <Form form={form1} layout="vertical">
