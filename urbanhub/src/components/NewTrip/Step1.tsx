@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Col, DatePicker, Form, InputNumber, Row, Tag, Tooltip, Typography } from 'antd';
+import { Button, Col, DatePicker, Form, InputNumber, Row, Tooltip, Typography } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -64,21 +64,25 @@ function Step1 (props: Step1Props){
       <Col span={14}>
         <div className='form-container'>
           <Title level={3} className='step-title'> Select your trip settings </Title>
+          
           <Paragraph style={{color: 'red'}}>*<Text className='label'> When would you like to go? </Text></Paragraph>
-          <Form.Item name="dateRange" hidden={step !== 1}>
+          <Form.Item name="dateRange">
           <DatePicker.RangePicker 
             style={{ width: '100%' }}
             onChange={(dates, dateStrings) => handleDateRangeChange(dates as [moment.Moment, moment.Moment])}
             disabledDate={(current) => current && current < moment().startOf('day')} 
-            allowClear={true}/>
+            allowClear={true}
+            format={'DD/MM/YYYY'}
+          />
           </Form.Item>
 
           <Paragraph style={{color: 'red'}}>*<Text className='label'> How many adults are going? </Text></Paragraph>
-          <Form.Item name="adults" hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
+          <Form.Item name="adults" style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
             <Row gutter={8}>
               <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
                 <InputNumber
-                  min={0}
+                  min={1}
+                  max={16-childrenValue}
                   keyboard={false}
                   value={adultsValue}
                   onChange={(value) => setAdultsValue(value ?? 0)}
@@ -88,20 +92,21 @@ function Step1 (props: Step1Props){
                 {adultsValue <= 1 ? <Text> Adult </Text> : <Text> Adults </Text>} <Text style={{ color: 'gray', marginLeft: '5px' }}>(13+ years old)</Text>
               </Col>
               <Col flex="none">
-                <Button type='default' shape='circle' icon={<MinusOutlined/>} onClick={() => handleDecrement('adults')} disabled={adultsValue===0}/>
+                <Button type='default' shape='circle' icon={<MinusOutlined/>} onClick={() => handleDecrement('adults')} disabled={adultsValue===1}/>
               </Col>
               <Col flex="none">
-                <Button type='default' shape='circle' icon={<PlusOutlined/>} onClick={() => handleIncrement('adults')} />
+                <Button type='default' shape='circle' icon={<PlusOutlined/>} onClick={() => handleIncrement('adults')} disabled={adultsValue>=(16-childrenValue)}/>
               </Col>
             </Row>
           </Form.Item>
 
-          <Paragraph style={{color: 'red'}}><Text className='label'> How many children are going? </Text></Paragraph>
-          <Form.Item name="children"  hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
+          <Paragraph><Text className='label'> How many children are going? </Text></Paragraph>
+          <Form.Item name="children" style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
             <Row gutter={8}>
               <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
                 <InputNumber
                   min={0}
+                  max={16-adultsValue}
                   value={childrenValue}
                   keyboard={false}
                   onChange={(value) => setChildrenValue(value ?? 0)}
@@ -114,13 +119,13 @@ function Step1 (props: Step1Props){
                 <Button type='default' shape='circle' icon={<MinusOutlined/>} onClick={() => handleDecrement('children')} disabled={childrenValue===0} />
               </Col>
               <Col flex="none">
-                <Button type='default' shape='circle' icon={<PlusOutlined/>} onClick={() => handleIncrement('children')}/>
+                <Button type='default' shape='circle' icon={<PlusOutlined/>} onClick={() => handleIncrement('children')} disabled={childrenValue>=(16-adultsValue)}/>
               </Col>
             </Row>
           </Form.Item>
 
           <Paragraph style={{color: 'red'}}>*<Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>
-          <Form.Item name="budget" hidden={step !== 1} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
+          <Form.Item name="budget" style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
             <InputNumber
               onChange={(value) =>
                 handleInputChange({
