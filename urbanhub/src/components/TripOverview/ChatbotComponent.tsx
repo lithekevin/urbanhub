@@ -93,6 +93,9 @@ function Chatbot(props: ChatbotProps) {
   };
 
   function parseInput(input: string) {
+
+    input = input.trim();
+
     const regexDelete = /^(delete|Delete) "(.+)" from (\d{2}\/\d{2}\/\d{4})$/;  //Ex: 'Delete "Attraction to delete" from 12/01/2024'
     const matchDelete = input.match(regexDelete);
     const regexAdd = /^(add|Add) "(.+)" to (\d{2}\/\d{2}\/\d{4}) with time: (\d{2}:\d{2}) - (\d{2}:\d{2})$/; //Ex: 'Add "Attraction to add" to 12/01/2024 with time: 00:00 - 04:00'
@@ -276,32 +279,6 @@ function Chatbot(props: ChatbotProps) {
         attractionsForDay = tripState.value?.schedule.get(closestKey) || [];
       }
 
-      let slotAvailable: boolean = true;
-      attractionsForDay.forEach((attraction) => {
-        let attStartTime = attraction.startDate.format("HH:mm");
-        let attEndTime = attraction.endDate.format("HH:mm");
-
-        const [startTimeHH, startTimeMM] = startTime.split(':').map(Number);
-        const [endTimeHH, endTimeMM] = endTime.split(':').map(Number);
-        const [attStartTimeHH, attStartTimeMM] = attStartTime.split(':').map(Number);
-        const [attEndTimeHH, attEndTimeMM] = attEndTime.split(':').map(Number);
-
-        if (
-          ((startTimeHH > attStartTimeHH || (startTimeHH === attStartTimeHH && startTimeMM >= attStartTimeMM)) &&
-            (startTimeHH < attEndTimeHH || (startTimeHH === attEndTimeHH && startTimeMM <= attEndTimeMM))) ||
-          ((endTimeHH > attStartTimeHH || (endTimeHH === attStartTimeHH && endTimeMM >= attStartTimeMM)) &&
-            (endTimeHH < attEndTimeHH || (endTimeHH === attEndTimeHH && endTimeMM <= attEndTimeMM)))
-        ) {
-          slotAvailable = false;
-        }
-      });
-
-      if (!slotAvailable) {
-        updateMessage("It seems like the selected time slot overlaps with one of the existing attractions. Please choose another time slot and try again.");
-        setIsValidInput(false);
-        return;
-      }
-
       //Everything ok, add attraction
       if (tripId) {
         const attraction = {
@@ -389,35 +366,6 @@ function Chatbot(props: ChatbotProps) {
       if (attractionId === "") {
         //Attraction has not been found in specified day
         updateMessage("It seems the attraction you mentioned isn't scheduled on that date. Could you please provide a different date or attraction?");
-        setIsValidInput(false);
-        return;
-      }
-
-      //Check if the selected time slot is available        
-      let slotAvailable: boolean = true;
-      attractionsForDay.forEach((attraction) => {
-        let attStartTime = attraction.startDate.format("HH:mm");
-        let attEndTime = attraction.endDate.format("HH:mm");
-
-        const [startTimeHH, startTimeMM] = startTime.split(':').map(Number);
-        const [endTimeHH, endTimeMM] = endTime.split(':').map(Number);
-        const [attStartTimeHH, attStartTimeMM] = attStartTime.split(':').map(Number);
-        const [attEndTimeHH, attEndTimeMM] = attEndTime.split(':').map(Number);
-
-        if (
-          ((startTimeHH > attStartTimeHH || (startTimeHH === attStartTimeHH && startTimeMM >= attStartTimeMM)) &&
-            (startTimeHH < attEndTimeHH || (startTimeHH === attEndTimeHH && startTimeMM <= attEndTimeMM))) ||
-          ((endTimeHH > attStartTimeHH || (endTimeHH === attStartTimeHH && endTimeMM >= attStartTimeMM)) &&
-            (endTimeHH < attEndTimeHH || (endTimeHH === attEndTimeHH && endTimeMM <= attEndTimeMM)))
-        ) {
-          if (attraction.name !== attractionName) {
-            slotAvailable = false;
-          }
-        }
-      });
-
-      if (!slotAvailable) {
-        updateMessage("It seems like the time slot you wrote overlaps with one of the existing attractions. Please choose another time slot and try again.");
         setIsValidInput(false);
         return;
       }
@@ -551,34 +499,6 @@ function Chatbot(props: ChatbotProps) {
 
       if (closestKeyNew !== null) {
         attractionsForDayNew = tripState.value?.schedule.get(closestKeyNew) || [];
-      }
-
-      let slotAvailable: boolean = true;
-      attractionsForDayNew.forEach((attraction) => {
-        let attStartTime = attraction.startDate.format("HH:mm");
-        let attEndTime = attraction.endDate.format("HH:mm");
-
-        const [startTimeHH, startTimeMM] = startTime.split(':').map(Number);
-        const [endTimeHH, endTimeMM] = endTime.split(':').map(Number);
-        const [attStartTimeHH, attStartTimeMM] = attStartTime.split(':').map(Number);
-        const [attEndTimeHH, attEndTimeMM] = attEndTime.split(':').map(Number);
-
-        if (
-          ((startTimeHH > attStartTimeHH || (startTimeHH === attStartTimeHH && startTimeMM >= attStartTimeMM)) &&
-            (startTimeHH < attEndTimeHH || (startTimeHH === attEndTimeHH && startTimeMM <= attEndTimeMM))) ||
-          ((endTimeHH > attStartTimeHH || (endTimeHH === attStartTimeHH && endTimeMM >= attStartTimeMM)) &&
-            (endTimeHH < attEndTimeHH || (endTimeHH === attEndTimeHH && endTimeMM <= attEndTimeMM)))
-        ) {
-          if (attraction.name !== attractionName) {
-            slotAvailable = false;
-          }
-        }
-      });
-
-      if (!slotAvailable) {
-        updateMessage("It seems like the time slot you wrote overlaps with one of the existing attractions. Please choose another time slot and try again.");
-        setIsValidInput(false);
-        return;
       }
 
       //Everything ok, edit attraction
