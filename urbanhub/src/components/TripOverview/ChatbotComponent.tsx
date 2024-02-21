@@ -94,7 +94,7 @@ function Chatbot(props: ChatbotProps) {
 
   function parseInput(input: string) {
 
-    input = input.trim();
+    input = input.trim().replace(/\s+/g, ' ');
 
     const regexDelete = /^(delete|Delete) "(.+)" from (\d{2}\/\d{2}\/\d{4})$/;  //Ex: 'Delete "Attraction to delete" from 12/01/2024'
     const matchDelete = input.match(regexDelete);
@@ -566,6 +566,12 @@ function Chatbot(props: ChatbotProps) {
             placeholder="Ask something to UrbanHub..."
             value={inputValue}
             onChange={handleInputChange}
+            onKeyPress={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault(); 
+                handleSendClick();
+              }
+            }}
             autoSize={{ minRows: 1, maxRows: 3 }}
             style={{ marginRight: '10px', width: 'calc(100% - 20px)' }}
           />
@@ -591,7 +597,7 @@ const TypingText = ({ text, reloadText }: { text: string, reloadText: number }) 
       if (index > text.length) {
         clearInterval(timer);
       }
-    }, 50); // Adjust the timing to control the typing speed
+    }, 30); // Adjust the timing to control the typing speed
 
     // Cleanup function
     return () => clearInterval(timer);
