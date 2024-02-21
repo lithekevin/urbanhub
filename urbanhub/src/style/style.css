@@ -275,6 +275,14 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.time-picker-hide-footer .ant-picker-footer {
+    display: none;
+}
+
+.ant-form-item-explain-error {
+    font-size: small;
+}
+
 /************
  * MYTRIPS
  ************/
