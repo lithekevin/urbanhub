@@ -169,6 +169,11 @@ h6:where(.css-dev-only-do-not-override-gzal6t).ant-typography {
     cursor: pointer;
 }
 
+.back-link:hover,
+.back-link:hover .ant-typography{
+    color: #1a7aff !important;
+}
+
 .main-div {
     min-height: calc(78vh - 30px);
     position: relative;
