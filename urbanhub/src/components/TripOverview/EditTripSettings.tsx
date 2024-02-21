@@ -133,6 +133,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
               >
                 <InputNumber
                   min={1}
+                  max={16-numChildren}
                   keyboard={false}
                   controls={false}
                   style={{ width: 'auto', marginRight: '8px' }}
@@ -146,7 +147,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
               <Button type='default' shape='circle' icon={<MinusOutlined />} disabled={numAdults <= 1} onClick={() => handleDecrement('nAdults')} />
             </Col>
             <Col>
-              <Button type='default' shape='circle' icon={<PlusOutlined />} onClick={() => handleIncrement('nAdults')} />
+              <Button type='default' shape='circle' icon={<PlusOutlined />} disabled={numAdults>=(16-numChildren)} onClick={() => handleIncrement('nAdults')} />
             </Col>
           </Row>              
           <Paragraph style={{color: 'red', marginTop: '3vh'}}><Text className='label'> How many children are going? </Text></Paragraph>
@@ -157,6 +158,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
             >
               <InputNumber
                 min={0}
+                max={16-numAdults}
                 keyboard={false}
                 controls={false}
                 style={{ width: 'auto', marginRight: '8px' }}
@@ -170,7 +172,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
             <Button type='default' shape='circle' icon={<MinusOutlined />} disabled={numChildren<=0} onClick={() => handleDecrement('nChildren')} />
           </Col>
           <Col>
-            <Button type='default' shape='circle' icon={<PlusOutlined />} onClick={() => handleIncrement('nChildren')} />
+            <Button type='default' shape='circle' icon={<PlusOutlined />} disabled={numChildren>=(16-numAdults)} onClick={() => handleIncrement('nChildren')} />
           </Col>
           </Row>
           <Paragraph style={{color: 'red', marginTop: '3vh'}}><span>*</span><Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>
