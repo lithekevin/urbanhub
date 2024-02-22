@@ -362,7 +362,7 @@ function TripOverview(props: any) {
   };
 
   const [isHovered, setIsHovered] = useState(false);
-  const [showChatbot, setShowChatbot] = useState(true); // State variable to control the visibility of the chatbot
+  const [showChatbot, setShowChatbot] = useState(false); 
 
   const handlePopoverVisibleChange = (visible: boolean) => {
     setShowChatbot(visible); // Set the visibility of the chatbot based on popover visibility
@@ -685,26 +685,27 @@ function TripOverview(props: any) {
               title={<Text style={{ color: 'white' }}><TypingText text="Click me! I can help you modify the trip." reloadText={0} /></Text>}
               placement="top"
               open={showTooltip}
-              overlayStyle={{ width: '200px', height: 'auto' }}
+              overlayStyle={{ width: '100px', height: 'auto' }}
             >
               <Button
                 type="text"
                 className="chatbot-button"
                 style={{
-                  width: "65px",
-                  height: "65px",
+                  width: "70px",
+                  height: "70px",
                   borderRadius: "50%",
                   position: "fixed",
                   right: "22px",
                   zIndex: 999,
                   backgroundColor: 'white',
                   bottom: `30px`,
-                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.7)",
                   transform: `scale(${isHovered ? 1.1 : 1})`,
                   transition: "box-shadow transform 0.3s ease",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  borderColor: '#00AA70'
                 }}
                 onMouseEnter={() => {
                   setIsHovered(true);
@@ -720,7 +721,7 @@ function TripOverview(props: any) {
                   alt="UrbanHub assistant"
                   preview={false}
                   height={"auto"}
-                  style={{ width: '55px', height: '55px' }}
+                  style={{ width: '60px', height: '60px' }}
                 />
               </Button>
             </Tooltip>
