@@ -9,6 +9,7 @@ import {
   Flex,
   Spin,
 } from "antd";
+import { PlusOutlined, CheckOutlined, LoadingOutlined } from "@ant-design/icons";
 import { Trip } from "../../models/trip";
 import colors from "../../style/colors";
 import DailyAttractions from "./DailyAttractions";
@@ -93,7 +94,26 @@ function Sidebar(props: SidebarProps) {
   const dailyActivities: CollapseProps["items"] = dayLabels.map(
     (dayLabel, index) => ({
       key: `${index}`,
-      label: dayjs(dayLabel, "DD/MM/YYYY").format("dddd, DD MMMM YYYY"),
+      label: (
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span>{dayjs(dayLabel, "DD/MM/YYYY").format("dddd, DD MMMM YYYY")}</span>
+          <span>
+            {dayjs(dayLabel, "DD/MM/YYYY").isBefore(dayjs().startOf('day')) && (
+              <>
+                <CheckOutlined style={{ color: 'blue' }} />
+                <span style={{ marginLeft: '10px', color: 'blue' }}> Visited</span>
+              </>
+
+            )}
+            {dayjs(dayLabel, "DD/MM/YYYY").isSame(dayjs().startOf('day')) && (
+              <>
+                <LoadingOutlined style={{ color: colors.hardBackgroundColor}} />
+                <span style={{ marginLeft: '10px', color: colors.hardBackgroundColor }}> Ongoing</span>
+              </>
+            )}
+          </span>
+        </div>
+      ),
       children: (
         <div>
           <DailyAttractions
@@ -132,7 +152,7 @@ function Sidebar(props: SidebarProps) {
   return (
     <>
       {loadingState.value && (
-        <Spin tip="Loading" size="large" fullscreen/>
+        <Spin tip="Loading" size="large" fullscreen />
       )}
       {errorState.value && (
         <Col>
@@ -160,14 +180,16 @@ function Sidebar(props: SidebarProps) {
               >
                 {tripState.value.city}
               </Title>
-              { editing.value && (
+              {editing.value && (
                 <Button
                   type="primary"
-                  style={{ backgroundColor: colors.hardBackgroundColor, marginLeft:'2%' }}
+                  style={{ backgroundColor: colors.hardBackgroundColor, marginLeft: '2%' }}
                   onClick={() => openForm()}
                   className="button-new-trip"
                 >
-                  Add Attraction
+                  <span>
+                    <PlusOutlined style={{ marginRight: "8px" }} /> Add Attraction
+                  </span>
                 </Button>
               )}
             </Flex>

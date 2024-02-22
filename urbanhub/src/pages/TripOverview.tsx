@@ -441,6 +441,8 @@ function TripOverview(props: any) {
           });
         }
       },
+      okText: "Yes, delete it",
+      cancelText: "No, Cancel"
     });
   }
 
@@ -480,12 +482,12 @@ function TripOverview(props: any) {
       >
         {/* Arrow on the left */}
         <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ paddingLeft: '1%'}}>
-          <span onClick={() => navigate("/")} className="back-link">
+          <div onClick={() => navigate("/")} className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
             <ArrowLeftOutlined
               className="float-left"
               style={{ marginRight: '4px', fontSize: '25px' }}
             /> <Text>Back</Text>
-          </span>
+          </div>
         </Col>
         <Col xs={5} sm={5} md={4} lg={4} xl={4} xxl={4}>
           <span className="span-container">

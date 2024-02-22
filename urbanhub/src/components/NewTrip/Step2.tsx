@@ -79,13 +79,14 @@ function Step2(props: Step2Props) {
       Modal.confirm({
         title: 'Warning',
         content: message,
-        okText: 'Yes',
-        cancelText: 'No',
+        okText: 'Go back and answer questions',
+        cancelText: 'Skip this step',
         onOk: () => {
-          nextStep();
+          return;
         },
         onCancel: () => {
-          return;
+          
+          nextStep();
         },
         centered: true,
       })  
