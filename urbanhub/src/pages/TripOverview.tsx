@@ -424,7 +424,8 @@ function TripOverview(props: any) {
         }
       },
       okText: "Yes, delete it",
-      cancelText: "No, Cancel"
+      cancelText: "No, Cancel",
+      okButtonProps: { danger: true },
     });
   }
 

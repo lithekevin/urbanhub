@@ -256,6 +256,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
             <br />
             <strong>Date:</strong> {attraction.startDate.format("DD/MM/YYYY")}
             <br />
+            <strong>Time slot:</strong> {attraction.startDate.format("HH:mm")} - {attraction.endDate.format("HH:mm")}
           </p>
         </div>
       ),
@@ -292,7 +293,8 @@ function DailyAttractions(props: DailyAttractionsProps) {
         }
       },
       okText: "Yes, delete it",
-      cancelText: "No, cancel"
+      cancelText: "No, cancel",
+      okButtonProps: { danger: true },
     });
   };
 

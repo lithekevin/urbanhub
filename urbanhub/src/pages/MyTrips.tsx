@@ -123,7 +123,8 @@ function MyTrips(props: any) {
         setEnlargedCard(null);
       },
       okText: "Yes, delete it",
-      cancelText: "No, Cancel"
+      cancelText: "No, Cancel",
+      okButtonProps: { danger: true },
     });
   };
 
