@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Steps, Row, Col, ConfigProvider, Typography, Flex } from "antd";
+import { Form, Steps, Row, Col, ConfigProvider, Typography, Flex, FloatButton, Tooltip } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -279,6 +279,9 @@ function NewTrip (props: TripFormProps) {
               onSubmit={onSubmit}
             />
           )}
+          <Tooltip title="Back to top" placement="topLeft" style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'}}>
+            <FloatButton.BackTop visibilityHeight={50} style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'}}/>
+          </Tooltip>
         </Form>
     </>
   );
