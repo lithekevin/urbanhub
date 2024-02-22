@@ -430,18 +430,18 @@ function TripOverview(props: any) {
 
   const [showTooltip, setShowTooltip] = useState(false);
 
-  // Imposta lo stato del tooltip su true quando il componente viene montato
-  // useEffect(() => {
-  //   setShowTooltip(true);
+  //Imposta lo stato del tooltip su true quando il componente viene montato
+  useEffect(() => {
+    setShowTooltip(true);
 
-  //   // Imposta un timeout per nascondere il tooltip dopo 10 secondi
-  //   const timeout = setTimeout(() => {
-  //     setShowTooltip(false);
-  //   }, 10000); // 10 secondi in millisecondi
+    // Imposta un timeout per nascondere il tooltip dopo 10 secondi
+    const timeout = setTimeout(() => {
+      setShowTooltip(false);
+    }, 10000); // 10 secondi in millisecondi
 
-  //   // Cancella il timeout quando il componente viene smontato o quando lo stato del tooltip cambia
-  //   return () => clearTimeout(timeout);
-  // }, []);
+    // Cancella il timeout quando il componente viene smontato o quando lo stato del tooltip cambia
+    return () => clearTimeout(timeout);
+  }, []);
 
   const tripMenu = (
     <Menu>
