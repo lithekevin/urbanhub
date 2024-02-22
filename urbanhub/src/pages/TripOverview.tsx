@@ -362,7 +362,7 @@ function TripOverview(props: any) {
   };
 
   const [isHovered, setIsHovered] = useState(false);
-  const [showChatbot, setShowChatbot] = useState(false); // State variable to control the visibility of the chatbot
+  const [showChatbot, setShowChatbot] = useState(true); // State variable to control the visibility of the chatbot
 
   const handlePopoverVisibleChange = (visible: boolean) => {
     setShowChatbot(visible); // Set the visibility of the chatbot based on popover visibility
@@ -431,17 +431,17 @@ function TripOverview(props: any) {
   const [showTooltip, setShowTooltip] = useState(false);
 
   // Imposta lo stato del tooltip su true quando il componente viene montato
-  useEffect(() => {
-    setShowTooltip(true);
+  // useEffect(() => {
+  //   setShowTooltip(true);
 
-    // Imposta un timeout per nascondere il tooltip dopo 10 secondi
-    const timeout = setTimeout(() => {
-      setShowTooltip(false);
-    }, 10000); // 10 secondi in millisecondi
+  //   // Imposta un timeout per nascondere il tooltip dopo 10 secondi
+  //   const timeout = setTimeout(() => {
+  //     setShowTooltip(false);
+  //   }, 10000); // 10 secondi in millisecondi
 
-    // Cancella il timeout quando il componente viene smontato o quando lo stato del tooltip cambia
-    return () => clearTimeout(timeout);
-  }, []);
+  //   // Cancella il timeout quando il componente viene smontato o quando lo stato del tooltip cambia
+  //   return () => clearTimeout(timeout);
+  // }, []);
 
   const tripMenu = (
     <Menu>
@@ -684,7 +684,7 @@ function TripOverview(props: any) {
               title={<Text style={{ color: 'white' }}><TypingText text="Click me! I can help you modify the trip." reloadText={0} /></Text>}
               placement="top"
               open={showTooltip}
-              overlayStyle={{ width: '90px', height: 'auto' }}
+              overlayStyle={{ width: '200px', height: 'auto' }}
             >
               <Button
                 type="text"
