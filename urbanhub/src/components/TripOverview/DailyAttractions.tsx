@@ -291,6 +291,8 @@ function DailyAttractions(props: DailyAttractionsProps) {
           });
         }
       },
+      okText: "Yes, delete it",
+      cancelText: "No, cancel"
     });
   };
 
