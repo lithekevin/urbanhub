@@ -339,6 +339,9 @@ function TripCard(props: Readonly<{
                   style={{
                     background: "rgba(0, 0, 0, 0.7)",
                     borderRadius: "50%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                   onClick={(event) => {
                     event.preventDefault();
