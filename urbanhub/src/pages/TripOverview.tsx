@@ -1,28 +1,10 @@
 import { useState, useEffect } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
-import {
-  FaChild,
-  FaChildDress,
-  FaPerson,
-  FaPersonDress,
-  FaWallet
-} from "react-icons/fa6";
+import { FaChild, FaChildDress, FaPerson, FaPersonDress, FaWallet } from "react-icons/fa6";
 import { TbCoinEuroFilled } from "react-icons/tb";
-import {
-  Button,
-  Col,
-  Divider,
-  Form,
-  Image,
-  Modal,
-  Popover,
-  Row,
-  Spin,
-  Tooltip,
-  Typography,
-} from "antd";
-import { ArrowLeftOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Col, Divider, Dropdown, Form, Image, Menu, Modal, Popover, Row, Spin, Tooltip, Typography, } from "antd";
+import { ArrowLeftOutlined, DeleteTwoTone, EditTwoTone, MenuOutlined } from "@ant-design/icons";
 import { deleteTrip, getTripById } from "../firebase/daos/dao-trips";
 import { Attraction } from "../models/attraction";
 import { TripAttraction } from "../models/tripAttraction";
@@ -425,7 +407,7 @@ function TripOverview(props: any) {
         try {
           if (tripId) {
             await deleteTrip(tripId);
-            navigate("/",  { state: { mode: true }});
+            navigate("/", { state: { mode: true } });
 
           }
         } catch (error) {
@@ -461,6 +443,21 @@ function TripOverview(props: any) {
     return () => clearTimeout(timeout);
   }, []);
 
+  const tripMenu = (
+    <Menu>
+      {editing && (
+        <Menu.Item key="edit" onClick={handleOpenModal}>
+          <EditTwoTone/> Edit trip settings
+        </Menu.Item>
+      )}
+      {tripId && (
+        <Menu.Item key="delete" onClick={handleDeleteTrip}>
+          <DeleteTwoTone twoToneColor={colors.deleteButtonColor}/> Delete Trip
+        </Menu.Item>
+      )}
+    </Menu>
+  );
+
   return (
     <>
       {(loading || imageLoading) && (
@@ -481,7 +478,7 @@ function TripOverview(props: any) {
         }}
       >
         {/* Arrow on the left */}
-        <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ paddingLeft: '1%'}}>
+        <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ paddingLeft: '1%' }}>
           <div onClick={() => navigate("/")} className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
             <ArrowLeftOutlined
               className="float-left"
@@ -541,47 +538,25 @@ function TripOverview(props: any) {
             )}
           </span>
         </Col>
-          <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ textAlign: 'end', paddingRight: '1%' }}>
-            {editing && (
-              <Tooltip title="Edit trip settings" placement="bottomRight">
-                <Button
-                  size="middle"
-                  className="enterEditModeButton"
-                  type="text"
-                  style={{
-                    backgroundColor: 'white',
-                    color: colors.primaryButtonColor,
-                    borderColor: colors.primaryButtonColor,
-                    textAlign: "center",
-                    fontSize: '15px',
-                    marginRight: '5px'
-                  }}
-                  onClick={() => handleOpenModal()}
-                >
-                  <span>{<EditOutlined/>}</span>
-                </Button>
-              </Tooltip>
-            )}
-            {tripId && ( // Check if tripId exists
-              <Tooltip title="Delete Trip" placement="bottomLeft">
-                <Button
-                  size="middle"
-                  className="enterEditModeButton"
-                  type="text"
-                  style={{
-                    backgroundColor: 'white',
-                    color: colors.deleteButtonColor,
-                    borderColor: colors.deleteButtonColor,
-                    textAlign: "center",
-                    fontSize: '15px'
-                  }}
-                  onClick={() => handleDeleteTrip()}
-                >
-                  <span>{<DeleteOutlined />}</span>
-                </Button>
-              </Tooltip>
-            )}
-          </Col>
+        <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ textAlign: 'end', paddingRight: '1%' }}>
+          <Dropdown overlay={tripMenu} placement="bottomRight">
+            <Button
+              size="middle"
+              className="enterEditModeButton"
+              type="text"
+              style={{
+                backgroundColor: 'white',
+                color: colors.hardBackgroundColor,
+                borderColor: colors.hardBackgroundColor,
+                textAlign: "center",
+                fontSize: '15px',
+                marginRight: '5px'
+              }}
+            >
+              <span>{<MenuOutlined />} Edit Trip</span>
+            </Button>
+          </Dropdown>
+        </Col>
       </Row>
 
       <Divider style={{ marginTop: "10px" }} />
@@ -684,72 +659,72 @@ function TripOverview(props: any) {
           />
         </Container>
         {editing && (
-        <Popover
-          content={
-            <Chatbot
-              tripState={{ value: trip, setter: setTrip }}
-              dirtyState={{ value: dirty, setter: setDirty }}
-              undoState={{ value: undoVisibility, setter: setUndoVisibility }}
-              messageAIState={{
-                value: messageAI,
-                setter: setMessageAI
-              }}
-              tripId={tripId}
-              messageApi={messageApi}
-            />
-          }
-          trigger="click"
-          open={showChatbot}
-          onOpenChange={handlePopoverVisibleChange}
-          placement="right"
-          arrow={{ pointAtCenter: true }}
-          overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", borderRadius: '4%' }}
-        >
-          <Tooltip 
-            title={<Text style={{color: 'white'}}><TypingText text="Click me! I can help you modify the trip." reloadText={0}/></Text>} 
-            placement="top"
-            open={showTooltip}
-            overlayStyle={{ width: '90px', height: 'auto' }}
-          >
-            <Button
-              type="text"
-              className="chatbot-button"
-              style={{
-                width: "65px",
-                height: "65px",
-                borderRadius: "50%",
-                position: "fixed",
-                right: "22px",
-                zIndex: 999,
-                backgroundColor: 'white',
-                bottom: `30px`,
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-                transform: `scale(${isHovered ? 1.1 : 1})`,
-                transition: "box-shadow transform 0.3s ease",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onMouseEnter={() => {
-                setIsHovered(true);
-                setShowTooltip(true);
-              }}
-              onMouseLeave={() => {
-                setIsHovered(false)
-                setShowTooltip(false);
-              }}
-            >
-              <Image
-                src="https://imgur.com/tRPWpWV.png"
-                alt="UrbanHub assistant"
-                preview={false}
-                height={"auto"}
-                style={{ width: '55px', height: '55px' }}
+          <Popover
+            content={
+              <Chatbot
+                tripState={{ value: trip, setter: setTrip }}
+                dirtyState={{ value: dirty, setter: setDirty }}
+                undoState={{ value: undoVisibility, setter: setUndoVisibility }}
+                messageAIState={{
+                  value: messageAI,
+                  setter: setMessageAI
+                }}
+                tripId={tripId}
+                messageApi={messageApi}
               />
-            </Button>
-          </Tooltip>
-        </Popover>
-      )}
+            }
+            trigger="click"
+            open={showChatbot}
+            onOpenChange={handlePopoverVisibleChange}
+            placement="right"
+            arrow={{ pointAtCenter: true }}
+            overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", borderRadius: '4%' }}
+          >
+            <Tooltip
+              title={<Text style={{ color: 'white' }}><TypingText text="Click me! I can help you modify the trip." reloadText={0} /></Text>}
+              placement="top"
+              open={showTooltip}
+              overlayStyle={{ width: '90px', height: 'auto' }}
+            >
+              <Button
+                type="text"
+                className="chatbot-button"
+                style={{
+                  width: "65px",
+                  height: "65px",
+                  borderRadius: "50%",
+                  position: "fixed",
+                  right: "22px",
+                  zIndex: 999,
+                  backgroundColor: 'white',
+                  bottom: `30px`,
+                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                  transform: `scale(${isHovered ? 1.1 : 1})`,
+                  transition: "box-shadow transform 0.3s ease",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onMouseEnter={() => {
+                  setIsHovered(true);
+                  setShowTooltip(true);
+                }}
+                onMouseLeave={() => {
+                  setIsHovered(false)
+                  setShowTooltip(false);
+                }}
+              >
+                <Image
+                  src="https://imgur.com/tRPWpWV.png"
+                  alt="UrbanHub assistant"
+                  preview={false}
+                  height={"auto"}
+                  style={{ width: '55px', height: '55px' }}
+                />
+              </Button>
+            </Tooltip>
+          </Popover>
+        )}
       </div>
     </>
   );

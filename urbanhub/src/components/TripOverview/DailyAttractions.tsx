@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Flex, Modal, Tag, Timeline, Typography } from "antd";
-import {
-  EuroCircleOutlined,
-  EditTwoTone,
-  DeleteTwoTone,
-  InfoCircleOutlined,
-} from "@ant-design/icons";
+import { Badge, Button, Col, Flex, Modal, Row, Tag, Timeline, Typography } from "antd";
+import { EuroCircleOutlined, EditTwoTone, DeleteTwoTone, InfoCircleOutlined, } from "@ant-design/icons";
 import { TbCar, TbWalk } from "react-icons/tb";
 import { deleteAttraction } from "../../firebase/daos/dao-trips";
 import { TripAttraction } from "../../models/tripAttraction";
@@ -185,40 +180,41 @@ function DailyAttractions(props: DailyAttractionsProps) {
                       )}
                     </div>
                   </Flex>
-
-                  <Flex justify="space-between" align="center" style={{marginTop: '3vh'}}>
-                    <div
-                    className="read-more-link"
-                    >
-                      <Link
-                        href={wikipediaUrls[attraction.name]}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          color: "black",
-                          textAlign: "left",
-                          display: "flex",
-                          alignItems: "center",
-                          cursor: 'pointer'
-                        }}
-                        
+                  <Row justify={"space-between"} style={{marginTop: "20px"}}>
+                    <Col>
+                      <div
+                        className="read-more-link"
                       >
-                        <InfoCircleOutlined size={25} style={{ marginRight: '2px' }} />
-                        <Text underline>Read more...</Text>
-                      </Link>
-                    </div>
-                    <Tag
-                      icon={<EuroCircleOutlined />}
-                      color="green"
-                      style={{ textAlign: "right", display: "table" }}
-                    >
-                      {" "}
-                      {attraction.perPersonCost
-                        ? attraction.perPersonCost * (trip!.nAdults + trip!.nChildren)
-                        : "free"}
-                    </Tag>
-                  </Flex>
-
+                        <Link
+                          href={wikipediaUrls[attraction.name]}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            color: "black",
+                            textAlign: "left",
+                            display: "flex",
+                            alignItems: "center",
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <InfoCircleOutlined size={25} style={{ marginRight: '2px' }} />
+                          <Text underline>Read more...</Text>
+                        </Link>
+                      </div>
+                    </Col>
+                    <Col>
+                      <Tag
+                        icon={<EuroCircleOutlined />}
+                        color="green"
+                        style={{ textAlign: "center", display: "table" , width: "100%"}}
+                      >
+                        {" "}
+                        {attraction.perPersonCost
+                          ? attraction.perPersonCost * (trip!.nAdults + trip!.nChildren)
+                          : "free"}
+                      </Tag>
+                    </Col>
+                  </Row>
                 </div>
               </div>
             </Badge.Ribbon>

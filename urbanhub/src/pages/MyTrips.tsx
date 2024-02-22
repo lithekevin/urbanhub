@@ -29,7 +29,7 @@ function MyTrips(props: any) {
 
   useEffect(() => {
     // Load trips from firebase
-    async function loadTrips() {
+    async function loadTrips() {  
       setLoading(true);
       try {
         const DBtrips = await getAllTrips();
@@ -161,8 +161,8 @@ function MyTrips(props: any) {
     <>
       {loading && (
         <Spin size="large">
-          <Typography.Text>Loading</Typography.Text>
-        </Spin>
+        <Typography.Text>Loading</Typography.Text>
+      </Spin>
       )}
 
       {error && (
