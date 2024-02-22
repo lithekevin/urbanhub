@@ -180,7 +180,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
           <Row gutter={8} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px', height: '50px' }}>
           <Form.Item 
             name="budget"
-            rules={[{ required: true, message: '' }]}
+            rules={[{ required: true, message: 'Please insert your budget!' }]}
             >
           <InputNumber
             min={0}
