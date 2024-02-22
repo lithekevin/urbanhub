@@ -43,9 +43,20 @@ function Step2(props: Step2Props) {
           
   // Handle user's answers to questions
   const handleAnswerChange = (index: number, value: string) => {
-    const updatedAnswers = [...userAnswers];
-    updatedAnswers[index] = value;
-    setUserAnswers(updatedAnswers);
+    if(value.length > 0){
+      const updatedAnswers = [...userAnswers];
+      updatedAnswers[index] = value;
+      setUserAnswers(updatedAnswers);
+    }
+    else if(value.length === 0){
+      const updatedAnswers: string[] = [];
+      userAnswers.forEach((ans, i) => {
+        if(i !== index){
+          updatedAnswers[i] = ans;
+        }
+      });
+      setUserAnswers(updatedAnswers);
+    }
   };
 
   // Load more questions when the user clicks the button
@@ -68,14 +79,14 @@ function Step2(props: Step2Props) {
 
   const handleClickNextStep = () => {
     let message;
-    if (userAnswers.length === 0) {
+    if (userAnswers.every(str => !(str && str.length !== 0))){
       message = "If you don't answer any of the AI's questions, it won't understand your preferences, and the trip will not be personalized. Are you sure you want to continue?";
     }
-    if (userAnswers.length < 9 && userAnswers.length > 0) {
+    if (userAnswers.filter(str => str && str.length !== 0).length < 9 && userAnswers.filter(str => str && str.length !== 0).length > 0) {
       message = "The AI needs more answers to understand your preferences and personalize the trip. Are you sure you want to continue?";
     }
   
-    if (userAnswers.length < 9) {
+    if (userAnswers.filter(str => str && str.length !== 0).length < 9) {
       Modal.confirm({
         title: 'Warning',
         content: message,
@@ -151,7 +162,7 @@ function Step2(props: Step2Props) {
                     <LeftOutlined />
                     Previous questions
                 </Button>
-                { questionsPageNumber < 2 &&
+                { questionsPercentage < 100 &&
                 <Button 
                   type = 'primary'
                   style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}

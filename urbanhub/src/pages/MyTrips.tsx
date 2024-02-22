@@ -160,7 +160,9 @@ function MyTrips(props: any) {
   return (
     <>
       {loading && (
-        <Spin tip="Loading" size="large" fullscreen />
+        <Spin size="large">
+          <Typography.Text>Loading</Typography.Text>
+        </Spin>
       )}
 
       {error && (
