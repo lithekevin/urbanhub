@@ -15,7 +15,6 @@ import {
   Divider,
   Form,
   Image,
-  message,
   Modal,
   Popover,
   Row,
@@ -682,9 +681,7 @@ function TripOverview(props: any) {
             setDirty={setDirty}
           />
         </Container>
-      </div>
-
-      {editing && (
+        {editing && (
         <Popover
           content={
             <Chatbot
@@ -751,6 +748,7 @@ function TripOverview(props: any) {
           </Tooltip>
         </Popover>
       )}
+      </div>
     </>
   );
 }
