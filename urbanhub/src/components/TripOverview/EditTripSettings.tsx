@@ -39,10 +39,12 @@ function EditTripSettings(props: EditTripSettingsProps) {
   const handleUpdateTrip = async () => {
       try {
       const values = await form1.validateFields();
+
+      const nChildrenValue = values.nChildren !== null ? values.nChildren : 0;
   
       if (trip) {
           trip.nAdults = values.nAdults;
-          trip.nChildren = values.nChildren;
+          trip.nChildren = nChildrenValue;
           trip.startDate = values.dateRange[0].format('DD-MM-YYYY');
           trip.endDate = values.dateRange[1].format('DD-MM-YYYY');
           trip.budget = values.budget; // Extract budget from form values
@@ -102,6 +104,8 @@ function EditTripSettings(props: EditTripSettingsProps) {
       }
     }
   };
+
+  
   
   
   
@@ -117,7 +121,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
         okText="Save new trip settings"
       >
         <Title level={3} className='step-title'> Edit Trip Settings </Title>
-        <Form form={form1} layout="vertical">
+        <Form form={form1} layout="vertical" >
           <Paragraph style={{color: 'red'}}><span>*</span><Text className='label'> When would you like to go? </Text></Paragraph>
               <Form.Item
                   name="dateRange"
