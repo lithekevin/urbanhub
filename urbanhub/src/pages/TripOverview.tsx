@@ -38,6 +38,7 @@ function TripOverview(props: any) {
   const [error, setError] = useState<boolean>(false);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [dirty, setDirty] = useState<boolean>(true);
+  const [dirty2, setDirty2] = useState<boolean>(false);
   const [messageApi, contextHolder] = [props.messageApi, props.contextHolder];
   const [activeKey, setActiveKey] = useState<string | string[]>([]);
   const { tripId } = useParams();
@@ -383,6 +384,7 @@ function TripOverview(props: any) {
       budget: trip?.budget,
       dateRange: [trip?.startDate, trip?.endDate],
     });
+    setDirty2(true);
     setVisible(true);
   };
 
@@ -657,6 +659,8 @@ function TripOverview(props: any) {
             setVisible={setVisible}
             trip={trip}
             setDirty={setDirty}
+            dirty2={dirty2}
+            setDirty2={setDirty2}
           />
         </Container>
         {editing && (

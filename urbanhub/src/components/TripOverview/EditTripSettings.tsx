@@ -11,6 +11,8 @@ const { Paragraph, Text, Title } = Typography;
 interface EditTripSettingsProps {
   form1: any;
   setDirty: React.Dispatch<React.SetStateAction<boolean>>;
+  setDirty2: React.Dispatch<React.SetStateAction<boolean>>;
+  dirty2: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   trip: Trip | null;
   visible: boolean;
@@ -20,7 +22,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const { form1, setDirty, setVisible, trip, visible } = props;
+  const { form1, setDirty, setVisible,setDirty2,dirty2, trip, visible } = props;
   const [numChildren, setNumChildren] = useState(0);
   const [numAdults, setNumAdults] = useState(0);
 
@@ -29,7 +31,12 @@ function EditTripSettings(props: EditTripSettingsProps) {
       setNumChildren(trip.nChildren || 0);
       setNumAdults(trip.nAdults || 0);
     }
-  }, [trip]);
+    setDirty2(false);
+  }, [trip,dirty2]);
+
+  console.log("adults: "+numAdults);
+  console.log("kids: "+numChildren);
+
 
 
   const handleCancel = () => {
@@ -43,7 +50,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
       const nChildrenValue = values.nChildren !== null ? values.nChildren : 0;
   
       if (trip) {
-          trip.nAdults = values.nAdults;
+          trip.nAdults = numAdults;
           trip.nChildren = nChildrenValue;
           trip.startDate = values.dateRange[0].format('DD-MM-YYYY');
           trip.endDate = values.dateRange[1].format('DD-MM-YYYY');
@@ -139,10 +146,10 @@ function EditTripSettings(props: EditTripSettingsProps) {
                 <InputNumber
                   min={1}
                   max={16-numChildren}
-                  keyboard={false}
                   controls={false}
                   style={{ width: 'auto', marginRight: '8px' }}
                   onChange={value => setNumAdults(value ?? 0)}
+                  onBlur={() => !numAdults && form1.setFieldsValue({ nAdults: 1 })}
                 />
               </Form.Item>
               <Text style={{ marginBottom: '20px' }}> {numAdults <= 1 ? 'Adult' : 'Adults'} </Text>
@@ -164,10 +171,10 @@ function EditTripSettings(props: EditTripSettingsProps) {
               <InputNumber
                 min={0}
                 max={16-numAdults}
-                keyboard={false}
                 controls={false}
                 style={{ width: 'auto', marginRight: '8px' }}
-                onChange={value => setNumChildren(value??0)}
+                onChange={value => setNumChildren(value ?? 0)}
+                onBlur={() => !numChildren && form1.setFieldsValue({ nChildren: 0 })}
               />
             </Form.Item>
             <Text style={{ marginBottom: '20px' }}> {numChildren <= 1 ? 'Child' : 'Children'} </Text>
