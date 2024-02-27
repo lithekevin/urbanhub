@@ -199,14 +199,12 @@ function NewTrip (props: TripFormProps) {
           <Row align={"middle"}>
             {/* Arrow on the left */}
             <Col span={4}>
-            <Flex onClick={() => prevStep()} style={{ display: 'flex', alignItems: 'center' }} className="back-link">
-              <div  className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
-              <ArrowLeftOutlined
+              <div onClick={() => navigate(-1)} className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
+                <ArrowLeftOutlined
                 className="float-left"
                 style={{ marginRight: '4px', fontSize: '25px' }}
-              /> <Text>Back</Text>
-            </div>
-            </Flex>
+                /> <Text>Back</Text>
+              </div>
             </Col>
             {/* Stepper centered */}
             <Col span={16}>

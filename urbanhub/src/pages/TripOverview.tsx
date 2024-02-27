@@ -482,7 +482,7 @@ function TripOverview(props: any) {
       >
         {/* Arrow on the left */}
         <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ paddingLeft: '1%' }}>
-          <div onClick={() => navigate("/")} className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <div onClick={() => navigate(-1)} className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
             <ArrowLeftOutlined
               className="float-left"
               style={{ marginRight: '4px', fontSize: '25px' }}
