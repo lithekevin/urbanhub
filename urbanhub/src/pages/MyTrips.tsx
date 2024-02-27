@@ -29,7 +29,7 @@ function MyTrips(props: any) {
 
   useEffect(() => {
     // Load trips from firebase
-    async function loadTrips() {  
+    async function loadTrips() {
       setLoading(true);
       try {
         const DBtrips = await getAllTrips();
@@ -68,7 +68,7 @@ function MyTrips(props: any) {
     }
   }, [location]);
 
-  
+
 
   useEffect(() => {
     // Retrieve the active tab from URL parameters when the component mounts or updates
@@ -106,13 +106,6 @@ function MyTrips(props: any) {
           console.log(error);
           messageApi.error("Error while deleting trip!");
         }
-
-        console.log(`Deleting trip:
-          City: ${trip.city}
-          Start Date: ${trip.startDate.format("DD/MM/YYYY")}
-          End Date: ${trip.endDate.format("DD/MM/YYYY")}
-          ID: ${trip.id}
-        `);
 
         // Update your state or perform any necessary actions to remove the trip
         setTrips((prevTrips) => prevTrips.filter((t) => t.id !== trip.id));
@@ -162,8 +155,8 @@ function MyTrips(props: any) {
     <>
       {loading && (
         <Spin size="large">
-        <Typography.Text>Loading</Typography.Text>
-      </Spin>
+          <Typography.Text>Loading</Typography.Text>
+        </Spin>
       )}
 
       {error && (

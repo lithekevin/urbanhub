@@ -314,7 +314,6 @@ function Chatbot(props: ChatbotProps) {
       if (!attractionDate.isValid()) {
         //Date not valid
         setReloadText((prev) => prev + 1);
-        console.log("matchEdit: ", matchEdit);
         updateMessage("Oops! It seems like the date you provided is not quite right. Could you please try entering it again with a correct value and format?");
         setIsValidInput(false);
         return;
@@ -557,9 +556,6 @@ function Chatbot(props: ChatbotProps) {
     if (inputValue !== '') {
       const text: string = inputValue;
       parseInput(text);
-      if (isValidInput) {
-        console.log('Input is valid');
-      }
     }
   };
 

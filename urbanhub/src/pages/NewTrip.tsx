@@ -34,10 +34,10 @@ interface TripFormProps {
   }) => void;
 }
 
-function NewTrip (props: TripFormProps) {
+function NewTrip(props: TripFormProps) {
 
   const { onSubmit } = props;
-  
+
   const steps = [
     {
       title: "Trip destination",
@@ -59,7 +59,7 @@ function NewTrip (props: TripFormProps) {
     dateRange: ["", ""],
     adults: 0,
     children: 0,
-    budget: 0,
+    budget: -1,
     additionalInfo: "",
     questions: [""],
     answers: [""],
@@ -121,7 +121,7 @@ function NewTrip (props: TripFormProps) {
   }, [adultsValue, childrenValue, handleInputChange]);
 
   const handleDateRangeChange = (dates: [moment.Moment, moment.Moment]) => {
-    if(dates){
+    if (dates) {
       const dateStrings = dates.map((date) => date.format("DD/MM/YYYY"));
       handleInputChange({
         target: { name: "dateRange", value: dateStrings },
@@ -160,7 +160,7 @@ function NewTrip (props: TripFormProps) {
         return (
           formData.dateRange[0] !== "" &&
           formData.adults > 0 &&
-          formData.budget > 0
+          formData.budget >= 0
         );
       case 2:
         return true;
@@ -180,107 +180,109 @@ function NewTrip (props: TripFormProps) {
   const prevStep = () => {
     if (step === 0) {
       navigate(-1);
-    } else{
+    } else {
       setStep((prevStep) => prevStep - 1);
     }
   };
 
   return (
     <>
-        <ConfigProvider
-          theme={{
-            components: {
-              Steps: {
-                colorPrimary: colors.hardBackgroundColor,
-              },
+      <ConfigProvider
+        theme={{
+          components: {
+            Steps: {
+              colorPrimary: colors.hardBackgroundColor,
             },
-          }}
-        >
-          <Row align={"middle"}>
-            {/* Arrow on the left */}
-            <Col span={4}>
-              <div onClick={() => navigate(-1)} className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
+          },
+        }}
+      >
+        <Row align={"middle"}>
+          {/* Arrow on the left */}
+          <Col span={4}>
+            <Flex onClick={() => prevStep()} style={{ display: 'flex', alignItems: 'center' }} className="back-link">
+              <div className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
                 <ArrowLeftOutlined
-                className="float-left"
-                style={{ marginRight: '4px', fontSize: '25px' }}
+                  className="float-left"
+                  style={{ marginRight: '4px', fontSize: '25px' }}
                 /> <Text>Back</Text>
               </div>
-            </Col>
-            {/* Stepper centered */}
-            <Col span={16}>
-              <div className="mb-3 center text-center">
-                <Steps current={step} size="small" style={{ paddingTop: '15px' }}>
-                  {steps.map((s, index) => (
-                    <Step key={s.title} title={s.title} />
-                  ))}
-                </Steps>
-              </div>
-            </Col>
-            <Col span={4}> </Col>
-          </Row>
-        </ConfigProvider>
-      
-        <Form layout="vertical">
-          {step === 0 && (
-            <Step0
-              isDestinationSelected={isDestinationSelected}
-              setIsDestinationSelected={setIsDestinationSelected}
-              isDestinationValid={isDestinationValid}
-              setIsDestinationValid={setIsDestinationValid}
-              cityPosition={cityPosition}
-              setCityPosition={setCityPosition}
-              mapZoom={mapZoom}
-              setMapZoom={setMapZoom}
-              formData={formData}
-              handleInputChange={handleInputChange}
-              step={step}
-              nextStep={nextStep}
-            />
-          )}
-          {step === 1 && (
-            <Step1
-              step={step}
-              handleDateRangeChange={handleDateRangeChange}
-              adultsValue={adultsValue}
-              setAdultsValue={setAdultsValue}
-              childrenValue={childrenValue}
-              setChildrenValue={setChildrenValue}
-              handleInputChange={handleInputChange}
-              formData={formData}
-              prevStep={prevStep}
-              nextStep={nextStep}
-            />
-          )}
-          {step === 2 && (
-            <Step2
-              step={step}
-              displayedQuestions={displayedQuestions}
-              formData={formData}
-              setDisplayedQuestions={setDisplayedQuestions}
-              allDisplayedQuestions={allDisplayedQuestions}
-              setAllDisplayedQuestions={setAllDisplayedQuestions}
-              userAnswers={userAnswers}
-              setUserAnswers={setUserAnswers}
-              questionsPageNumber={questionsPageNumber}
-              setQuestionsPageNumber={setQuestionsPageNumber}
-              maxPageNumber={maxPageNumber}
-              setMaxPageNumber={setMaxPageNumber}
-              prevStep={prevStep}
-              nextStep={nextStep}
-            />
-          )}
-          {step === 3 && (
-            <Step3
-              step={step}
-              formData={formData}
-              prevStep={prevStep}
-              onSubmit={onSubmit}
-            />
-          )}
-          <Tooltip title="Back to top" placement="topLeft" style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'}}>
-            <FloatButton.BackTop visibilityHeight={50} style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'}}/>
-          </Tooltip>
-        </Form>
+            </Flex>
+          </Col>
+          {/* Stepper centered */}
+          <Col span={16}>
+            <div className="mb-3 center text-center">
+              <Steps current={step} size="small" style={{ paddingTop: '15px' }}>
+                {steps.map((s, index) => (
+                  <Step key={s.title} title={s.title} />
+                ))}
+              </Steps>
+            </div>
+          </Col>
+          <Col span={4}> </Col>
+        </Row>
+      </ConfigProvider>
+
+      <Form layout="vertical">
+        {step === 0 && (
+          <Step0
+            isDestinationSelected={isDestinationSelected}
+            setIsDestinationSelected={setIsDestinationSelected}
+            isDestinationValid={isDestinationValid}
+            setIsDestinationValid={setIsDestinationValid}
+            cityPosition={cityPosition}
+            setCityPosition={setCityPosition}
+            mapZoom={mapZoom}
+            setMapZoom={setMapZoom}
+            formData={formData}
+            handleInputChange={handleInputChange}
+            step={step}
+            nextStep={nextStep}
+          />
+        )}
+        {step === 1 && (
+          <Step1
+            step={step}
+            handleDateRangeChange={handleDateRangeChange}
+            adultsValue={adultsValue}
+            setAdultsValue={setAdultsValue}
+            childrenValue={childrenValue}
+            setChildrenValue={setChildrenValue}
+            handleInputChange={handleInputChange}
+            formData={formData}
+            prevStep={prevStep}
+            nextStep={nextStep}
+          />
+        )}
+        {step === 2 && (
+          <Step2
+            step={step}
+            displayedQuestions={displayedQuestions}
+            formData={formData}
+            setDisplayedQuestions={setDisplayedQuestions}
+            allDisplayedQuestions={allDisplayedQuestions}
+            setAllDisplayedQuestions={setAllDisplayedQuestions}
+            userAnswers={userAnswers}
+            setUserAnswers={setUserAnswers}
+            questionsPageNumber={questionsPageNumber}
+            setQuestionsPageNumber={setQuestionsPageNumber}
+            maxPageNumber={maxPageNumber}
+            setMaxPageNumber={setMaxPageNumber}
+            prevStep={prevStep}
+            nextStep={nextStep}
+          />
+        )}
+        {step === 3 && (
+          <Step3
+            step={step}
+            formData={formData}
+            prevStep={prevStep}
+            onSubmit={onSubmit}
+          />
+        )}
+        <Tooltip title="Back to top" placement="topLeft" style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)' }}>
+          <FloatButton.BackTop visibilityHeight={50} style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)' }} />
+        </Tooltip>
+      </Form>
     </>
   );
 };
