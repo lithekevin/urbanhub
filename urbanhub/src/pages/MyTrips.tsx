@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { Card, Row, Col, Container } from "react-bootstrap";
 import { Typography, Button, Modal, Skeleton, Image, Empty, Spin, Alert, Tabs, Flex, ConfigProvider, Dropdown, Menu } from "antd";
-import { PlusOutlined, DeleteOutlined, MoreOutlined } from "@ant-design/icons";
+import { PlusOutlined, DeleteTwoTone, MoreOutlined } from "@ant-design/icons";
 import { deleteTrip, getAllTrips } from "../firebase/daos/dao-trips";
 import { Trip } from "../models/trip";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -126,25 +126,19 @@ function MyTrips(props: any) {
   };
 
   const menu = (trip: Trip) => {
-    const isPastTrip = dayjs().isAfter(dayjs(trip.endDate));
     return (
       <Menu
         items={[
-          ...(!isPastTrip ? [] : []), // Remove the edit option for past trips
           {
             key: "delete",
-            label: (
-              <>
-                <DeleteOutlined style={{ marginRight: "2px", color: colors.deleteButtonColor }} />
-                <Text style={{ color: colors.deleteButtonColor }}>Delete Trip</Text>
-              </>
-            ),
+            icon: <DeleteTwoTone twoToneColor={colors.deleteButtonColor} style={{ fontSize: '15px'}}/>,
+            label: <Text>Delete Trip</Text>,
             onMouseEnter: () => handleMenuHover(trip),
             onClick: (info: MenuInfo) => {
               info.domEvent.preventDefault();
               info.domEvent.stopPropagation();
               handleDelete(trip);
-            },
+            }
           }
         ]}
       />
@@ -154,9 +148,7 @@ function MyTrips(props: any) {
   return (
     <>
       {loading && (
-        <Spin size="large">
-          <Typography.Text>Loading</Typography.Text>
-        </Spin>
+        <Spin size="large" fullscreen/>
       )}
 
       {error && (

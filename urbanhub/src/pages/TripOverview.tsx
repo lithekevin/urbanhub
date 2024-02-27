@@ -445,41 +445,42 @@ function TripOverview(props: any) {
     // Cancella il timeout quando il componente viene smontato o quando lo stato del tooltip cambia
     return () => clearTimeout(timeout);
   }, []);
-
-  const tripMenu = (
-    <Menu>
-      {editing && (
-        <Menu.Item key="edit" onClick={handleOpenModal}>
-          <EditTwoTone/> Edit trip settings
-        </Menu.Item>
-      )}
-      {tripId && (
-        <Menu.Item key="delete" onClick={handleDeleteTrip}>
-          <DeleteTwoTone twoToneColor={colors.deleteButtonColor}/> Delete Trip
-        </Menu.Item>
-      )}
-    </Menu>
-  );
+ 
+  const tripMenu = () => { 
+    return (
+      <Menu
+        items={[
+          editing ? // Render the "Edit trip settings" button only if editing is true
+            {
+              key: "edit",
+              label: <Text>Edit Trip Settings</Text>,
+              icon: <EditTwoTone style={{ fontSize: '15px'}}/>,
+              onClick: handleOpenModal,
+            }
+            : null, // If editing is false, render null
+          tripId ? // Render the "Delete trip" button only if tripId is defined
+          {
+            key: "delete",
+            label: <Text>Delete Trip</Text>,
+            icon: <DeleteTwoTone twoToneColor={colors.deleteButtonColor} style={{ fontSize: '15px'}}/>,
+            onClick: handleDeleteTrip,
+          }: null, // If tripId is not defined, render null
+        ]}
+      />
+    );
+  };
 
   return (
     <>
       {(loading || imageLoading) && (
-        <Spin tip="Loading" size="large" fullscreen />
+        <Spin size="large" fullscreen/>
       )}
 
       {/*contextHolder*/}
 
-      <Row
+      <Row 
         align="middle"
-        justify="space-between"
-        style={{
-          fontSize: "25px",
-          position: "relative",
-          margin: "0 auto",
-          maxWidth: "1300px",
-          height: '37px',
-        }}
-      >
+        style={{ paddingTop: '15px' }}>
         {/* Arrow on the left */}
         <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ paddingLeft: '1%' }}>
           <div onClick={() => navigate(-1)} className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
@@ -542,7 +543,7 @@ function TripOverview(props: any) {
           </span>
         </Col>
         <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ textAlign: 'end', paddingRight: '1%' }}>
-          <Dropdown overlay={tripMenu} placement="bottomRight">
+          <Dropdown dropdownRender={() => tripMenu()} placement="bottomRight">
             <Button
               size="middle"
               className="enterEditModeButton"

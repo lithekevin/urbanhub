@@ -152,7 +152,7 @@ function Sidebar(props: SidebarProps) {
   return (
     <>
       {loadingState.value && (
-        <Spin tip="Loading" size="large" fullscreen />
+        <Spin size="large" fullscreen />
       )}
       {errorState.value && (
         <Col>

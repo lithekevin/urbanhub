@@ -67,7 +67,7 @@ function Step1(props: Step1Props) {
           <Title level={3} className='step-title'> Select your trip settings </Title>
 
           <Paragraph style={{ color: 'red' }}>*<Text className='label'> When would you like to go? </Text></Paragraph>
-          <Form.Item name="dateRange">
+          <Form.Item name="dateRange" rules={[{ required: true, message: 'Please select the date range' }]}>
             <DatePicker.RangePicker
               style={{ width: '100%' }}
               onChange={(dates, dateStrings) => handleDateRangeChange(dates as [moment.Moment, moment.Moment])}
@@ -126,7 +126,7 @@ function Step1(props: Step1Props) {
           </Form.Item>
 
           <Paragraph style={{ color: 'red' }}>*<Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>
-          <Form.Item name="budget" style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px' }}>
+          <Form.Item name="budget" rules={[{ required: true, message: 'Please type your budget'}]}>
             <InputNumber
               onChange={(value) =>
                 handleInputChange({
@@ -140,7 +140,7 @@ function Step1(props: Step1Props) {
               style={{ width: 'auto' }}
             />
           </Form.Item>
-          <Row className="d-flex justify-content-start mt-2" style={{ color: "red" }}>
+          <Row className="d-flex justify-content-start mt-3" style={{ color: "red", paddingTop: '10px' }}>
             <small>* This field is mandatory</small>
           </Row>
           <div className="mb-2 d-flex align-items-center justify-content-center">

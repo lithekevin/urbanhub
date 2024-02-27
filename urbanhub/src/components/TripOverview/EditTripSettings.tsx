@@ -68,7 +68,7 @@ function EditTripSettings(props: EditTripSettingsProps) {
         console.error('Error while saving: ', error);
         messageApi.open({
           type: "error",
-          content: "Error while editibg trip settings!",
+          content: "Error while editing trip settings!",
           duration: 3,
           style: {
             marginTop: "70px",
@@ -183,10 +183,9 @@ function EditTripSettings(props: EditTripSettingsProps) {
           </Col>
         </Row>
         <Paragraph style={{ color: 'red', marginTop: '3vh' }}><span>*</span><Text className='label'> How much do you plan to spend on this trip? </Text></Paragraph>
-        <Row gutter={8} style={{ border: '1px solid #d9d9d9', padding: '8px', borderRadius: '4px', height: '50px' }}>
           <Form.Item
             name="budget"
-            rules={[{ required: true, message: '' }]}
+            rules={[{ required: true, message: 'Please type your budget' }]}
           >
             <InputNumber
               min={0}
@@ -195,9 +194,8 @@ function EditTripSettings(props: EditTripSettingsProps) {
               style={{ width: 'auto' }}
             />
           </Form.Item>
-        </Row>
       </Form>
-      <Row className='d-flex justify-content-start mt-3' style={{ color: "red" }}>
+      <Row className='d-flex justify-content-start mt-3' style={{ color: "red", paddingTop: '10px' }}>
         <small>* This field is mandatory</small>
       </Row>
 

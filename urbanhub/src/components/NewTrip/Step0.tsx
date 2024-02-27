@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AutoComplete, Button, Col, Form, Image, Row, Tooltip, Typography } from "antd";
+import { AutoComplete, Button, Col, Form, Image, Row, Spin, Tooltip, Typography } from "antd";
 import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
 import cities from "../../firebase/cities";
 import { DEFAULT_LOCATION } from "../../pages/NewTrip";
@@ -85,6 +85,10 @@ function Step0(props: Step0Props) {
   };
 
   return (
+    <>
+    { (!mapLoaded || !showMarker) && (
+      <Spin size="large" fullscreen/>
+    )}
     <Row>
       <Col span={5}></Col>
       <Col span={14}>
@@ -240,6 +244,7 @@ function Step0(props: Step0Props) {
       </Col>
       <Col span={5}></Col>
     </Row>
+    </>
   );
 };
 

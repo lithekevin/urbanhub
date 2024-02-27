@@ -198,7 +198,7 @@ function NewTrip(props: TripFormProps) {
       >
         <Row align={"middle"}>
           {/* Arrow on the left */}
-          <Col span={4}>
+          <Col span={4} style={{ paddingLeft: '1%'}}>
             <Flex onClick={() => prevStep()} style={{ display: 'flex', alignItems: 'center' }} className="back-link">
               <div className="back-link" style={{ display: 'inline-flex', alignItems: 'center' }}>
                 <ArrowLeftOutlined
