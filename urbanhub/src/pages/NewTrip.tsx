@@ -72,7 +72,7 @@ function NewTrip(props: TripFormProps) {
     lat: DEFAULT_LOCATION.lat,
     lng: DEFAULT_LOCATION.lng,
   });
-  const [mapZoom, setMapZoom] = React.useState(3);
+  const [mapZoom, setMapZoom] = React.useState(2);
 
   const [adultsValue, setAdultsValue] = React.useState<number>(1);
   const [childrenValue, setChildrenValue] = React.useState<number>(0);

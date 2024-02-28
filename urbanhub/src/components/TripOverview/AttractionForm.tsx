@@ -336,7 +336,7 @@ function AttractionForm(props: AttractionFormProps) {
                       <div className="smallAttractionContainer">
                         <Image className="attractionImage" src={imageUrl || defaultAttractionImageUrl} alt={selectedMarker.name} preview={false} />
                         <Title className="attractionName" style={{ textAlign: 'center', fontSize: '12px' }}>{selectedMarker.name}</Title>
-                        <Tag icon={<EuroCircleOutlined />} color="green" style={{ gridColumn: "1", gridRow: "2", display: "inline-block", maxWidth: "60px", }}>{" "}{selectedMarker.perPersonCost ? selectedMarker.perPersonCost * (trip!.nAdults + trip!.nChildren) : "free"}</Tag>
+                        <Tag icon={<EuroCircleOutlined />} color="green" style={{ gridColumn: "1", gridRow: "2", display: "inline-block", maxWidth: "60px", margin: '0' }}>{" "}{selectedMarker.perPersonCost ? selectedMarker.perPersonCost * (trip!.nAdults + trip!.nChildren) : "free"}</Tag>
                       </div>
                     </InfoWindow>
                   )}

@@ -101,6 +101,10 @@ function TripOverview(props: any) {
   );
   const [modifiedByChatbot, setModifiedByChatbot] = useState<boolean>(false);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   //ActiveKey is update opening the current day for ingoing trips
   useEffect(() => {
     if(!modifiedByChatbot){
@@ -699,7 +703,7 @@ function TripOverview(props: any) {
             onOpenChange={handlePopoverVisibleChange}
             placement="right"
             arrow={{ pointAtCenter: true }}
-            overlayStyle={{ maxWidth: "90vw", width: "100%", marginLeft: "20px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", borderRadius: '4%' }}
+            overlayStyle={{ width: "85vw", marginLeft: "20px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", borderRadius: '4%' }}
           >
             <Tooltip
               title={<Text style={{ color: 'white' }}><TypingText text="Click me! I can help you modify the trip." reloadText={0} /></Text>}
@@ -715,7 +719,7 @@ function TripOverview(props: any) {
                   height: "70px",
                   borderRadius: "50%",
                   position: "fixed",
-                  right: "22px",
+                  right: "3.5%",
                   zIndex: 999,
                   backgroundColor: 'white',
                   bottom: `30px`,
