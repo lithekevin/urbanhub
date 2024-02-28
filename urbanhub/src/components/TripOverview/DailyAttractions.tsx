@@ -37,6 +37,10 @@ interface DailyAttractionsProps {
     value: string | null;
     setter: React.Dispatch<React.SetStateAction<string | null>>;
   };
+  modifiedByChatbot: {
+    value: boolean;
+    setter: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 }
 
 function DailyAttractions(props: DailyAttractionsProps) {
@@ -57,6 +61,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
     trip,
     tripId,
     attractionCardHoveredID,
+    modifiedByChatbot
   } = props;
 
   let attractionsForDay: TripAttraction[] = [];
@@ -267,6 +272,7 @@ function DailyAttractions(props: DailyAttractionsProps) {
             await deleteAttraction(tripId, attraction.startDate, attraction.id);
             setDirty(true);
             setUndoVisibility(false);
+            modifiedByChatbot.setter(true);
 
             // Show success message
             messageApi.open({

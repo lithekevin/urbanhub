@@ -609,6 +609,7 @@ function TripOverview(props: any) {
                 value: attractionCardHoveredID,
                 setter: setAttractionCardHoveredID,
               }}
+              modifiedByChatbot={{value: modifiedByChatbot, setter: setModifiedByChatbot}}
             />
           </div>
           <div className="body-space">
@@ -665,6 +666,7 @@ function TripOverview(props: any) {
             tripId={tripId}
             validSelection={validSelection}
             zoomLevel={zoomLevel}
+            modifiedByChatbot={{value: modifiedByChatbot, setter: setModifiedByChatbot}}
           />
           <EditTripSettings
             form1={form1}

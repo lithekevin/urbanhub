@@ -39,6 +39,10 @@ interface AttractionFormProps {
   tripId: string | undefined;
   validSelection: boolean;
   zoomLevel: number;
+  modifiedByChatbot: {
+    value: boolean;
+    setter: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 }
 
 function AttractionForm(props: AttractionFormProps) {
@@ -46,7 +50,7 @@ function AttractionForm(props: AttractionFormProps) {
   const { cityPosition, contextHolder, defaultAttractionImageUrl, editingAttraction, form, imageUrl, isFormVisible, trip,
     selAttraction, selectedAttractionId, selectedDay, selectedMarker, setDirty, setEditingAttraction,
     setIsFormVisible, setMap, setMessageAI, setSelectedAttractionId, setSelectedMarker, setUndoVisibility,
-    setValidSelection, tripId, validSelection, zoomLevel, messageApi } = props;
+    setValidSelection, tripId, validSelection, zoomLevel, messageApi,modifiedByChatbot } = props;
 
   const [showParagraph, setShowParagraph] = useState(false);
   const [markerClicked, setMarkerClicked] = useState<boolean>(false);
@@ -77,6 +81,7 @@ function AttractionForm(props: AttractionFormProps) {
 
       if (tripId && selectedDay) {
         editAttraction(tripId, editingAttraction.id, selectedDay, values.date.format('DD/MM/YYYY'), attraction);
+        modifiedByChatbot.setter(true);
         setMessageAI("Is there anything I can do for you?");
         setUndoVisibility(false);
         // Show success message
@@ -120,6 +125,7 @@ function AttractionForm(props: AttractionFormProps) {
     }
 
     setDirty(true);
+    modifiedByChatbot.setter(true);
     setEditingAttraction(null);
     setIsFormVisible(false);
     setSelectedAttractionId(null);

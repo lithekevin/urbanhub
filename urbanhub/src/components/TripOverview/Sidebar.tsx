@@ -64,6 +64,10 @@ interface SidebarProps {
     value: string | null;
     setter: React.Dispatch<React.SetStateAction<string | null>>;
   };
+  modifiedByChatbot: {
+    value: boolean;
+    setter: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 }
 
 function Sidebar(props: SidebarProps) {
@@ -89,6 +93,7 @@ function Sidebar(props: SidebarProps) {
     tripState,
     contextHolder,
     attractionCardHoveredID,
+    modifiedByChatbot
   } = props;
 
   const dailyActivities: CollapseProps["items"] = dayLabels.map(
@@ -137,6 +142,7 @@ function Sidebar(props: SidebarProps) {
               value: attractionCardHoveredID.value,
               setter: attractionCardHoveredID.setter,
             }}
+            modifiedByChatbot={modifiedByChatbot}
           />
         </div>
       ),
