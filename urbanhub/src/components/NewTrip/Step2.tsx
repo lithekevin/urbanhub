@@ -106,7 +106,9 @@ function Step2(props: Step2Props) {
       nextStep();
     }
   };   
- 
+
+  console.log('questionsPageNumber', questionsPageNumber);
+
   return (
     <Row>
       <Col span={5}></Col>
@@ -162,7 +164,7 @@ function Step2(props: Step2Props) {
                     <LeftOutlined />
                     Previous questions
                 </Button>
-                { questionsPercentage < 100 &&
+                { ((questionsPercentage < 100) && (questionsPageNumber < 2)) &&
                 <Button 
                   type = 'primary'
                   style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -180,7 +182,7 @@ function Step2(props: Step2Props) {
                     }
 
                   }} 
-                  disabled={questionsPageNumber === 2 || (userAnswers.slice(questionStartingIndex, questionEndingIndex+1).length < 3 || userAnswers.slice(questionStartingIndex, questionEndingIndex+1).some((ans) => !ans) && maxPageNumber <= questionsPageNumber)}
+                  disabled={questionsPageNumber === 2 }
                 >
                   {questionsPageNumber === (maxPageNumber) ?  "More questions" : "Next questions"}
                   <RightOutlined />
