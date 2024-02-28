@@ -107,8 +107,6 @@ function Step2(props: Step2Props) {
     }
   };   
 
-  console.log('questionsPageNumber', questionsPageNumber);
-
   return (
     <Row>
       <Col span={5}></Col>
