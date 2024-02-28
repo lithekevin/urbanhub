@@ -26,6 +26,7 @@ const defaultAttractionImageUrl =
   "https://images.unsplash.com/photo-1416397202228-6b2eb5b3bb26?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 function TripOverview(props: any) {
+  const [menuOpen, setIsMenuOpen] = useState(false);
   const defaultCenter = {
     lat: 48.7758,
     lng: 9.1829,
@@ -543,10 +544,19 @@ function TripOverview(props: any) {
           </span>
         </Col>
         <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4} style={{ textAlign: 'end', paddingRight: '1%' }}>
-          <Dropdown dropdownRender={() => tripMenu()} placement="bottomRight">
+          <Dropdown 
+            dropdownRender={() => tripMenu()} 
+            placement="bottomRight" 
+            arrow={{ pointAtCenter: false }} 
+            trigger={["click"]}
+            onOpenChange={(visible) => {
+              setIsMenuOpen(visible);
+            }}
+          >
             <Button
+              icon={<MenuOutlined />}
               size="middle"
-              className="enterEditModeButton"
+              className={`enterEditModeButton ${menuOpen ? "menu-open" : ""}`} 
               type="text"
               style={{
                 backgroundColor: 'white',
@@ -556,9 +566,7 @@ function TripOverview(props: any) {
                 fontSize: '15px',
                 marginRight: '5px'
               }}
-            >
-              <span>{<MenuOutlined />} Edit Trip</span>
-            </Button>
+            > Edit Trip </Button>
           </Dropdown>
         </Col>
       </Row>

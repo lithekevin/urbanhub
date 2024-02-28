@@ -100,8 +100,8 @@ function Sidebar(props: SidebarProps) {
           <span>
             {dayjs(dayLabel, "DD/MM/YYYY").isBefore(dayjs().startOf('day')) && (
               <>
-                <CheckOutlined style={{ color: 'blue' }} />
-                <span style={{ marginLeft: '10px', color: 'blue' }}> Visited</span>
+                <CheckOutlined style={{ color: colors.primaryButtonColor }} />
+                <span style={{ marginLeft: '10px', color: colors.primaryButtonColor }}> Visited</span>
               </>
 
             )}
