@@ -62,6 +62,16 @@ function Main() {
 
         const nextTripID = calculateNextTripID(trips);
 
+        let answers = new Array(9).fill(''); // array to be copied in the answers field of the tripToAdd object
+        for (let i = 0; i < data.answers.length; i++) {
+          if(data.answers[i]){
+            answers[i] = data.answers[i];
+          }
+          else{
+            answers[i] = '';
+          }
+        }
+
         const tripToAdd = {
           id: nextTripID,
           city: data.destination,
@@ -71,7 +81,7 @@ function Main() {
           nChildren: data.children,
           budget: data.budget,
           questions: data.questions,
-          answers: data.answers,
+          answers: answers,
           schedule: {},
           location: {
             latitude: tripCity ? tripCity.location.latitude : 0,
