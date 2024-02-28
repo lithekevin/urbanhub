@@ -29,7 +29,7 @@ function Step2(props: Step2Props) {
           userAnswers, setUserAnswers, questionsPageNumber, setQuestionsPageNumber, maxPageNumber, setMaxPageNumber,
           step, prevStep, nextStep } = props;
 
-  let questionsPercentage = userAnswers.filter(a => (a && a.length !== 0)).length * 100/6;
+  let questionsPercentage = userAnswers.filter(a => (a && a.length !== 0)).length * 100/9;
   let questionStartingIndex = questionsPageNumber*3;
   let questionEndingIndex = questionsPageNumber*3+2;
   let previousPageQuestionStartingIndex = (questionsPageNumber-1)*3;
@@ -164,9 +164,9 @@ function Step2(props: Step2Props) {
                     <LeftOutlined />
                     Previous questions
                 </Button>
-                { ((questionsPageNumber < 2)) &&
+                { ((questionsPercentage < 100) && (questionsPageNumber < 2)) &&
                 <Button 
-                  type = {questionsPercentage < 100 ? 'primary' : 'default'}
+                  type = 'primary'
                   style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   onClick={() => {
                     if(allDisplayedQuestions.length === questionEndingIndex+1){
