@@ -99,29 +99,33 @@ function TripOverview(props: any) {
   const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(
     null
   );
+  const [modifiedByChatbot, setModifiedByChatbot] = useState<boolean>(false);
 
   //ActiveKey is update opening the current day for ingoing trips
   useEffect(() => {
-    const currentDay = dayjs().startOf("day");
-    var closestIndex = null;
+    if(!modifiedByChatbot){
+      const currentDay = dayjs().startOf("day");
+      var closestIndex = null;
 
-    let index = -1;
+      let index = -1;
 
-    // Iterate through the schedule
-    trip?.schedule.forEach((attractions, scheduledDay) => {
-      index++;
+      // Iterate through the schedule
+      trip?.schedule.forEach((attractions, scheduledDay) => {
+        index++;
 
-      // Check if the current day matches any scheduled day
-      if (dayjs(scheduledDay).startOf("day").isSame(currentDay)) {
-        closestIndex = index;
+        // Check if the current day matches any scheduled day
+        if (dayjs(scheduledDay).startOf("day").isSame(currentDay)) {
+          closestIndex = index;
+        }
+      });
+
+      if (closestIndex !== null) {
+        setActiveKey([closestIndex]);
+      } else {
+        setActiveKey([]);
       }
-    });
-
-    if (closestIndex !== null) {
-      setActiveKey([closestIndex]);
-    } else {
-      setActiveKey([]);
     }
+    
   }, [trip]);
 
   useEffect(() => {
@@ -685,6 +689,7 @@ function TripOverview(props: any) {
                 }}
                 tripId={tripId}
                 messageApi={messageApi}
+                modifiedByChatbot={{value: modifiedByChatbot, setter: setModifiedByChatbot}}
               />
             }
             trigger="click"

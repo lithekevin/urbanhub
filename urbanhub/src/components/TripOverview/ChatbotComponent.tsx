@@ -39,10 +39,14 @@ interface ChatbotProps {
   };
   tripId: string | undefined;
   messageApi: any;
+  modifiedByChatbot: {
+    value: boolean;
+    setter: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 }
 
 function Chatbot(props: ChatbotProps) {
-  const { tripState, dirtyState, undoState, messageAIState, tripId, messageApi } = props;
+  const { tripState, dirtyState, undoState, messageAIState, tripId, messageApi, modifiedByChatbot } = props;
 
   //Used for undo operation
   const [tripUpdates, setTripUpdates] = useState<Trip | null>(null);
@@ -85,6 +89,7 @@ function Chatbot(props: ChatbotProps) {
 
   const handleUndoClick = () => {
     setIsValidInput(true);
+    modifiedByChatbot.setter(true);
     undoState.setter(false);
     editTrip(tripState.value?.id, tripUpdates);
     dirtyState.setter(true);
@@ -173,6 +178,7 @@ function Chatbot(props: ChatbotProps) {
             setIsValidInput(true);
             await deleteAttraction(tripId, attractionDate, attractionId);
             dirtyState.setter(true);
+            modifiedByChatbot.setter(true);
             setReloadText((prev) => prev + 1);
             updateMessage("Got it! "+inputAttraction+" has been successfully deleted from "+attractionDate.format('DD/MM/YYYY')+". Is there anything else I can do for you?");
             setInputValue('');
@@ -297,6 +303,7 @@ function Chatbot(props: ChatbotProps) {
           endDate: endTime,
         };
         setIsValidInput(true);
+        modifiedByChatbot.setter(true);
         addAttractionToTrip(tripId, attractionDate.format('DD/MM/YYYY'), attraction);
         setReloadText((prev) => prev + 1);
         updateMessage("Got it! "+attractionName+" has been successfully added on "+attractionDate.format('DD/MM/YYYY')+" from "+startTime+" to "+endTime+". Is there anything else I can do for you?");
@@ -395,6 +402,7 @@ function Chatbot(props: ChatbotProps) {
         };
 
         setIsValidInput(true);
+        modifiedByChatbot.setter(true);
         editAttraction(tripId, attractionId, attractionDate, attractionDate.format('DD/MM/YYYY'), attraction);
         setReloadText((prev) => prev + 1);
         updateMessage("Got it! The visit to '"+attractionName+"' is now scheduled on "+attractionDate.format('DD/MM/YYYY')+" from "+startTime+" to "+endTime+". Is there anything else I can do for you?");
@@ -534,6 +542,7 @@ function Chatbot(props: ChatbotProps) {
         };
 
         setIsValidInput(true);
+        modifiedByChatbot.setter(true);
         editAttraction(tripId, attractionId, attractionDateOld, newDate, attraction);
         setReloadText((prev) => prev + 1);
         updateMessage("Got it! The visit to '"+attractionName+"' is now scheduled on "+attractionDateNew.format('DD/MM/YYYY')+" from "+startTime+" to "+endTime+". Is there anything else I can do for you?");
