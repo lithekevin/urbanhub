@@ -76,7 +76,7 @@ function Step0(props: Step0Props) {
       setMapZoom(9);
     } else {
       setCityPosition({ lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng });
-      setMapZoom(3);
+      setMapZoom(2);
     }
   };
 
