@@ -30,7 +30,7 @@ function App() {
       <div className="wrapper">
         <NavigationBar />
         <LoadScript
-          googleMapsApiKey="AIzaSyDYwrQtanLbPehi6huH0sY0FMnvHo4Tg1w"
+          googleMapsApiKey="AIzaSyBoUEV9z3o0kvB77suHyPBtSRnaY6cso2A"
           language="en"
         >
           <Main />
