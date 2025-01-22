@@ -175,7 +175,7 @@ function MyTrips(props: any) {
       {contextHolder}
 
       <Flex align="middle" justify="space-around" className="mt-4">
-        <Title level={2} style={{ marginBottom: '0' }}>MY TRIPS</Title>
+        <Title level={2} style={{ marginBottom: '0', fontWeight: 'bold' }}>My Trips</Title>
         <AddTripButton />
       </Flex>
 
