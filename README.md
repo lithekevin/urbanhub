@@ -35,22 +35,26 @@
       <img src="./images/Overview-2.png" alt="Trip Overview - 2" height="190">
     </p>
   </div>
+
   <div id="how-to-run" align="left">
-    <h2>How to run the Project</h2>
-    <p>Execute the following commands in a Command Shell:</p>
-    <p>
-      <code>cd Urbanhub/urbanhub</code> - Enter the folder
-    </p>
-    <p>
-      <code>npm install</code> - Install all the dependencies
-    </p>
-    <p>
-      <code>npm start</code> - Start the application
-    </p>
-    <p>⚠️ <em>If you don't have npm installed you can download it from here: <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">npm</a>
-      </em>
-    </p>
-  </div>
+  <h2>How to run the Project</h2>
+  <h3>Prerequisites</h3>
+  <p>Make sure you have Node.js installed. You can download it from <a href="https://nodejs.org/">here</a>.</p>
+  <h3>Steps</h3>
+  <p>Execute the following commands in a Command Shell:</p>
+  <p>
+    <code>git clone https://github.com/lithekevin/urbanhub.git</code> - Clone the project
+  </p>
+  <p>
+    <code>cd urbanhub</code> - Move inside the project folder
+  </p>
+  <p>
+    <code>npm install</code> - Install all the dependencies
+  </p>
+  <p>
+    <code>npm start</code> - Start the application
+  </p>
+</div>
 
   <div id="contributors" align="left">
     <h2>Contributors</h2>
