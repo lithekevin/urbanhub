@@ -24,12 +24,6 @@ interface CityPosition {
   lng: number;
 }
 
-interface DirectionsState {
-  geocoded_waypoints: any[]; // You might want to create a more specific type for this
-  routes: any[]; // You might want to create a more specific type for this
-  status: string;
-}
-
 interface GoogleMapsComponentProps {
   activeKeyState: {
     value: string | string[];
@@ -44,8 +38,8 @@ interface GoogleMapsComponentProps {
     lng: number;
   };
   directionsState: {
-    value: DirectionsState;
-    setter: React.Dispatch<SetStateAction<DirectionsState>>;
+    value: google.maps.DirectionsResult | null;
+    setter: React.Dispatch<React.SetStateAction<google.maps.DirectionsResult | null>>;
   };
   tripState: {
     value: Trip | null;
@@ -205,7 +199,7 @@ function GoogleMapsComponent(props: GoogleMapsComponentProps) {
               }}
             />
           )}
-        {activeKeyState.value.length === 1 && (
+        {activeKeyState.value.length === 1 && directionsState.value && (
           <DirectionsRenderer
             directions={directionsState.value}
             options={{ suppressMarkers: true }}

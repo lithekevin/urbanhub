@@ -24,13 +24,16 @@ import {
   fillSchedule,
 } from "./utils/tripCreation";
 
+const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+console.log(apiKey);
+
 function App() {
   return (
     <BrowserRouter>
       <div className="wrapper">
         <NavigationBar />
         <LoadScript
-          googleMapsApiKey="AIzaSyBoUEV9z3o0kvB77suHyPBtSRnaY6cso2A"
+          googleMapsApiKey={apiKey || ""}
           language="en"
         >
           <Main />
