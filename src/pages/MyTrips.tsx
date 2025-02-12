@@ -355,6 +355,8 @@ function TripCard(props: Readonly<{
 }
 
 function AddTripButton() {
+  const navigate = useNavigate();
+
   return (
     <Button
       size="large"
@@ -365,7 +367,7 @@ function AddTripButton() {
         color: colors.whiteBackgroundColor,
         textAlign: "center",
       }}
-      href="/newTrip"
+      onClick={() => navigate("/newTrip")}
     >
       <span>
         <PlusOutlined style={{ marginRight: "8px" }} /> New Trip
